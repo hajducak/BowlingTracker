@@ -55,7 +55,7 @@ class FirebaseManagerTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
-                    XCTAssertEqual((error as NSError).code, 500, "The error code should be 500.")
+                    XCTAssertEqual((error as NSError).code, 1, "The error code should be 1.")
                     expectation.fulfill()
                 case .finished:
                     XCTFail("Expected failure, but received success.")
@@ -103,7 +103,7 @@ class FirebaseManagerTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
-                    XCTAssertEqual((error as NSError).code, 500, "The error code should be 500.")
+                    XCTAssertEqual((error as NSError).code, 1, "The error code should be 1.")
                     expectation.fulfill()
                 case .finished:
                     XCTFail("Expected failure, but received success.")

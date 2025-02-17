@@ -3,6 +3,8 @@ import SwiftUI
 struct PerformanceListView: View {
     @ObservedObject var viewModel: PerformanceListViewModel
     @State private var selectedFilter: StorageType? = nil
+    @State private var showDeleteConfirmation = false
+    @EnvironmentObject var tabSelectionViewModel: TabSelectionViewModel
 
     var body: some View {
         VStack {
@@ -18,18 +20,29 @@ struct PerformanceListView: View {
                     .progressViewStyle(CircularProgressViewStyle())
                     .padding()
             }
-            // TODO: add empty view
-            List(viewModel.performances) { performance in
-                HStack {
-                    Text(performance.name)
-                    Spacer()
-                    Text("\(performance.duration) min")
-                        .foregroundColor(.gray)
+            if viewModel.performances.isEmpty {
+                emptyView
+            } else {
+                List(viewModel.performances) { performance in
+                    HStack {
+                        Text(performance.name)
+                        Spacer()
+                        Text("\(performance.duration) min")
+                            .foregroundColor(.gray)
+                    }
+                    .padding()
+                    .background(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
+                    .cornerRadius(8)
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            viewModel.deletePerformance(performance)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
-                .padding()
-                .background(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
-                .cornerRadius(8)
             }
+
             if let toastMessage = viewModel.toastMessage, viewModel.showToast {
                 Text(toastMessage)
                     .padding()
@@ -47,6 +60,7 @@ struct PerformanceListView: View {
             }
         }
         .navigationBarTitle("Performance List")
+        .navigationBarItems(trailing: deleteAllButton)
         .task {
             viewModel.fetchPerformances(filter: selectedFilter)
         }
@@ -55,5 +69,43 @@ struct PerformanceListView: View {
                 viewModel.fetchPerformances(filter: newValue)
             }
         })
+        .alert(isPresented: $showDeleteConfirmation) {
+            Alert(
+                title: Text("Confirm Deletion"),
+                message: Text("Are you sure you want to delete all performances? This action cannot be undone."),
+                primaryButton: .destructive(Text("Delete All")) {
+                    viewModel.deleteAllPerformances()
+                },
+                secondaryButton: .cancel()
+            )
+        }
+    }
+
+    private var deleteAllButton: some View {
+        Button(action: {
+            showDeleteConfirmation = true
+        }) {
+            Label("Delete All", systemImage: "trash.fill")
+                .foregroundColor(.red)
+        }
+    }
+    
+    private var emptyView: some View {
+        VStack {
+            Spacer()
+            Text("No performances found")
+                .font(.title)
+                .foregroundColor(.gray)
+                .padding()
+            
+            Button(action: {
+                tabSelectionViewModel.selectAddTab()
+            }) {
+                Text("Add a Performance")
+                    .foregroundColor(.blue)
+            }
+            .padding()
+            Spacer()
+        }
     }
 }

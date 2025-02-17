@@ -16,6 +16,18 @@ class PerformanceListViewModel: ObservableObject {
         self.firebaseManager = firebaseManager
     }
 
+    func deletePerformance(_ performance: SportPerformance) {
+        // TODO: Implement deleting from source Forebase/SwiftData
+        if let index = performances.firstIndex(where: { $0.id == performance.id }) {
+            performances.remove(at: index)
+        }
+    }
+
+    func deleteAllPerformances() {
+        // TODO: Implement deleting from source Forebase/SwiftData
+        performances.removeAll()
+    }
+
     @MainActor func fetchPerformances(filter: StorageType?) {
         isLoading = true
         

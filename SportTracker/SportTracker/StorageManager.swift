@@ -1,10 +1,12 @@
 import SwiftData
+import Foundation
 
+@MainActor
 class StorageManager {
     let modelContext: ModelContext
 
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
+    init(modelContainer: ModelContainer) {
+        self.modelContext = modelContainer.mainContext
     }
 
     func savePerformance(_ performance: SportPerformance) {

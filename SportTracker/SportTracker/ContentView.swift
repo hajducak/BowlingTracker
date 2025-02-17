@@ -1,16 +1,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel: SportPerformanceViewModel
+    @StateObject private var addPerformanceViewModel: AddPerformanceViewModel
+    @StateObject private var performanceListViewModel: PerformanceListViewModel
 
-    init(viewModel: SportPerformanceViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+    init(
+        addPerformanceViewModel: AddPerformanceViewModel,
+        performanceListViewModel: PerformanceListViewModel
+    ) {
+        _addPerformanceViewModel = StateObject(wrappedValue: addPerformanceViewModel)
+        _performanceListViewModel = StateObject(wrappedValue: performanceListViewModel)
     }
 
     var body: some View {
         TabView {
             NavigationView {
-                AddPerformanceView(viewModel: viewModel)
+                AddPerformanceView(viewModel: addPerformanceViewModel)
                     .navigationBarTitle("Add Performance")
             }
             .tabItem {
@@ -18,7 +23,7 @@ struct ContentView: View {
                 Text("Add")
             }
             NavigationView {
-                PerformanceListView(viewModel: viewModel)
+                PerformanceListView(viewModel: performanceListViewModel)
                     .navigationBarTitle("Performance List")
             }
             .tabItem {

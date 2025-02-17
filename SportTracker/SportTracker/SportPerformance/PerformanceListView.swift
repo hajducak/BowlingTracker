@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct PerformanceListView: View {
-    @ObservedObject var viewModel: SportPerformanceViewModel
-    
+    @ObservedObject var viewModel: PerformanceListViewModel
     @State private var selectedFilter: StorageType? = nil
     
     var body: some View {
@@ -26,10 +25,15 @@ struct PerformanceListView: View {
                 .background(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
                 .cornerRadius(8)
             }
-            .onAppear {
-                viewModel.fetchPerformances(filter: selectedFilter)
-            }
         }
         .navigationBarTitle("Performance List")
+        .task {
+            viewModel.fetchPerformances(filter: selectedFilter)
+        }
+        .onChange(of: selectedFilter, { _, newValue in
+            Task {
+                viewModel.fetchPerformances(filter: newValue)
+            }
+        })
     }
 }

@@ -1,26 +1,21 @@
 import SwiftUI
 
 struct AddPerformanceView: View {
-    @ObservedObject var viewModel: SportPerformanceViewModel
-    
-    @State private var name: String = ""
-    @State private var location: String = ""
-    @State private var duration: String = ""
-    @State private var selectedStorage: StorageType = .local
+    @ObservedObject var viewModel: AddPerformanceViewModel
     
     var body: some View {
         VStack {
-            TextField("Enter performance name", text: $name)
+            TextField("Enter performance name", text: $viewModel.name)
                 .padding().textFieldStyle(RoundedBorderTextFieldStyle())
             
-            TextField("Enter performance location", text: $location)
+            TextField("Enter performance location", text: $viewModel.location)
                 .padding().textFieldStyle(RoundedBorderTextFieldStyle())
             
-            TextField("Enter performance duration (in minutes)", text: $duration)
+            TextField("Enter performance duration (in minutes)", text: $viewModel.duration)
                 .padding().textFieldStyle(RoundedBorderTextFieldStyle())
                 .keyboardType(.numberPad)
             
-            Picker("Storage Type", selection: $selectedStorage) {
+            Picker("Storage Type", selection: $viewModel.storageType) {
                 Text("Local").tag(StorageType.local)
                 Text("Remote").tag(StorageType.remote)
             }
@@ -28,11 +23,12 @@ struct AddPerformanceView: View {
             .padding()
             
             Button("Save Performance") {
-                if let duration = Int(duration) {
-                    viewModel.addPerformance(name: name, location: location, duration: duration, storageType: selectedStorage)
-                }
+                viewModel.savePerformance()
             }
-            .padding().background(Color.blue).foregroundColor(.white).cornerRadius(8)
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(8)
             
             Spacer()
         }

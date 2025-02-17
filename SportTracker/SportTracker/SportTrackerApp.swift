@@ -20,9 +20,13 @@ struct SportTrackerApp: App {
         WindowGroup {
             let storageManager = StorageManager(modelContainer: modelContainer)
             let firebaseManager = FirebaseManager.shared
-            let viewModel = SportPerformanceViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
+            let performanceListViewModel = PerformanceListViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
+            let addPerformanceViewModel = AddPerformanceViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
 
-            ContentView(viewModel: viewModel)
+            ContentView(
+                addPerformanceViewModel: addPerformanceViewModel,
+                performanceListViewModel: performanceListViewModel
+            )
         }
     }
 }

@@ -11,7 +11,6 @@ class PerformanceListViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        
         let expectation = self.expectation(description: "Waiting for setup to complete")
         Task {
             do {
@@ -105,6 +104,55 @@ class PerformanceListViewModelTests: XCTestCase {
             SportPerformance(name: "Swimming", location: "Pool", duration: 60, storageType: StorageType.remote.rawValue)
         ]
 
+        viewModel.fetchPerformances(filter: .remote)
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - Test Loading Indicator
+    @MainActor func testLoadingIndicatorIsShown() {
+        let expectation = self.expectation(description: "Loading indicator shows during fetch")
+        var isLoadingChanged = false
+        viewModel.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if isLoading {
+                    isLoadingChanged = true
+                }
+            }
+            .store(in: &cancellables)
+
+        mockStorageManager.performances = [
+            SportPerformance(name: "Running", location: "Park", duration: 30, storageType: StorageType.local.rawValue)
+        ]
+        mockFirebaseManager.performancesToReturn = [
+            SportPerformance(name: "Swimming", location: "Pool", duration: 60, storageType: StorageType.remote.rawValue)
+        ]
+
+        viewModel.fetchPerformances(filter: nil)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            XCTAssertTrue(isLoadingChanged, "Expected isLoading to be true during fetch")
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    // MARK: - Test Toast Message on Error
+    @MainActor func testToastMessageOnError() {
+        let expectation = self.expectation(description: "Toast message shows on error")
+
+        viewModel.$toastMessage
+            .sink { message in
+                if let message = message, message.contains("Error fetching") {
+                    XCTAssertTrue(message.contains("Error fetching"))
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+
+        mockFirebaseManager.shouldReturnError = true
         viewModel.fetchPerformances(filter: .remote)
 
         waitForExpectations(timeout: 2, handler: nil)

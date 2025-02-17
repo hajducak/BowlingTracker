@@ -125,7 +125,7 @@ class MockFirebaseManager: FirebaseManager {
 
     override func savePerformance(_ performance: SportPerformance) -> AnyPublisher<Void, Error> {
         if shouldReturnError {
-            return Fail(error: NSError(domain: "MockFirebaseError", code: 500, userInfo: nil))
+            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
                 .eraseToAnyPublisher()
         } else {
             return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
@@ -134,7 +134,7 @@ class MockFirebaseManager: FirebaseManager {
 
     override func fetchPerformances() -> AnyPublisher<[SportPerformance], Error> {
         if shouldReturnError {
-            return Fail(error: NSError(domain: "MockFirebaseError", code: 500, userInfo: nil))
+            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
                 .eraseToAnyPublisher()
         } else {
             return Just(performancesToReturn)

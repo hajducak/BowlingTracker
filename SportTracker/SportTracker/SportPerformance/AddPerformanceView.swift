@@ -22,17 +22,33 @@ struct AddPerformanceView: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding()
             
-            Button("Save Performance") {
+            Button(action: {
                 viewModel.savePerformance()
+            }) {
+                HStack {
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    }
+                    Text(viewModel.isLoading ? "Saving..." : "Save Performance")
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(viewModel.isLoading ? Color.gray : Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .disabled(viewModel.isLoading)
             }
             .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            
+
             Spacer()
         }
         .padding()
         .navigationBarTitle("Add Performance")
+        .overlay(
+            ToastView(message: viewModel.toastMessage, isShowing: $viewModel.showToast)
+        )
     }
 }
+
+

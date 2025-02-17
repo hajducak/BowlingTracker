@@ -3,6 +3,10 @@ import Combine
 
 class PerformanceListViewModel: ObservableObject {
     @Published var performances: [SportPerformance] = []
+    @Published var isLoading: Bool = false
+    @Published var toastMessage: String? = nil
+    @Published var showToast: Bool = false
+    
     private let storageManager: StorageManager
     private let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
@@ -13,26 +17,31 @@ class PerformanceListViewModel: ObservableObject {
     }
 
     @MainActor func fetchPerformances(filter: StorageType?) {
+        isLoading = true
+        
         if let filter = filter {
             switch filter {
             case .local:
                 storageManager.fetchPerformances()
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { completion in
+                        self.isLoading = false
                         if case .failure(let error) = completion {
-                            print("⚠️ Error fetching local performances: \(error)")
+                            self.toastMessage = "⚠️ Error fetching local performances: \(error.localizedDescription)"
+                            self.showToast = true
                         }
                     }, receiveValue: { [weak self] performances in
                         self?.performances = performances.filter { $0.storageType == StorageType.local.rawValue }
                     })
                     .store(in: &cancellables)
-                
             case .remote:
                 firebaseManager.fetchPerformances()
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { completion in
+                        self.isLoading = false
                         if case .failure(let error) = completion {
-                            print("⚠️ Error fetching remote performances: \(error)")
+                            self.toastMessage = "⚠️ Error fetching remote performances: \(error.localizedDescription)"
+                            self.showToast = true
                         }
                     }, receiveValue: { [weak self] performances in
                         self?.performances = performances.filter { $0.storageType == StorageType.remote.rawValue }
@@ -43,8 +52,10 @@ class PerformanceListViewModel: ObservableObject {
             storageManager.fetchPerformances()
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
+                    self.isLoading = false
                     if case .failure(let error) = completion {
-                        print("⚠️ Error fetching local performances: \(error)")
+                        self.toastMessage = "⚠️ Error fetching local performances: \(error.localizedDescription)"
+                        self.showToast = true
                     }
                 }, receiveValue: { [weak self] performances in
                     self?.performances = performances
@@ -54,8 +65,10 @@ class PerformanceListViewModel: ObservableObject {
             firebaseManager.fetchPerformances()
                 .receive(on: DispatchQueue.main)
                 .sink(receiveCompletion: { completion in
+                    self.isLoading = false
                     if case .failure(let error) = completion {
-                        print("⚠️ Error fetching remote performances: \(error)")
+                        self.toastMessage = "⚠️ Error fetching remote performances: \(error.localizedDescription)"
+                        self.showToast = true
                     }
                 }, receiveValue: { [weak self] performances in
                     self?.performances.append(contentsOf: performances)

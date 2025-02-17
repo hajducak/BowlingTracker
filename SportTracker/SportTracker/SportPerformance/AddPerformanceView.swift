@@ -4,7 +4,7 @@ struct AddPerformanceView: View {
     @ObservedObject var viewModel: AddPerformanceViewModel
     
     var body: some View {
-        VStack {
+        ScrollView {
             TextField("Enter performance name", text: $viewModel.name)
                 .padding().textFieldStyle(RoundedBorderTextFieldStyle())
             
@@ -17,8 +17,10 @@ struct AddPerformanceView: View {
             
             Picker("Storage Type", selection: $viewModel.storageType) {
                 Text("Local").tag(StorageType.local)
+                    .accessibilityIdentifier("localButton")
                 Text("Remote").tag(StorageType.remote)
-            }
+                    .accessibilityIdentifier("remoteButton")
+            }.accessibilityIdentifier("storageType")
             .pickerStyle(SegmentedPickerStyle())
             .padding()
             
@@ -50,5 +52,3 @@ struct AddPerformanceView: View {
         )
     }
 }
-
-

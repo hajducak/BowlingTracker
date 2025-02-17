@@ -1,14 +1,6 @@
-//
-//  SportTrackerUITestsLaunchTests.swift
-//  SportTrackerUITests
-//
-//  Created by MacBook Pro on 17/02/2025.
-//
-
 import XCTest
 
 final class SportTrackerUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
@@ -22,12 +14,28 @@ final class SportTrackerUITestsLaunchTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
+        let listTab = app.tabBars.buttons["List"]
+        XCTAssertTrue(listTab.exists, "The List tab should be available after app launch.")
+        
+        if !listTab.isSelected {
+            listTab.tap()
+        }
+
+        let performanceListNavigationBar = app.navigationBars["Performance List"]
+        XCTAssertTrue(performanceListNavigationBar.exists, "Performance List screen should be shown after launch.")
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+
+    @MainActor
+    func testLaunchPerformance() throws {
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                XCUIApplication().launch()
+            }
+        }
     }
 }

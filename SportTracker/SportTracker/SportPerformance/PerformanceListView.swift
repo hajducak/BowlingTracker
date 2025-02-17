@@ -18,6 +18,7 @@ struct PerformanceListView: View {
                     .progressViewStyle(CircularProgressViewStyle())
                     .padding()
             }
+            // TODO: add empty view
             List(viewModel.performances) { performance in
                 HStack {
                     Text(performance.name)

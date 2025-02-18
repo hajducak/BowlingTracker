@@ -15,12 +15,13 @@ struct PerformanceListView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
+            // TODO: State handling
             if viewModel.isLoading {
                 ProgressView("Loading performances...")
                     .progressViewStyle(CircularProgressViewStyle())
                     .padding()
-            }
-            if viewModel.performances.isEmpty {
+                Spacer()
+            } else if viewModel.isEmpty(selectedFilter: selectedFilter) {
                 emptyView
             } else {
                 List(viewModel.performances) { performance in
@@ -42,22 +43,6 @@ struct PerformanceListView: View {
                     }
                 }
             }
-
-            if let toastMessage = viewModel.toastMessage, viewModel.showToast {
-                Text(toastMessage)
-                    .padding()
-                    .background(Color.red.opacity(0.8))
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .transition(.move(edge: .top))
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            withAnimation {
-                                viewModel.showToast = false
-                            }
-                        }
-                    }
-            }
         }
         .navigationBarTitle("Performance List")
         .navigationBarItems(trailing: deleteAllButton)
@@ -78,7 +63,7 @@ struct PerformanceListView: View {
                 },
                 secondaryButton: .cancel()
             )
-        }
+        }.toast($viewModel.toast, timeout: 3)
     }
 
     private var deleteAllButton: some View {
@@ -89,7 +74,7 @@ struct PerformanceListView: View {
                 .foregroundColor(.red)
         }
     }
-    
+
     private var emptyView: some View {
         VStack {
             Spacer()

@@ -47,8 +47,6 @@ struct AddPerformanceView: View {
         }
         .padding()
         .navigationBarTitle("Add Performance")
-        .overlay(
-            ToastView(message: viewModel.toastMessage, isShowing: $viewModel.showToast)
-        )
+        .toast($viewModel.toast, timeout: 3)
     }
 }

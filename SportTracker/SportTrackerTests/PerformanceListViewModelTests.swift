@@ -158,21 +158,3 @@ class PerformanceListViewModelTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 }
-
-final class MockStorageManager: StorageManager {
-    var performances: [SportPerformance] = []
-
-    override init(modelContainer: ModelContainer) {
-        super.init(modelContainer: modelContainer)
-    }
-    
-    override func fetchPerformances() -> AnyPublisher<[SportPerformance], Error> {
-        return Just(performances)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    override func savePerformance(_ performance: SportPerformance) {
-        performances.append(performance)
-    }
-}

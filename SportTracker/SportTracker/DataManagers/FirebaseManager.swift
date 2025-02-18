@@ -63,4 +63,36 @@ public class FirebaseManager {
         }
         .eraseToAnyPublisher()
     }
+
+    func deleteAllPerformances() -> AnyPublisher<Void, Error> {
+        return Future { [weak self] promise in
+            self?.db.collection("performances").getDocuments { snapshot, error in
+                if let error = error {
+                    promise(.failure(error))
+                    return
+                }
+                let batch = self?.db.batch()
+                snapshot?.documents.forEach { batch?.deleteDocument($0.reference) }
+                batch?.commit { batchError in
+                    if let batchError = batchError {
+                        promise(.failure(batchError))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func deletePerformance(with id: String) -> AnyPublisher<Void, Error> {
+        return Future { [weak self] promise in
+            self?.db.collection("performances").document(id).delete { error in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
 }

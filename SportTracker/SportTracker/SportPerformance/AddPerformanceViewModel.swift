@@ -7,8 +7,7 @@ class AddPerformanceViewModel: ObservableObject {
     @Published var duration: String = ""
     @Published var storageType: StorageType = .local
     @Published var isLoading: Bool = false
-    @Published var showToast: Bool = false
-    @Published var toastMessage: String = ""
+    @Published var toast: Toast?
 
     private let storageManager: StorageManager
     private let firebaseManager: FirebaseManager
@@ -21,37 +20,38 @@ class AddPerformanceViewModel: ObservableObject {
 
     @MainActor func savePerformance() {
         guard let durationInt = Int(duration), !name.isEmpty, !location.isEmpty else {
-            showToast(message: "⚠️ Please fill in all fields correctly.")
+            toast = Toast(type: .userError, message: "Please fill in all fields correctly.")
             return
         }
         
-        let performance = SportPerformance(name: name, location: location, duration: durationInt, storageType: storageType.rawValue)
+        let performance = SportPerformance(
+            name: name,
+            location: location,
+            duration: durationInt,
+            storageType: storageType.rawValue
+        )
         
         isLoading = true
 
         if storageType == .local {
             storageManager.savePerformance(performance)
             isLoading = false
-            showToast(message: "✅ Performance saved locally!")
+            toast = Toast(type: .success, message: "Performance saved locally!")
         } else {
             firebaseManager.savePerformance(performance)
                 .sink(receiveCompletion: { [weak self] completion in
+                    guard let self else { return }
                     DispatchQueue.main.async {
-                        self?.isLoading = false
+                        self.isLoading = false
                         switch completion {
                         case .finished:
-                            self?.showToast(message: "✅ Performance saved to Firebase!")
+                            self.toast = Toast(type: .success, message: "Performance saved to Firebase!")
                         case .failure(let error):
-                            self?.showToast(message: "⚠️ Error saving to Firebase: \(error.localizedDescription)")
+                            self.toast = Toast(type: .error(error), message: "Error saving to Firebase:")
                         }
                     }
                 }, receiveValue: { _ in })
                 .store(in: &cancellables)
         }
-    }
-
-    private func showToast(message: String) {
-        toastMessage = message
-        showToast = true
     }
 }

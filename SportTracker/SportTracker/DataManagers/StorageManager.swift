@@ -35,16 +35,28 @@ public class StorageManager {
     }
 
     @MainActor
-    func clearPerformances() {
+    func deleteAllPerformances() {
         do {
-            let descriptor = FetchDescriptor<SportPerformance>()
-            let performances = try modelContext.fetch(descriptor)
+            let performances = try modelContext.fetch(FetchDescriptor<SportPerformance>())
             for performance in performances {
                 modelContext.delete(performance)
             }
             try modelContext.save()
         } catch {
-            print("⚠️ Error while clearing performances: \(error.localizedDescription)")
+            print("⚠️ Error while deleting all performances: \(error.localizedDescription)")
+        }
+    }
+    
+    @MainActor
+    func deletePerformance(with id: String) {
+        do {
+            let performances = try modelContext.fetch(FetchDescriptor<SportPerformance>())
+            if let performance = performances.first(where: { $0.id == id }) {
+                modelContext.delete(performance)
+                try modelContext.save()
+            }
+        } catch {
+            print("⚠️ Error while deleting performance by ID: \(error.localizedDescription)")
         }
     }
 }

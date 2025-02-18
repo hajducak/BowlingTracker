@@ -34,7 +34,7 @@ class StorageManagerTests: XCTestCase {
         super.tearDown()
     }
 
-    @MainActor func testSavePerformance() {
+    @MainActor func test_whenSavePerformance_thenPerformancesAreSet() {
         let performance = SportPerformance(id: "1", name: "Test Performance", location: "Test Location", duration: 15, storageType: StorageType.local.rawValue)
 
         mockStorageManager.savePerformance(performance)
@@ -46,7 +46,7 @@ class StorageManagerTests: XCTestCase {
         XCTAssertEqual(mockStorageManager.performances.first?.storageType, StorageType.local.rawValue, "The saved performance storage type should match.")
     }
 
-    @MainActor func testFetchPerformances() {
+    @MainActor func test_whenFetchPerformances_thenReceivedAllData() {
         let performance1 = SportPerformance(id: "1", name: "Performance 1", location: "Location 1", duration: 10, storageType: StorageType.local.rawValue)
         let performance2 = SportPerformance(id: "2", name: "Performance 2", location: "Location 2", duration: 20, storageType: StorageType.remote.rawValue)
 
@@ -69,13 +69,54 @@ class StorageManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 1, handler: nil)
     }
-
-    @MainActor func testClearPerformances() {
+    
+    @MainActor
+    func test_whenDeletePerformanceById_thenPerformanceIsRemoved() {
         let performance1 = SportPerformance(id: "1", name: "Performance 1", location: "Location 1", duration: 10, storageType: StorageType.local.rawValue)
+        let performance2 = SportPerformance(id: "2", name: "Performance 2", location: "Location 2", duration: 20, storageType: StorageType.remote.rawValue)
 
         mockStorageManager.savePerformance(performance1)
-        mockStorageManager.clearPerformances()
+        mockStorageManager.savePerformance(performance2)
 
-        XCTAssertEqual(mockStorageManager.performances.count, 0, "There should be no performances after clearing.")
+        mockStorageManager.deletePerformance(with: "1")
+
+        XCTAssertEqual(mockStorageManager.performances.count, 1, "Only one performance should remain.")
+        XCTAssertEqual(mockStorageManager.performances.first?.id, "2", "Remaining performance should have ID 2.")
+    }
+
+    @MainActor
+    func test_whenDeleteAllPerformances_thenPerformancesAreRemoved() {
+        let performance = SportPerformance(id: "1", name: "Performance", location: "Location", duration: 15, storageType: StorageType.local.rawValue)
+
+        mockStorageManager.savePerformance(performance)
+        mockStorageManager.deleteAllPerformances()
+
+        XCTAssertEqual(mockStorageManager.performances.count, 0, "All performances should be deleted.")
+    }
+}
+
+final class MockStorageManager: StorageManager {
+    var performances: [SportPerformance] = []
+
+    override init(modelContainer: ModelContainer) {
+        super.init(modelContainer: modelContainer)
+    }
+    
+    override func fetchPerformances() -> AnyPublisher<[SportPerformance], Error> {
+        return Just(performances)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+    
+    override func savePerformance(_ performance: SportPerformance) {
+        performances.append(performance)
+    }
+
+    override func deleteAllPerformances() {
+        performances.removeAll()
+    }
+
+    override func deletePerformance(with id: String) {
+        performances.removeAll { $0.id == id }
     }
 }

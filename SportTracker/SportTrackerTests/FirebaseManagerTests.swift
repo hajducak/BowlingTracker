@@ -18,7 +18,7 @@ class FirebaseManagerTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchPerformancesSuccess() {
+    func test_givenSuccess_whenFetchPerformances_thenSuccessIsSown() {
         let expectedPerformances: [SportPerformance] = [
             SportPerformance(id: "1", name: "Firebase Performance 1", location: "Location 1", duration: 10, storageType: StorageType.remote.rawValue)
         ]
@@ -44,7 +44,7 @@ class FirebaseManagerTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func testFetchPerformancesFailure() {
+    func test_givenError_whenFetchPerformances_thenFailureIsShown() {
         firebaseManager.shouldReturnError = true
 
         let publisher = firebaseManager.fetchPerformances()
@@ -68,7 +68,7 @@ class FirebaseManagerTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func testSavePerformanceSuccess() {
+    func test_givenSuccess_whenSavePerformance_thenSuccessIsSown() {
         let performance = SportPerformance(id: "1", name: "Test Performance", location: "Test Location", duration: 15, storageType: StorageType.remote.rawValue)
 
         firebaseManager.shouldReturnError = false
@@ -90,7 +90,7 @@ class FirebaseManagerTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func testSavePerformanceFailure() {
+    func test_givenFailure_whenSavePerformance_thenFailureIsSown() {
         let performance = SportPerformance(id: "1", name: "Test Performance", location: "Test Location", duration: 15, storageType: StorageType.remote.rawValue)
 
         firebaseManager.shouldReturnError = true
@@ -115,6 +115,44 @@ class FirebaseManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 1, handler: nil)
     }
+
+    func test_whenDeletePerformanceById() {
+        firebaseManager.shouldReturnError = false
+
+        let publisher = firebaseManager.deletePerformance(with: "1")
+        let expectation = self.expectation(description: "deletePerformanceById")
+
+        publisher
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Expected success, but received failure: \(error)")
+                }
+            }, receiveValue: {
+                expectation.fulfill()
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+
+    func test_whenDeleteAllPerformances() {
+        firebaseManager.shouldReturnError = false
+
+        let publisher = firebaseManager.deleteAllPerformances()
+        let expectation = self.expectation(description: "deleteAllPerformances")
+
+        publisher
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Expected success, but received failure: \(error)")
+                }
+            }, receiveValue: {
+                expectation.fulfill()
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 1, handler: nil)
+    }
 }
 
 class MockFirebaseManager: FirebaseManager {
@@ -128,6 +166,7 @@ class MockFirebaseManager: FirebaseManager {
             return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
                 .eraseToAnyPublisher()
         } else {
+            performancesToReturn.append(performance)
             return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
         }
     }
@@ -140,6 +179,26 @@ class MockFirebaseManager: FirebaseManager {
             return Just(performancesToReturn)
                 .setFailureType(to: Error.self)
                 .eraseToAnyPublisher()
+        }
+    }
+
+    override func deleteAllPerformances() -> AnyPublisher<Void, Error> {
+        if shouldReturnError {
+            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
+                .eraseToAnyPublisher()
+        } else {
+            performancesToReturn.removeAll()
+            return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
+        }
+    }
+
+    override func deletePerformance(with id: String) -> AnyPublisher<Void, Error> {
+        if shouldReturnError {
+            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
+                .eraseToAnyPublisher()
+        } else {
+            performancesToReturn.removeAll { $0.id == id }
+            return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
         }
     }
 }

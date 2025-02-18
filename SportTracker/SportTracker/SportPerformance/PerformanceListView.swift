@@ -10,8 +10,8 @@ struct PerformanceListView: View {
         VStack {
             Picker("Filter", selection: $selectedFilter) {
                 Text("All").tag(StorageType?.none)
-                Text("Local").tag(StorageType.local)
-                Text("Remote").tag(StorageType.remote)
+                Text("Local 🟢").tag(StorageType.local)
+                Text("Remote 🔵").tag(StorageType.remote)
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
@@ -59,8 +59,7 @@ struct PerformanceListView: View {
                         .foregroundColor(.gray)
                 }
                 .padding()
-                .background(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
-                .cornerRadius(8)
+                .listRowBackground(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
                 .swipeActions {
                     Button(role: .destructive) {
                         viewModel.deletePerformance(performance)
@@ -69,6 +68,7 @@ struct PerformanceListView: View {
                     }
                 }
             }
+            .listStyle(.insetGrouped)
         }
     }
 
@@ -77,7 +77,7 @@ struct PerformanceListView: View {
             showDeleteConfirmation = true
         }) {
             Label("Delete All", systemImage: "trash.fill")
-                .foregroundColor(.red)
+                .foregroundColor(.black)
         }
     }
 

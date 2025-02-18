@@ -31,7 +31,19 @@ struct ContentView: View {
                 Image(systemName: "list.dash")
                 Text("List")
             }.tag(1)
-        }.environmentObject(tabSelectionViewModel)
+        }
+        .onAppear {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .black
+            appearance.stackedLayoutAppearance.normal.iconColor = .white
+            appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
+            appearance.stackedLayoutAppearance.selected.iconColor = .blue
+            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.blue]
+            UITabBar.appearance().standardAppearance = appearance
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+        .environmentObject(tabSelectionViewModel)
     }
 }
 

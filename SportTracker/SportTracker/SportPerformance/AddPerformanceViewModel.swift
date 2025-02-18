@@ -8,6 +8,7 @@ class AddPerformanceViewModel: ObservableObject {
     @Published var storageType: StorageType = .local
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
+    @Published var isDisabled: Bool = true
 
     private let storageManager: StorageManager
     private let firebaseManager: FirebaseManager
@@ -16,6 +17,13 @@ class AddPerformanceViewModel: ObservableObject {
     init(storageManager: StorageManager, firebaseManager: FirebaseManager) {
         self.storageManager = storageManager
         self.firebaseManager = firebaseManager
+
+        Publishers.CombineLatest3($name, $location, $duration)
+            .sink { [weak self] name, location, duration in
+                guard let self else { return }
+                isDisabled = name.isEmpty || location.isEmpty || duration.isEmpty
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor func savePerformance() {
@@ -37,11 +45,13 @@ class AddPerformanceViewModel: ObservableObject {
             storageManager.savePerformance(performance)
             isLoading = false
             toast = Toast(type: .success, message: "Performance saved locally!")
+            setInputToDefault()
         } else {
             firebaseManager.savePerformance(performance)
                 .sink(receiveCompletion: { [weak self] completion in
                     guard let self else { return }
                     DispatchQueue.main.async {
+                        self.setInputToDefault()
                         self.isLoading = false
                         switch completion {
                         case .finished:
@@ -53,5 +63,12 @@ class AddPerformanceViewModel: ObservableObject {
                 }, receiveValue: { _ in })
                 .store(in: &cancellables)
         }
+    }
+
+    private func setInputToDefault() {
+        name = ""
+        location = ""
+        duration = ""
+        storageType = .local
     }
 }

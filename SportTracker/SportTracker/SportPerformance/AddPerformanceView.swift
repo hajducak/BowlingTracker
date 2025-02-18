@@ -42,6 +42,8 @@ struct AddPerformanceView: View {
                 .disabled(viewModel.isLoading)
             }
             .padding()
+            .disabled(viewModel.isDisabled)
+            .opacity(viewModel.isDisabled ? 0.5 : 1)
 
             Spacer()
         }

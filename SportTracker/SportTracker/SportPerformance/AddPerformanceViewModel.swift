@@ -28,7 +28,7 @@ class AddPerformanceViewModel: ObservableObject {
 
     @MainActor func savePerformance() {
         guard let durationInt = Int(duration), !name.isEmpty, !location.isEmpty else {
-            toast = Toast(type: .userError, message: "Please fill in all fields correctly.")
+            toast = Toast(type: .error(.invalidInput))
             return
         }
         
@@ -43,9 +43,20 @@ class AddPerformanceViewModel: ObservableObject {
 
         if storageType == .local {
             storageManager.savePerformance(performance)
-            isLoading = false
-            toast = Toast(type: .success, message: "Performance saved locally!")
-            setInputToDefault()
+                .sink(receiveCompletion: { [weak self] completion in
+                    guard let self else { return }
+                    DispatchQueue.main.async {
+                        self.isLoading = false
+                        switch completion {
+                        case .finished:
+                            self.toast = Toast(type: .success("Performance saved locally!"))
+                            self.setInputToDefault()
+                        case .failure(let error):
+                            self.toast = Toast(type: .error(error))
+                        }
+                    }
+                }, receiveValue: { _ in })
+                .store(in: &cancellables)
         } else {
             firebaseManager.savePerformance(performance)
                 .sink(receiveCompletion: { [weak self] completion in
@@ -55,9 +66,9 @@ class AddPerformanceViewModel: ObservableObject {
                         self.isLoading = false
                         switch completion {
                         case .finished:
-                            self.toast = Toast(type: .success, message: "Performance saved to Firebase!")
+                            self.toast = Toast(type: .success("Performance saved to Firebase!"))
                         case .failure(let error):
-                            self.toast = Toast(type: .error(error), message: "Error saving to Firebase:")
+                            self.toast = Toast(type: .error(error))
                         }
                     }
                 }, receiveValue: { _ in })

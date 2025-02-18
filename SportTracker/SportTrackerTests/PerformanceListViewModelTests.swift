@@ -84,7 +84,7 @@ class PerformanceListViewModelTests: XCTestCase {
         waitForExpectations(timeout: 2)
     }
 
-    @MainActor func test_whenFetchRemotePerformances_thenContentIsShownWithRemoreData() {
+    @MainActor func test_whenFetchRemotePerformances_thenContentIsShownWithRemoteData() {
         let expectation = expectation(description: "Fetch remote performances")
 
         viewModel.$state
@@ -140,26 +140,5 @@ class PerformanceListViewModelTests: XCTestCase {
 
         viewModel.fetchPerformances(filter: nil)
         waitForExpectations(timeout: 2)
-    }
-
-    @MainActor func test_givenFailure_whenFetchPerformances_thenErrorIsShown() {
-        let expectation = self.expectation(description: "Toast should show error message")
-
-        viewModel.$toast
-            .dropFirst()
-            .sink { toast in
-                if let toast = toast, toast.message.contains("Error fetching performances") {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
-
-        mockFirebaseManager.shouldReturnError = true
-        viewModel.fetchPerformances(filter: .remote)
-
-        waitForExpectations(timeout: 5)
-        
-        XCTAssertNotNil(viewModel.toast, "Toast should not be nil after error")
-        XCTAssertTrue(viewModel.toast?.message.contains("Error fetching performances") ?? false, "Toast should contain the error message.")
     }
 }

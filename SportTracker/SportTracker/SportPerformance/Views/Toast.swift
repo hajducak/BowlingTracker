@@ -1,34 +1,22 @@
 struct Toast {
     var type: ToastType
-    var message: String
 }
 
 extension Toast {
-    var toastMessage: String {
-        type.preffix + message + type.suffix
-    }
+    var toastMessage: String { type.message }
 }
 
 enum ToastType {
-    case error(Error), success, userError
+    case error(AppError), success(String)
 }
 
 extension ToastType {
-    var preffix: String {
-        switch self {
-        case .error(_):
-            return "⚠️ "
-        case .userError:
-            return "❌ "
-        case .success:
-            return "✅ "
-        }
-    }
-    var suffix: String {
+    var message: String {
         switch self {
         case .error(let error):
-            return " \(error.localizedDescription)"
-        default: return ""
+            return "⚠️ \(error.errorMessage)"
+        case .success(let message):
+            return "✅ \(message)"
         }
     }
 }

@@ -55,8 +55,11 @@ class FirebaseManagerTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
-                    XCTAssertEqual((error as NSError).code, 1, "The error code should be 1.")
-                    expectation.fulfill()
+                    if case .fetchingError = error {
+                        expectation.fulfill()
+                    } else {
+                        XCTFail("Expected fetchingError, but received a different error: \(error)")
+                    }
                 case .finished:
                     XCTFail("Expected failure, but received success.")
                 }
@@ -103,8 +106,11 @@ class FirebaseManagerTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
-                    XCTAssertEqual((error as NSError).code, 1, "The error code should be 1.")
-                    expectation.fulfill()
+                    if case .saveError = error {
+                        expectation.fulfill()
+                    } else {
+                        XCTFail("Expected saveError, but received a different error: \(error)")
+                    }
                 case .finished:
                     XCTFail("Expected failure, but received success.")
                 }
@@ -161,44 +167,44 @@ class MockFirebaseManager: FirebaseManager {
     
     override init() {}
 
-    override func savePerformance(_ performance: SportPerformance) -> AnyPublisher<Void, Error> {
+    override func savePerformance(_ performance: SportPerformance) -> AnyPublisher<Void, AppError> {
         if shouldReturnError {
-            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
+            return Fail(error: AppError.saveError(NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"])))
                 .eraseToAnyPublisher()
         } else {
             performancesToReturn.append(performance)
-            return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return Just(()).setFailureType(to: AppError.self).eraseToAnyPublisher()
         }
     }
 
-    override func fetchPerformances() -> AnyPublisher<[SportPerformance], Error> {
+    override func fetchPerformances() -> AnyPublisher<[SportPerformance], AppError> {
         if shouldReturnError {
-            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
+            return Fail(error: AppError.fetchingError(NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"])))
                 .eraseToAnyPublisher()
         } else {
             return Just(performancesToReturn)
-                .setFailureType(to: Error.self)
+                .setFailureType(to: AppError.self)
                 .eraseToAnyPublisher()
         }
     }
 
-    override func deleteAllPerformances() -> AnyPublisher<Void, Error> {
+    override func deleteAllPerformances() -> AnyPublisher<Void, AppError> {
         if shouldReturnError {
-            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
+            return Fail(error: AppError.deletingError(NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"])))
                 .eraseToAnyPublisher()
         } else {
             performancesToReturn.removeAll()
-            return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return Just(()).setFailureType(to: AppError.self).eraseToAnyPublisher()
         }
     }
-
-    override func deletePerformance(with id: String) -> AnyPublisher<Void, Error> {
+    
+    override func deletePerformance(with id: String) -> AnyPublisher<Void, AppError> {
         if shouldReturnError {
-            return Fail(error: NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"]))
+            return Fail(error: AppError.deletingError(NSError(domain: "MockFirebaseManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "Simulated error"])))
                 .eraseToAnyPublisher()
         } else {
             performancesToReturn.removeAll { $0.id == id }
-            return Just(()).setFailureType(to: Error.self).eraseToAnyPublisher()
+            return Just(()).setFailureType(to: AppError.self).eraseToAnyPublisher()
         }
     }
 }

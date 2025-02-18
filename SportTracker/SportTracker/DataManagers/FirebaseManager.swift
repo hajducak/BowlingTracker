@@ -7,7 +7,7 @@ public class FirebaseManager {
 
     public init() {}
 
-    func savePerformance(_ performance: SportPerformance) -> AnyPublisher<Void, Error> {
+    func savePerformance(_ performance: SportPerformance) -> AnyPublisher<Void, AppError> {
         let data: [String: Any] = [
             "id": performance.id,
             "name": performance.name,
@@ -21,7 +21,7 @@ public class FirebaseManager {
                 .document(performance.id)
                 .setData(data) { error in
                     if let error = error {
-                        promise(.failure(error))
+                        promise(.failure(.saveError(error)))
                     } else {
                         promise(.success(()))
                     }
@@ -30,20 +30,20 @@ public class FirebaseManager {
         .eraseToAnyPublisher()
     }
 
-    func fetchPerformances() -> AnyPublisher<[SportPerformance], Error> {
+    func fetchPerformances() -> AnyPublisher<[SportPerformance], AppError> {
         return Future { [weak self] promise in
             guard let self = self else {
-                promise(.failure(NSError(domain: "FirebaseError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Self is nil"])))
+                promise(.failure(.customError("Self is nil")))
                 return
             }
             self.db.collection("performances").getDocuments { snapshot, error in
                 if let error = error {
-                    promise(.failure(error))
+                    promise(.failure(.fetchingError(error)))
                     return
                 }
                 
                 guard let snapshot = snapshot else {
-                    promise(.failure(NSError(domain: "FirebaseError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found"])))
+                    promise(.failure(.customError("No Data Found")))
                     return
                 }
 
@@ -64,18 +64,18 @@ public class FirebaseManager {
         .eraseToAnyPublisher()
     }
 
-    func deleteAllPerformances() -> AnyPublisher<Void, Error> {
+    func deleteAllPerformances() -> AnyPublisher<Void, AppError> {
         return Future { [weak self] promise in
             self?.db.collection("performances").getDocuments { snapshot, error in
                 if let error = error {
-                    promise(.failure(error))
+                    promise(.failure(.deletingError(error)))
                     return
                 }
                 let batch = self?.db.batch()
                 snapshot?.documents.forEach { batch?.deleteDocument($0.reference) }
                 batch?.commit { batchError in
                     if let batchError = batchError {
-                        promise(.failure(batchError))
+                        promise(.failure(.deletingError(batchError)))
                     } else {
                         promise(.success(()))
                     }
@@ -84,11 +84,11 @@ public class FirebaseManager {
         }.eraseToAnyPublisher()
     }
     
-    func deletePerformance(with id: String) -> AnyPublisher<Void, Error> {
+    func deletePerformance(with id: String) -> AnyPublisher<Void, AppError> {
         return Future { [weak self] promise in
             self?.db.collection("performances").document(id).delete { error in
                 if let error = error {
-                    promise(.failure(error))
+                    promise(.failure(.deletingError(error)))
                 } else {
                     promise(.success(()))
                 }

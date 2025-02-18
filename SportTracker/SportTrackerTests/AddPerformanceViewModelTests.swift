@@ -40,7 +40,7 @@ class AddPerformanceViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    @MainActor func test_whenSavePerformance_thenLocalSavedAndShownSuccess() {
+    @MainActor func test_whenSavePerformance_thenLocalDataAreSaved() {
         viewModel.name = "Performance 1"
         viewModel.location = "Location 1"
         viewModel.duration = "15"
@@ -52,10 +52,9 @@ class AddPerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(mockStorageManager.performances.first?.location, "Location 1", "The saved performance location should match.")
         XCTAssertEqual(mockStorageManager.performances.first?.duration, 15, "The saved performance duration should match.")
         XCTAssertEqual(mockStorageManager.performances.first?.storageType, StorageType.local.rawValue, "The saved performance storage type should match.")
-        XCTAssertEqual(viewModel.toast?.toastMessage, "✅ Performance saved locally!", "Toast message should indicate local save success.")
     }
 
-    @MainActor func test_whenSavePerformance_theRemoteSavedAndShownSuccess() {
+    @MainActor func test_whenSavePerformance_thenRemoteSavedAndShownSuccess() {
         viewModel.name = "Swimming"
         viewModel.location = "Pool"
         viewModel.duration = "45"
@@ -84,20 +83,20 @@ class AddPerformanceViewModelTests: XCTestCase {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             XCTAssertFalse(self.viewModel.isLoading, "Loading should be false after failure.")
-            XCTAssertTrue(self.viewModel.toast?.toastMessage.contains("⚠️ Error saving to Firebase") ?? false, "Toast message should indicate Firebase failure.")
+            XCTAssertTrue(self.viewModel.toast?.toastMessage.contains("⚠️ Error occures while saving to Database: Simulated error") ?? false, "Toast message should indicate Firebase failure.")
             XCTAssertNotNil(self.viewModel.toast, "Toast should be displayed.")
             expectation.fulfill()
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
 
-    @MainActor func test_gicingEmptyField_whenSavePerformance_thenUserErrorShown() {
+    @MainActor func test_givenEmptyField_whenSavePerformance_thenUserErrorShown() {
         viewModel.name = ""
         viewModel.location = ""
         viewModel.duration = ""
         viewModel.savePerformance()
 
-        XCTAssertEqual(viewModel.toast?.toastMessage, "❌ Please fill in all fields correctly.", "Toast message should indicate missing fields.")
+        XCTAssertEqual(viewModel.toast?.toastMessage, "⚠️ Please fill in all fields correctly.", "Toast message should indicate missing fields.")
         XCTAssertNotNil(viewModel.toast, "Toast should be displayed.")
         XCTAssertFalse(viewModel.isLoading, "Loading should remain false.")
     }

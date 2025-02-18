@@ -119,4 +119,20 @@ class AddPerformanceViewModelTests: XCTestCase {
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
+
+    func test_givenEmptyFields_whenInit_thenButtonIsDisabled() {
+        viewModel.name = ""
+        viewModel.location = ""
+        viewModel.duration = ""
+        
+        XCTAssertTrue(viewModel.isDisabled, "Button should be disabled when fields are empty")
+    }
+
+    func test_givenNonEmptyFields_whenInit_thenButtonIsEnabled() {
+        viewModel.name = "Performance"
+        viewModel.location = "Location"
+        viewModel.duration = "30"
+        
+        XCTAssertFalse(viewModel.isDisabled, "Button should be enabled when fields are filled")
+    }
 }

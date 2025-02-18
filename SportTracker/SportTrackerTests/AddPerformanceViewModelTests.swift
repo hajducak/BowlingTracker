@@ -8,29 +8,29 @@ class AddPerformanceViewModelTests: XCTestCase {
     var cancellables: Set<AnyCancellable>!
     var mockStorageManager: MockStorageManager!
     var mockFirebaseManager: MockFirebaseManager!
-    
+
     func makeInMemoryContainer() throws -> ModelContainer {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         return try ModelContainer(for: SportPerformance.self, configurations: config)
     }
-    
-    override func setUp() {
-       super.setUp()
-       cancellables = []
 
-       let expectation = self.expectation(description: "Waiting for setup to complete")
-       Task {
-           do {
-               mockStorageManager = await MockStorageManager(modelContainer: try makeInMemoryContainer())
-               mockFirebaseManager = MockFirebaseManager()
-               viewModel = AddPerformanceViewModel(storageManager: mockStorageManager, firebaseManager: mockFirebaseManager)
-               expectation.fulfill()
-           } catch {
-               XCTFail("Error initializing model container: \(error)")
-           }
-       }
-       waitForExpectations(timeout: 5, handler: nil)
-   }
+    override func setUp() {
+        super.setUp()
+        cancellables = []
+
+        let expectation = self.expectation(description: "Waiting for setup to complete")
+        Task {
+            do {
+                mockStorageManager = await MockStorageManager(modelContainer: try makeInMemoryContainer())
+                mockFirebaseManager = MockFirebaseManager()
+                viewModel = AddPerformanceViewModel(storageManager: mockStorageManager, firebaseManager: mockFirebaseManager)
+                expectation.fulfill()
+            } catch {
+                XCTFail("Error initializing model container: \(error)")
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 
     override func tearDown() {
         cancellables = nil
@@ -40,7 +40,7 @@ class AddPerformanceViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    @MainActor func testSavePerformance_SuccessfulLocalSave() {
+    @MainActor func test_whenSavePerformance_thenLocalSavedAndShownSuccess() {
         viewModel.name = "Performance 1"
         viewModel.location = "Location 1"
         viewModel.duration = "15"
@@ -52,9 +52,10 @@ class AddPerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(mockStorageManager.performances.first?.location, "Location 1", "The saved performance location should match.")
         XCTAssertEqual(mockStorageManager.performances.first?.duration, 15, "The saved performance duration should match.")
         XCTAssertEqual(mockStorageManager.performances.first?.storageType, StorageType.local.rawValue, "The saved performance storage type should match.")
+        XCTAssertEqual(viewModel.toast?.toastMessage, "✅ Performance saved locally!", "Toast message should indicate local save success.")
     }
-    
-    @MainActor func testSavePerformance_SuccessfulRemoteSave() {
+
+    @MainActor func test_whenSavePerformance_theRemoteSavedAndShownSuccess() {
         viewModel.name = "Swimming"
         viewModel.location = "Pool"
         viewModel.duration = "45"
@@ -64,14 +65,14 @@ class AddPerformanceViewModelTests: XCTestCase {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             XCTAssertFalse(self.viewModel.isLoading, "Loading should be false after saving.")
-            XCTAssertEqual(self.viewModel.toastMessage, "✅ Performance saved to Firebase!", "Toast message should indicate Firebase success.")
-            XCTAssertTrue(self.viewModel.showToast, "Toast should be displayed.")
+            XCTAssertEqual(self.viewModel.toast?.toastMessage, "✅ Performance saved to Firebase!", "Toast message should indicate Firebase success.")
+            XCTAssertNotNil(self.viewModel.toast, "Toast should be displayed.")
             expectation.fulfill()
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
 
-    @MainActor func testSavePerformance_FailureRemoteSave() {
+    @MainActor func test_givenFailure_whenSavePerformance_thenFailureRemoteSaveAndShownError() {
         viewModel.name = "Cycling"
         viewModel.location = "Trail"
         viewModel.duration = "50"
@@ -83,25 +84,25 @@ class AddPerformanceViewModelTests: XCTestCase {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             XCTAssertFalse(self.viewModel.isLoading, "Loading should be false after failure.")
-            XCTAssertTrue(self.viewModel.toastMessage.contains("⚠️ Error saving to Firebase"), "Toast message should indicate Firebase failure.")
-            XCTAssertTrue(self.viewModel.showToast, "Toast should be displayed.")
+            XCTAssertTrue(self.viewModel.toast?.toastMessage.contains("⚠️ Error saving to Firebase") ?? false, "Toast message should indicate Firebase failure.")
+            XCTAssertNotNil(self.viewModel.toast, "Toast should be displayed.")
             expectation.fulfill()
         }
         waitForExpectations(timeout: 2, handler: nil)
     }
 
-    @MainActor  func testSavePerformance_MissingFields() {
+    @MainActor func test_gicingEmptyField_whenSavePerformance_thenUserErrorShown() {
         viewModel.name = ""
         viewModel.location = ""
         viewModel.duration = ""
         viewModel.savePerformance()
 
-        XCTAssertEqual(viewModel.toastMessage, "⚠️ Please fill in all fields correctly.", "Toast message should indicate missing fields.")
-        XCTAssertTrue(viewModel.showToast, "Toast should be displayed.")
+        XCTAssertEqual(viewModel.toast?.toastMessage, "❌ Please fill in all fields correctly.", "Toast message should indicate missing fields.")
+        XCTAssertNotNil(viewModel.toast, "Toast should be displayed.")
         XCTAssertFalse(viewModel.isLoading, "Loading should remain false.")
     }
 
-    @MainActor func testSavePerformance_LoadingState() {
+    @MainActor func test_whenSavePerformance_thenLoadingStateIsShown() {
         viewModel.name = "Yoga"
         viewModel.location = "Studio"
         viewModel.duration = "40"

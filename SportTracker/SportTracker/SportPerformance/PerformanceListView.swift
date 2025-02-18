@@ -15,34 +15,7 @@ struct PerformanceListView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
-            // TODO: State handling
-            if viewModel.isLoading {
-                ProgressView("Loading performances...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
-                Spacer()
-            } else if viewModel.isEmpty(selectedFilter: selectedFilter) {
-                emptyView
-            } else {
-                List(viewModel.performances) { performance in
-                    HStack {
-                        Text(performance.name)
-                        Spacer()
-                        Text("\(performance.duration) min")
-                            .foregroundColor(.gray)
-                    }
-                    .padding()
-                    .background(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
-                    .cornerRadius(8)
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            viewModel.deletePerformance(performance)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    }
-                }
-            }
+            contentView
         }
         .navigationBarTitle("Performance List")
         .navigationBarItems(trailing: deleteAllButton)
@@ -63,7 +36,40 @@ struct PerformanceListView: View {
                 },
                 secondaryButton: .cancel()
             )
-        }.toast($viewModel.toast, timeout: 3)
+        }
+        .toast($viewModel.toast, timeout: 3)
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        switch viewModel.state {
+        case .loading:
+            ProgressView("Loading performances...")
+                .progressViewStyle(CircularProgressViewStyle())
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .empty:
+            emptyView
+        case .content(let performances):
+            List(performances) { performance in
+                HStack {
+                    Text(performance.name)
+                    Spacer()
+                    Text("\(performance.duration) min")
+                        .foregroundColor(.gray)
+                }
+                .padding()
+                .background(performance.storageType == StorageType.local.rawValue ? Color.green.opacity(0.3) : Color.blue.opacity(0.3))
+                .cornerRadius(8)
+                .swipeActions {
+                    Button(role: .destructive) {
+                        viewModel.deletePerformance(performance)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+            }
+        }
     }
 
     private var deleteAllButton: some View {

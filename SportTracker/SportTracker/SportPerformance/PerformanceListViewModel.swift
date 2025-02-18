@@ -1,9 +1,14 @@
 import Foundation
 import Combine
 
+enum PerformanceListState {
+    case loading
+    case empty
+    case content([SportPerformance])
+}
+
 class PerformanceListViewModel: ObservableObject {
-    @Published var performances: [SportPerformance] = []
-    @Published var isLoading: Bool = true
+    @Published var state: PerformanceListState = .loading
     @Published var toast: Toast? = nil
     
     private let storageManager: StorageManager
@@ -15,84 +20,77 @@ class PerformanceListViewModel: ObservableObject {
         self.firebaseManager = firebaseManager
     }
 
-    func isEmpty(selectedFilter: StorageType?) -> Bool {
-        switch selectedFilter {
-        case .local:
-            return performances.filter({ $0.storageType == StorageType.local.rawValue }).isEmpty && !isLoading
-        case .remote:
-            return performances.filter({ $0.storageType == StorageType.remote.rawValue }).isEmpty && !isLoading
-        case .none:
-            return performances.isEmpty && !isLoading
-        }
-    }
-
     @MainActor func fetchPerformances(filter: StorageType?) {
-        isLoading = true
+        state = .loading
+        var publishers: [AnyPublisher<[SportPerformance], Never>] = []
+        var encounteredErrors: [Error] = []
+
+        func handleError(_ error: Error) {
+            encounteredErrors.append(error)
+        }
+
         switch filter {
         case .local:
-            storageManager.fetchPerformances()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    isLoading = false
-                    if case .failure(let error) = completion {
-                        toast = .init(type: .error(error), message: "Error fetching local performances:")
-                    }
-                }, receiveValue: { [weak self] performances in
-                    guard let self else { return }
-                    self.performances = performances.filter { $0.storageType == StorageType.local.rawValue }
-                })
-                .store(in: &cancellables)
+            let localPublisher = storageManager.fetchPerformances()
+                .map { $0.filter { $0.storageType == StorageType.local.rawValue } }
+                .catch { error -> Just<[SportPerformance]> in
+                    handleError(error)
+                    return Just([])
+                }
+                .eraseToAnyPublisher()
+            publishers.append(localPublisher)
+            
         case .remote:
-            firebaseManager.fetchPerformances()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    isLoading = false
-                    if case .failure(let error) = completion {
-                        toast = .init(type: .error(error), message: "Error fetching remote performances:")
-                    }
-                }, receiveValue: { [weak self] performances in
-                    guard let self else { return }
-                    self.performances = performances.filter { $0.storageType == StorageType.remote.rawValue }
-                })
-                .store(in: &cancellables)
+            let remotePublisher = firebaseManager.fetchPerformances()
+                .map { $0.filter { $0.storageType == StorageType.remote.rawValue } }
+                .catch { error -> Just<[SportPerformance]> in
+                    handleError(error)
+                    return Just([])
+                }
+                .eraseToAnyPublisher()
+            publishers.append(remotePublisher)
+            
         case .none:
-            storageManager.fetchPerformances()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    isLoading = false
-                    if case .failure(let error) = completion {
-                        toast = .init(type: .error(error), message: "Error fetching local performances:")
-                    }
-                }, receiveValue: { [weak self] performances in
-                    guard let self else { return }
-                    self.performances = performances
-                })
-                .store(in: &cancellables)
-            firebaseManager.fetchPerformances()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    isLoading = false
-                    if case .failure(let error) = completion {
-                        toast = .init(type: .error(error), message: "Error fetching remote performances:")
-                    }
-                }, receiveValue: { [weak self] performances in
-                    guard let self else { return }
-                    self.performances.append(contentsOf: performances)
-                })
-                .store(in: &cancellables)
+            let localPublisher = storageManager.fetchPerformances()
+                .catch { error -> Just<[SportPerformance]> in
+                    handleError(error)
+                    return Just([])
+                }
+                .eraseToAnyPublisher()
+            
+            let remotePublisher = firebaseManager.fetchPerformances()
+                .catch { error -> Just<[SportPerformance]> in
+                    handleError(error)
+                    return Just([])
+                }
+                .eraseToAnyPublisher()
+            
+            publishers.append(localPublisher)
+            publishers.append(remotePublisher)
         }
+
+        guard !publishers.isEmpty else {
+            state = .empty
+            return
+        }
+
+        Publishers.MergeMany(publishers)
+            .collect()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] allPerformances in
+                guard let self else { return }
+                let mergedPerformances = allPerformances.flatMap { $0 }
+                state = mergedPerformances.isEmpty ? .empty : .content(mergedPerformances)
+                if let firstError = encounteredErrors.first {
+                    toast = .init(type: .error(firstError), message: "Error fetching performances")
+                }
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor func deletePerformance(_ performance: SportPerformance) {
         if performance.storageType == StorageType.local.rawValue {
             storageManager.deletePerformance(with: performance.id)
-            if let index = performances.firstIndex(where: { $0.id == performance.id }) {
-                performances.remove(at: index)
-            }
         } else {
             firebaseManager.deletePerformance(with: performance.id)
                 .sink(receiveCompletion: { [weak self] completion in
@@ -100,13 +98,13 @@ class PerformanceListViewModel: ObservableObject {
                     if case .failure(let error) = completion {
                         toast = .init(type: .error(error), message: "Error deleting remote performance:")
                     }
-                }, receiveValue: { [weak self] in
-                    guard let self else { return }
-                    if let index = performances.firstIndex(where: { $0.id == performance.id }) {
-                        performances.remove(at: index)
-                    }
-                })
+                }, receiveValue: { })
                 .store(in: &cancellables)
+        }
+        
+        if case .content(var performances) = state {
+            performances.removeAll { $0.id == performance.id }
+            state = performances.isEmpty ? .empty : .content(performances)
         }
     }
 
@@ -116,11 +114,11 @@ class PerformanceListViewModel: ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self else { return }
                 if case .failure(let error) = completion {
-                    toast = .init(type: .error(error), message: "Error deleting all remote performances:")
+                    toast = .init(type: .error(error), message: "Error deleting all performances:")
                 }
-            }, receiveValue: { [weak self] _ in
+            }, receiveValue: { [weak self] in
                 guard let self else { return }
-                performances.removeAll()
+                state = .empty
             })
             .store(in: &cancellables)
     }

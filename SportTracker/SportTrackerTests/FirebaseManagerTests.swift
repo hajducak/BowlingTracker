@@ -18,7 +18,7 @@ class FirebaseManagerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_givenSuccess_whenFetchPerformances_thenSuccessIsSown() {
+    func test_givenSuccess_whenFetchPerformances_thenSuccessIsShown() {
         let expectedPerformances: [SportPerformance] = [
             SportPerformance(id: "1", name: "Firebase Performance 1", location: "Location 1", duration: 10, storageType: StorageType.remote.rawValue)
         ]
@@ -68,7 +68,7 @@ class FirebaseManagerTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func test_givenSuccess_whenSavePerformance_thenSuccessIsSown() {
+    func test_givenSuccess_whenSavePerformance_thenSuccessIsShown() {
         let performance = SportPerformance(id: "1", name: "Test Performance", location: "Test Location", duration: 15, storageType: StorageType.remote.rawValue)
 
         firebaseManager.shouldReturnError = false
@@ -90,7 +90,7 @@ class FirebaseManagerTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func test_givenFailure_whenSavePerformance_thenFailureIsSown() {
+    func test_givenFailure_whenSavePerformance_thenFailureIsShown() {
         let performance = SportPerformance(id: "1", name: "Test Performance", location: "Test Location", duration: 15, storageType: StorageType.remote.rawValue)
 
         firebaseManager.shouldReturnError = true

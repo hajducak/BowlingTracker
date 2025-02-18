@@ -11,6 +11,7 @@
 		528E48F92D638777008755A1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 528E48F82D638777008755A1 /* FirebaseFirestore */; };
 		528E48FB2D638777008755A1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 528E48FA2D638777008755A1 /* FirebaseStorage */; };
 		528E49072D6392EA008755A1 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 528E49062D6392EA008755A1 /* FirebaseFirestoreCombine-Community */; };
+		52E0CB0B2D64D78400DFB935 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 52E0CB0A2D64D78300DFB935 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		528E48C62D638623008755A1 /* SportTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		528E48D82D638625008755A1 /* SportTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SportTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		528E48E22D638625008755A1 /* SportTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SportTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		52E0CB0A2D64D78300DFB935 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -86,6 +88,7 @@
 		528E48BD2D638623008755A1 = {
 			isa = PBXGroup;
 			children = (
+				52E0CB0A2D64D78300DFB935 /* README.md */,
 				528E48C82D638623008755A1 /* SportTracker */,
 				528E48DB2D638625008755A1 /* SportTrackerTests */,
 				528E48E52D638625008755A1 /* SportTrackerUITests */,
@@ -230,6 +233,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52E0CB0B2D64D78400DFB935 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

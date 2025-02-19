@@ -1,34 +1,17 @@
-import Foundation
+struct Game {
+    var frames: [Frame]
 
-struct Pin: Hashable {
-    let id: Int
-}
+    init(frames: [Frame] = []) {
+        self.frames = frames.isEmpty ? (1...10).map { Frame(rolls: [], index: $0) } : frames
+    }
 
-struct Roll {
-    let knockedDownPins: Set<Pin>
-}
+    mutating func addRoll(knockedDownPins: [Pin]) {
+        let roll = Roll(knockedDownPins: knockedDownPins)
 
-enum FrameType {
-    case strike
-    case spare
-    case open
-}
-
-struct Frame {
-    var rolls: [Roll] = []
-    var frameType: FrameType? {
-        if rolls.count == 1, rolls.first?.knockedDownPins.count == 10 {
-            return .strike
-        } else if rolls.count >= 2, rolls[0].knockedDownPins.count + rolls[1].knockedDownPins.count == 10 {
-            return .spare
-        } else {
-            return .open
+        if let unfinishedFrameIndex = frames.firstIndex(where: { $0.frameType == .unfinished }) {
+            frames[unfinishedFrameIndex].rolls.append(roll)
         }
     }
-}
-
-struct Game {
-    var frames: [Frame] = []
     
     var strikeCount: Int {
         return frames.filter { $0.frameType == .strike }.count
@@ -72,16 +55,14 @@ struct Game {
     
     var maxPossibleScore: Int {
         var tempFrames = frames
-        let strikeRoll = Roll(knockedDownPins: Set((1...10).map { Pin(id: $0) }))
-        while tempFrames.count < 9 {
-            tempFrames.append(Frame(rolls: [strikeRoll]))
+        let strikeRoll = Roll(knockedDownPins: Array((1...10).map { Pin(id: $0) }))
+
+        tempFrames.enumerated().forEach { index, frame in
+            if frame.frameType == .unfinished {
+                tempFrames[index].rolls = index == 9 ? [strikeRoll, strikeRoll, strikeRoll] : [strikeRoll]
+            }
         }
-        let finalFrame = Frame(rolls: [strikeRoll, strikeRoll, strikeRoll])
-        tempFrames.append(finalFrame)
+        
         return Game(frames: tempFrames).currentScore
-    }
-    
-    var totalScore: Int? {
-        return frames.count == 10 ? currentScore : nil
     }
 }

@@ -18,6 +18,7 @@ class FirebaseManagerTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - Bowling
     func test_whenSaveSeries_thenSuccessIsSown() throws {
         let expectation = self.expectation(description: "Series saved successfully")
 
@@ -54,7 +55,54 @@ class FirebaseManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 3)
     }
+    
+    func test_whenSaveGameToSeries_thenSuccessIsSown() {
+        let expectation = self.expectation(description: "Game saved to series")
 
+        let series = Series(id: "1", name: "Test Series", tag: .training, games: [])
+        firebaseManager.storedSeries.append(series)
+
+        let dummyGame = Game.dummyGame
+        guard let seriesId = series.id else {
+            XCTFail("Saving game failed: series doesn't have id")
+            return
+        }
+    
+        firebaseManager.saveGameToSeries(seriesID: seriesId, game: dummyGame)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Saving game failed: \(error.localizedDescription)")
+                }
+            }, receiveValue: {
+                XCTAssertEqual(self.firebaseManager.storedSeries.first?.games.count, 1)
+                expectation.fulfill()
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 3)
+    }
+    
+    func test_givenError_whenSaveGameToSeries_thenSeriesNotFound() {
+        let expectation = self.expectation(description: "Saving game should fail because series does not exist")
+        let dummyGame = Game.dummyGame
+        
+        firebaseManager.saveGameToSeries(seriesID: "non-existent-series", game: dummyGame)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTAssertEqual(error.errorMessage, "Series not found.", "Expected 'Series not found' error")
+                    expectation.fulfill()
+                } else {
+                    XCTFail("Test should have failed but it succeeded")
+                }
+            }, receiveValue: {
+                XCTFail("Test should not return a success value")
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 3)
+    }
+    
+    // MARK: - Performances
     func test_whenFetchAllSeries_thenSuccessIsSown() throws {
         let expectation = self.expectation(description: "Fetch all series")
 
@@ -311,5 +359,36 @@ class MockFirebaseManager: FirebaseManager {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    override func saveGameToSeries(seriesID: String, game: Game) -> AnyPublisher<Void, AppError> {
+        return Future<Void, AppError> { promise in
+            guard let index = self.storedSeries.firstIndex(where: { $0.id == seriesID }) else {
+                promise(.failure(.customError("Series not found.")))
+                return
+            }
+
+            self.storedSeries[index].games.append(game)
+            promise(.success(()))
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
+extension Game {
+    static var dummyGame: Game {
+        Game(frames: (1...10).compactMap { Frame.dummyFrame(index: $0) })
+    }
+}
+
+extension Frame {
+    static func dummyFrame(index: Int) -> Frame {
+        Frame(rolls: [Roll.dummyRoll], index: index)
+    }
+}
+
+extension Roll {
+    static var dummyRoll: Roll {
+        Roll(knockedDownPins: Roll.tenPins)
     }
 }

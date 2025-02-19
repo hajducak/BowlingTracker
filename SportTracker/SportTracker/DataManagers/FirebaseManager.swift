@@ -55,6 +55,42 @@ public class FirebaseManager {
             }
         }.eraseToAnyPublisher()
     }
+
+    func saveGameToSeries(seriesID: String, game: Game) -> AnyPublisher<Void, AppError> {
+        let gameData: [String: Any]
+        
+        do {
+            gameData = try Firestore.Encoder().encode(game)
+        } catch {
+            return Fail(error: .saveError(error)).eraseToAnyPublisher()
+        }
+
+        return Future<Void, AppError> { promise in
+            let seriesRef = self.db.collection(self.seriesCollection).document(seriesID)
+
+            seriesRef.getDocument { document, error in
+                if let error = error {
+                    promise(.failure(.fetchingError(error)))
+                    return
+                }
+                
+                guard document?.exists == true else {
+                    promise(.failure(.customError("Series not found.")))
+                    return
+                }
+
+                seriesRef.updateData([
+                    "games": FieldValue.arrayUnion([gameData])
+                ]) { error in
+                    if let error = error {
+                        promise(.failure(.saveError(error)))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
     
     // MARK: - Prformances
     func savePerformance(_ performance: SportPerformance) -> AnyPublisher<Void, AppError> {

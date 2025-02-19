@@ -22,10 +22,12 @@ struct SportTrackerApp: App {
             let firebaseManager = FirebaseManager.shared
             let performanceListViewModel = PerformanceListViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
             let addPerformanceViewModel = AddPerformanceViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
+            let bowlingSeriesViewModel = BowlingSeriesViewModel(firebaseManager: firebaseManager)
 
             ContentView(
                 addPerformanceViewModel: addPerformanceViewModel,
-                performanceListViewModel: performanceListViewModel
+                performanceListViewModel: performanceListViewModel,
+                bowlingSeriesViewModel: bowlingSeriesViewModel
             )
         }
     }

@@ -3,14 +3,17 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var addPerformanceViewModel: AddPerformanceViewModel
     @StateObject private var performanceListViewModel: PerformanceListViewModel
+    @StateObject private var bowlingSeriesViewModel: BowlingSeriesViewModel
     @StateObject private var tabSelectionViewModel = TabSelectionViewModel()
 
     init(
         addPerformanceViewModel: AddPerformanceViewModel,
-        performanceListViewModel: PerformanceListViewModel
+        performanceListViewModel: PerformanceListViewModel,
+        bowlingSeriesViewModel: BowlingSeriesViewModel
     ) {
         _addPerformanceViewModel = StateObject(wrappedValue: addPerformanceViewModel)
         _performanceListViewModel = StateObject(wrappedValue: performanceListViewModel)
+        _bowlingSeriesViewModel = StateObject(wrappedValue: bowlingSeriesViewModel)
     }
 
     var body: some View {
@@ -31,6 +34,14 @@ struct ContentView: View {
                 Image(systemName: "list.dash")
                 Text("List")
             }.tag(1)
+            NavigationView {
+                BowlingSeriesView(viewModel: bowlingSeriesViewModel)
+                    .navigationBarTitle("My Series")
+            }
+            .tabItem {
+                Image(systemName: "figure.bowling")
+                Text("Bowling")
+            }.tag(2)
         }
         .onAppear {
             let appearance = UITabBarAppearance()

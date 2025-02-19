@@ -4,7 +4,7 @@ enum SeriesType: String, Codable {
     case tournament, training, league, other
 }
 
-struct Series: Codable {
+struct Series: Codable, Identifiable {
     var id: String?
     let name: String
     let tag: SeriesType

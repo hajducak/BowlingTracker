@@ -2,16 +2,30 @@ import SwiftUI
 
 struct BowlingSeriesView: View {
     @ObservedObject var viewModel: BowlingSeriesViewModel
-    
+    @State private var showAlert = false
+    @State private var seriesName = ""
+
     var body: some View {
         contentView
             .navigationBarItems(trailing: addButton)
-        
+            .alert("Enter Series Name", isPresented: $showAlert) {
+                TextField("Series Name", text: $seriesName)
+                
+                Button("Cancel", role: .cancel) {
+                    seriesName = ""
+                }
+                
+                Button("OK") {
+                    viewModel.addSeries(name: seriesName)
+                    seriesName = ""
+                }
+                .disabled(seriesName.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
     }
-    
+
     private var addButton: some View {
         Button(action: {
-            viewModel.addSeries()
+            showAlert = true
         }) {
             Label("Add", systemImage: "plus.circle.fill")
                 .foregroundColor(.black)
@@ -36,15 +50,60 @@ struct BowlingSeriesView: View {
                 Spacer()
             }
         case .content(let series):
-            List(series) { item in
-                HStack {
-                    Text(item.name)
-                    Spacer()
-                    Text(item.tag.rawValue)
-                        .foregroundColor(.gray)
+            ScrollView {
+                ForEach(series) { item in
+                    SeriesCell(series: item) { viewModel.deleteSeries($0) }
                 }
+                Spacer()
             }
-            .listStyle(.insetGrouped)
         }
+    }
+}
+
+struct SeriesCell: View {
+    var series: Series
+    var onDeleteSeries: (Series) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(series.tag.rawValue)
+                .font(.caption2)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 4)
+                .background(Color.blue.cornerRadius(8))
+            Text(series.name)
+                .padding(.bottom, 6)
+            Text(series.formattedDate)
+                .font(.callout)
+                .foregroundColor(.gray)
+                .padding(.bottom, 6)
+        }
+        .flexWidthModifier(alignment: .leading)
+        .padding(.horizontal, 20)
+        .tap(count: 3) {
+            onDeleteSeries(series)
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func tap(count: Int, perform: @escaping () -> Void) -> some View {
+        contentShape(Rectangle())
+            .onTapGesture(count: count, perform: perform)
+    }
+    
+    func flexWidthModifier(alignment: Alignment = .center) -> some View {
+        modifier(FlexWidthModifier(alignment: alignment))
+    }
+}
+
+struct FlexWidthModifier: ViewModifier {
+    let alignment: Alignment
+    init(alignment: Alignment = .center) {
+        self.alignment = alignment
+    }
+    func body(content: Content) -> some View {
+        content.frame(minWidth: 0, maxWidth: .infinity, alignment: alignment)
     }
 }

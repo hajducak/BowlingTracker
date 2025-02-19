@@ -102,6 +102,42 @@ class FirebaseManagerTests: XCTestCase {
         waitForExpectations(timeout: 3)
     }
     
+
+    func test_whenDeleteSeriesById_thenDeleteIsSuccess() {
+        let idToDelete = "testSeriesId"
+        
+        let expectation = self.expectation(description: "Series deleted")
+        
+        firebaseManager.deleteSeries(id: idToDelete)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Error: \(error.localizedDescription)")
+                }
+            }, receiveValue: {
+                expectation.fulfill()
+            })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    func test_givenError_whenDeleteSeriesById_thenDeleteIsFailure() {
+        let idToDelete = "invalidId"
+
+        let expectation = self.expectation(description: "Series delete fails")
+        
+        firebaseManager.deleteSeries(id: idToDelete)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Expected success, but received failure: \(error)")
+                    expectation.fulfill()
+                }
+            }, receiveValue: {})
+            .store(in: &cancellables)
+
+        wait(for: [expectation], timeout: 2.0)
+    }
+    
     // MARK: - Performances
     func test_whenFetchAllSeries_thenSuccessIsSown() throws {
         let expectation = self.expectation(description: "Fetch all series")
@@ -372,6 +408,14 @@ class MockFirebaseManager: FirebaseManager {
             promise(.success(()))
         }
         .eraseToAnyPublisher()
+    }
+
+    override func deleteSeries(id: String) -> AnyPublisher<Void, AppError> {
+        if id == "testSeriesId" {
+            return Just(()).setFailureType(to: AppError.self).eraseToAnyPublisher()
+        } else {
+            return Fail(error: AppError.deletingError(NSError(domain: "FirebaseError", code: 0, userInfo: nil))).eraseToAnyPublisher()
+        }
     }
 }
 

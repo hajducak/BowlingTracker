@@ -26,11 +26,8 @@ class BowlingSeriesViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    self.toast = Toast(type: .error(error))
+                if case .failure(let error) = completion {
+                    toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] series in
                 guard let self else { return }
@@ -39,9 +36,9 @@ class BowlingSeriesViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func addSeries() {
+    func addSeries(name: String) {
         // TODO: navigation for UI to add series, now just mock data
-        Self.mockSeries.forEach { save(series: $0) }
+        save(series: Self.mockSeries(name: name))
     }
 
     func save(series: Series) {
@@ -58,49 +55,64 @@ class BowlingSeriesViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+    
+    func deleteSeries(_ series: Series) {
+        guard let seriesId = series.id else { return }
+        firebaseManager.deleteSeries(id: seriesId)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
+                switch completion {
+                case .failure(let error):
+                    toast = Toast(type: .error(error))
+                case .finished:
+                    break
+                }
+            }, receiveValue: { [weak self] _ in
+                self?.setupSeries()
+            })
+            .store(in: &cancellables)
+    }
 }
 
 extension BowlingSeriesViewModel {
-    static var mockSeries: [Series] {
-        return [
-            Series(id: UUID().uuidString, name: "ABL 1. Liga", tag: .league, games: [
-                Game(frames: [
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-                ]),
-                Game(frames: [
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-                ]),
-                Game(frames: [
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-                ])
+    static func mockSeries(name:String) -> Series {
+        Series(id: UUID().uuidString, name: name, tag: .league, games: [
+            Game(frames: [
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
+            ]),
+            Game(frames: [
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
+            ]),
+            Game(frames: [
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
+                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
             ])
-        ]
+        ])
     }
 }

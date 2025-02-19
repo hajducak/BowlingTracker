@@ -34,6 +34,19 @@ public class FirebaseManager {
         }
     }
 
+    func deleteSeries(id: String) -> AnyPublisher<Void, AppError> {
+        return Future { [weak self] promise in
+            self?.db.collection("series").document(id).delete { error in
+                if let error = error {
+                    promise(.failure(.deletingError(error)))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
     func fetchAllSeries() -> AnyPublisher<[Series], AppError> {
         return Future<[Series], AppError> { promise in
             self.db.collection(self.seriesCollection).getDocuments { snapshot, error in

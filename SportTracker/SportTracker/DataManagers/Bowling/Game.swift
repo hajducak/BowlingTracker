@@ -1,4 +1,6 @@
-struct Game {
+import Foundation
+struct Game: Codable {
+    var id: String = UUID().uuidString
     var frames: [Frame]
 
     init(frames: [Frame] = []) {

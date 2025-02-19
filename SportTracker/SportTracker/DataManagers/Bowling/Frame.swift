@@ -5,7 +5,7 @@ enum FrameType {
     case unfinished
 }
 
-struct Frame {
+struct Frame: Codable {
     var rolls: [Roll] = []
     var frameType: FrameType {
         if rolls.count == 1, rolls.first?.knockedDownPins.count == 10, index != 10 {

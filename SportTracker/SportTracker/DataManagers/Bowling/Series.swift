@@ -1,20 +1,20 @@
 import Foundation
 
-enum SeriesType {
+enum SeriesType: String, Codable {
     case tournament, training, league, other
 }
 
-struct Series {
+struct Series: Codable {
+    var id: String?
     let name: String
     let tag: SeriesType
-    let date: Date
     var games: [Game]
     var currentGame: Game
 
-    init(name: String, tag: SeriesType, date: Date = Date.now, games: [Game] = [], currentGame: Game = Game()) {
+    init(id: String? = nil, name: String, tag: SeriesType, games: [Game] = [], currentGame: Game = Game()) {
+        self.id = id
         self.name = name
         self.tag = tag
-        self.date = date
         self.games = games
         self.currentGame = currentGame
     }

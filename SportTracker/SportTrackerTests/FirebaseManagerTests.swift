@@ -18,6 +18,83 @@ class FirebaseManagerTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_whenSaveSeries_thenSuccessIsSown() throws {
+        let expectation = self.expectation(description: "Series saved successfully")
+
+        let series = Series(name: "Test Series", tag: .training)
+
+        firebaseManager.saveSeries(series)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Saving series failed: \(error.localizedDescription)")
+                }
+            }, receiveValue: {
+                expectation.fulfill()
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 3)
+    }
+
+    func test_givenError_whenSaveSeries_thenFailureIsSown() throws {
+        let expectation = self.expectation(description: "Saving series should fail")
+        firebaseManager.shouldFail = true
+
+        let series = Series(name: "Test Series", tag: .training)
+
+        firebaseManager.saveSeries(series)
+            .sink(receiveCompletion: { completion in
+                if case .failure = completion {
+                    expectation.fulfill()
+                }
+            }, receiveValue: {
+                XCTFail("Save should have failed")
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 3)
+    }
+
+    func test_whenFetchAllSeries_thenSuccessIsSown() throws {
+        let expectation = self.expectation(description: "Fetch all series")
+
+        let series1 = Series(name: "Series 1", tag: .training)
+        let series2 = Series(name: "Series 2", tag: .tournament)
+        
+        _ = firebaseManager.saveSeries(series1)
+        _ = firebaseManager.saveSeries(series2)
+
+        firebaseManager.fetchAllSeries()
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Fetching series failed: \(error.localizedDescription)")
+                }
+            }, receiveValue: { seriesList in
+                XCTAssertEqual(seriesList.count, 2, "Should fetch 2 series")
+                expectation.fulfill()
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 3)
+    }
+
+    func test_givenError_whenFetchAllSeries_thenFailureIsSown() throws {
+        let expectation = self.expectation(description: "Fetching series should fail")
+        firebaseManager.shouldFail = true
+
+        firebaseManager.fetchAllSeries()
+            .sink(receiveCompletion: { completion in
+                if case .failure = completion {
+                    expectation.fulfill()
+                }
+            }, receiveValue: { _ in
+                XCTFail("Fetching should have failed")
+            })
+            .store(in: &cancellables)
+
+        waitForExpectations(timeout: 3)
+    }
+
     func test_givenSuccess_whenFetchPerformances_thenSuccessIsShown() {
         let expectedPerformances: [SportPerformance] = [
             SportPerformance(id: "1", name: "Firebase Performance 1", location: "Location 1", duration: 10, storageType: StorageType.remote.rawValue)
@@ -206,5 +283,33 @@ class MockFirebaseManager: FirebaseManager {
             performancesToReturn.removeAll { $0.id == id }
             return Just(()).setFailureType(to: AppError.self).eraseToAnyPublisher()
         }
+    }
+    
+    var storedSeries: [Series] = []
+    var shouldFail = false
+
+    override func saveSeries(_ series: Series) -> AnyPublisher<Void, AppError> {
+        return Future<Void, AppError> { promise in
+            if self.shouldFail {
+                promise(.failure(.saveError(NSError(domain: "TestError", code: -1, userInfo: nil))))
+            } else {
+                var newSeries = series
+                newSeries.id = UUID().uuidString
+                self.storedSeries.append(newSeries)
+                promise(.success(()))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    override func fetchAllSeries() -> AnyPublisher<[Series], AppError> {
+        return Future<[Series], AppError> { promise in
+            if self.shouldFail {
+                promise(.failure(.fetchingError(NSError(domain: "TestError", code: -1, userInfo: nil))))
+            } else {
+                promise(.success(self.storedSeries))
+            }
+        }
+        .eraseToAnyPublisher()
     }
 }

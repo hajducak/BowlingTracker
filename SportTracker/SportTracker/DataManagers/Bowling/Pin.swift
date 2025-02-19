@@ -1,3 +1,3 @@
-struct Pin: Hashable {
+struct Pin: Codable, Hashable {
     let id: Int
 }

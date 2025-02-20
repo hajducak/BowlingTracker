@@ -1,7 +1,8 @@
-enum FrameType {
+enum FrameType: String {
     case strike
     case spare
     case open
+    case last
     case unfinished
 }
 
@@ -16,8 +17,7 @@ struct Frame: Codable {
             return .open
         } else {
             if (rolls.count == 3) || (rolls.count == 2 && rolls[0].knockedDownPins.count + rolls[1].knockedDownPins.count < 10) {
-                // TODO: change this for last spare
-                return .spare
+                return .last
             } else {
                 return .unfinished
             }

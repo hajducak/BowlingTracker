@@ -24,6 +24,11 @@ struct Series: Codable, Identifiable {
     func getSeriesScore() -> Int {
         return games.reduce(0) { $0 + $1.currentScore }
     }
+
+    func getSeriesAvarage() -> Double {
+        guard getSeriesScore() != 0, games.count != 0 else { return 0 }
+        return Double(getSeriesScore() / games.count)
+    }
     
     func isCurrentGameActive() -> Bool {
         return currentGame.frames.contains { $0.frameType == .unfinished }

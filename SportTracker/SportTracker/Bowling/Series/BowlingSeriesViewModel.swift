@@ -12,7 +12,7 @@ class BowlingSeriesViewModel: ObservableObject {
     @Published var series: [Series] = []
     @Published var toast: Toast? = nil
 
-    private let firebaseManager: FirebaseManager
+    let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
 
     init(firebaseManager: FirebaseManager) {

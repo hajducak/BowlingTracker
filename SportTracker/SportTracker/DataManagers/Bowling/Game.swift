@@ -1,5 +1,5 @@
 import Foundation
-struct Game: Codable {
+struct Game: Codable, Identifiable {
     var id: String = UUID().uuidString
     var frames: [Frame]
 

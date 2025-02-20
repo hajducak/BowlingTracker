@@ -67,4 +67,47 @@ struct Game: Codable, Identifiable {
         
         return Game(frames: tempFrames).currentScore
     }
+    
+    /// Calculate score for current frame based on previous and next score
+    /// - adding bonus for X
+    /// - adding bonus for /
+    private func scoreForFrame(at index: Int) -> Int {
+        guard index >= 0, index < frames.count else { return 0 }
+        
+        var score = 0
+        let frame = frames[index]
+        
+        // Sum the knocked-down pins in the current frame
+        let frameScore = frame.rolls.reduce(0) { $0 + $1.knockedDownPins.count }
+        score += frameScore
+        
+        // Strike Bonus Calculation
+        if frame.frameType == .strike, index < frames.count - 1 {
+            let nextFrame = frames[index + 1]
+            score += nextFrame.rolls.prefix(2).reduce(0) { $0 + $1.knockedDownPins.count }
+            
+            // If consecutive strikes, take extra roll
+            if nextFrame.frameType == .strike, index + 2 < frames.count {
+                let secondNextFrame = frames[index + 2]
+                if let firstRoll = secondNextFrame.rolls.first {
+                    score += firstRoll.knockedDownPins.count
+                }
+            }
+        }
+        
+        // Spare Bonus Calculation
+        if frame.frameType == .spare, index < frames.count - 1 {
+            let nextFrame = frames[index + 1]
+            if let firstRoll = nextFrame.rolls.first {
+                score += firstRoll.knockedDownPins.count
+            }
+        }
+        
+        return score
+    }
+
+    /// Use this in game view for cumulative sum of score so far
+    func cumulativeScoreForFrame(at index: Int) -> Int {
+        return (0...index).reduce(0) { $0 + scoreForFrame(at: $1) }
+    }
 }

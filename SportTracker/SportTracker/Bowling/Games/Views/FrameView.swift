@@ -3,7 +3,13 @@ import SwiftUI
 struct FrameView: View {
     let frame: Frame
     /// Should count in game model, cose I need previus frames to count the current frame score
-    var scoreSoFar: Int = 0
+    var scoreSoFar: Int?
+    var scoreSoFarFormatted: String {
+        get {
+            guard let scoreSoFar else { return "" }
+            return "\(scoreSoFar)"
+        }
+    }
     var showframeType: Bool = false
     
     var body: some View {
@@ -21,11 +27,13 @@ struct FrameView: View {
                             .border(Color.black)
                     }
                 }
-                if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) { emptyBox }
+                if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
+                    emptyBox
+                }
             }
-            Text("\(scoreSoFar)")
+            Text(scoreSoFarFormatted)
                 .font(.caption)
-                .frame(width: 50)
+                .frame(width: 50, height: 20)
         }
         .overlay {
             if showframeType {

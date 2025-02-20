@@ -35,10 +35,10 @@ class BowlingSeriesViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
-    func addSeries(name: String) {
-        // TODO: navigation for UI to add series, now just mock data
-        save(series: Self.mockSeries(name: name))
+
+    func addSeries(name: String, type: SeriesType, date: Date) {
+        let newSeries = Series(date: date, name: name, tag: type)
+        save(series: newSeries)
     }
 
     func save(series: Series) {

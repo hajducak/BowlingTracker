@@ -60,38 +60,3 @@ struct AddPerformanceView: View {
     let addPerformanceViewModel = AddPerformanceViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
     AddPerformanceView(viewModel: addPerformanceViewModel)
 }
-
-struct CustomTextFieldStyle: ViewModifier {
-    let label: String
-    func body(content: Content) -> some View {
-        content
-            .padding()
-            .frame(height: 50)
-            .background(Color.gray.opacity(0.2).cornerRadius(8))
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-            )
-            .labled(label: label)
-    }
-}
-
-struct LabeledStyle: ViewModifier {
-    let label: String
-    func body(content: Content) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label).font(.subheadline).bold()
-            content.padding(.bottom, 15)
-        }
-    }
-}
-
-extension View {
-    func textFieldStyle(labeled: String) -> some View {
-        modifier(CustomTextFieldStyle(label: labeled))
-    }
-    
-    func labled(label: String) -> some View {
-        modifier(LabeledStyle(label: label))
-    }
-}

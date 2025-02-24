@@ -1,4 +1,4 @@
-struct Roll: Codable {
+struct Roll: Codable, Hashable {
     let knockedDownPins: [Pin]
 }
 

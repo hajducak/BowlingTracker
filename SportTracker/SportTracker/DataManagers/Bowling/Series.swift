@@ -71,9 +71,8 @@ struct Series: Codable, Identifiable {
         return currentGame.currentScore
     }
     
-    mutating func saveCurrentGame() {
-        guard let currentGame else { return }
-        games.append(currentGame)
+    mutating func save(game: Game) {
+        games.append(game)
     }
     
     mutating func newGame() {

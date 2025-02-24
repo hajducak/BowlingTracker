@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GameView: View {
-    @State var game: Game
+    @Binding var game: Game
     var showMax: Bool = true
 
     var body: some View {
@@ -29,7 +29,7 @@ struct GameView: View {
 #Preview {
     VStack(alignment: .leading, content: {
         GameView(
-            game: Game(frames: [
+            game: .constant(Game(frames: [
                 Frame(rolls: [Roll.roll10], index: 1),
                 Frame(rolls: [Roll.roll10], index: 2),
                 Frame(rolls: [Roll.roll10], index: 3),
@@ -42,10 +42,10 @@ struct GameView: View {
                 Frame(rolls: [Roll.roll10,
                               Roll.roll10,
                               Roll.roll10], index: 10)
-            ])
+            ]))
         )
         GameView(
-            game: Game(frames: [
+            game: .constant(Game(frames: [
                 Frame(rolls: [Roll.roll7, Roll.roll3], index: 1),
                 Frame(rolls: [Roll.roll6, Roll.roll4], index: 2),
                 Frame(rolls: [Roll.roll5, Roll.roll5], index: 3),
@@ -56,10 +56,10 @@ struct GameView: View {
                 Frame(rolls: [Roll.roll0, Roll.roll10], index: 8),
                 Frame(rolls: [Roll.roll8, Roll.roll2], index: 9),
                 Frame(rolls: [Roll.roll9, Roll.roll0], index: 10)
-            ])
+            ]))
         )
         GameView(
-            game: Game(frames: [
+            game: .constant(Game(frames: [
                 Frame(rolls: [Roll.roll7, Roll.roll3], index: 1),
                 Frame(rolls: [Roll.roll6, Roll.roll4], index: 2),
                 Frame(rolls: [Roll.roll5, Roll.roll5], index: 3),
@@ -70,7 +70,7 @@ struct GameView: View {
                 Frame(rolls: [], index: 8),
                 Frame(rolls: [], index: 9),
                 Frame(rolls: [], index: 10)
-            ])
+            ]))
         )
     })
 }

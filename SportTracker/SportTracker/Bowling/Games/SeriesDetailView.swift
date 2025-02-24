@@ -7,27 +7,23 @@ struct SeriesDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             switch viewModel.state {
             case .playing(let game):
-                VStack(alignment: .leading) {
+                ScrollView {
+                    HStack(spacing: 4) {
+                        ForEach(viewModel.series.games.indices, id: \.self) { index in
+                            Text("Game #\(index): \(viewModel.series.games[index].currentScore)")
+                        }
+                    }
                     Text("Current Game:")
                         .font(.title3)
-                    ScrollView(.horizontal) {
-                        GameView(game: game)
-                    }
-                    Spacer()
-                    // TODO: input for current game
-                    HStack {
-                        Button {
-                            // TOOO
-                        } label : {
-                            Text("Finish series")
-                        }
-                        Button {
-                            // TOOO
-                        } label : {
-                            Text("New game")
-                        }
-                    }
-                }
+                    RollView(viewModel: game)
+                }.navigationBarItems(
+                    trailing:
+                        Button(action: {
+                            viewModel.saveSeries()
+                        }, label: {
+                            Text("Save")
+                        })
+                )
             case .empty:
                 VStack {
                     Spacer()
@@ -54,7 +50,7 @@ struct SeriesDetailView: View {
                         VStack(alignment: .leading) {
                             Text("Game #\(index + 1): \(viewModel.games[index].currentScore)")
                             ScrollView(.horizontal) {
-                                GameView(game: viewModel.games[index], showMax: false)
+                                GameView(game: $viewModel.games[index], showMax: false)
                             }
                         }
                     }

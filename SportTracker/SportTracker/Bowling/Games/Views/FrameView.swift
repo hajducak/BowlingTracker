@@ -2,7 +2,6 @@ import SwiftUI
 
 struct FrameView: View {
     let frame: Frame
-    /// Should count in game model, cose I need previus frames to count the current frame score
     var scoreSoFar: Int?
     var scoreSoFarFormatted: String {
         get {

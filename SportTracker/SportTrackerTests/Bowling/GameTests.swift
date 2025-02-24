@@ -213,3 +213,89 @@ final class GameTests: XCTestCase {
         XCTAssertEqual(game.maxPossibleScore, 246, "Maximálne možné skóre nie je správne.")
     }
 }
+
+class LastFrameTests: XCTestCase {
+    func testLastFrame_StrikeStrikeStrike() {
+        let game = Game(frames: [
+            Frame(rolls: [], index: 1),
+            Frame(rolls: [
+                Roll.roll10,
+                Roll.roll10,
+                Roll.roll10
+            ], index: 10)
+        ])
+        
+        XCTAssertEqual(game.strikeCount, 3)
+        XCTAssertEqual(game.spareCount, 0)
+        XCTAssertEqual(game.openFrameCount, 0)
+    }
+    
+    func testLastFrame_StrikeStrikeNine() {
+        let game = Game(frames: [
+            Frame(rolls: [
+                Roll.roll10,
+                Roll.roll10,
+                Roll.roll9
+            ], index: 10)
+        ])
+        
+        XCTAssertEqual(game.strikeCount, 2)
+        XCTAssertEqual(game.spareCount, 0)
+        XCTAssertEqual(game.openFrameCount, 0)
+    }
+    
+    func testLastFrame_StrikeNineSpare() {
+        let game = Game(frames: [
+            Frame(rolls: [
+                Roll.roll10,
+                Roll.roll9,
+                Roll.roll1
+            ], index: 10)
+        ])
+        
+        XCTAssertEqual(game.strikeCount, 1)
+        XCTAssertEqual(game.spareCount, 1)
+        XCTAssertEqual(game.openFrameCount, 0)
+    }
+    
+    func testLastFrame_NineSpareStrike() {
+        let game = Game(frames: [
+            Frame(rolls: [
+                Roll.roll9,
+                Roll.roll1,
+                Roll.roll10
+            ], index: 10)
+        ])
+        
+        XCTAssertEqual(game.strikeCount, 1)
+        XCTAssertEqual(game.spareCount, 1)
+        XCTAssertEqual(game.openFrameCount, 0)
+    }
+
+    func testLastFrame_NineSpareFive() {
+        let game = Game(frames: [
+            Frame(rolls: [
+                Roll.roll9,
+                Roll.roll1,
+                Roll.roll5
+            ], index: 10)
+        ])
+        
+        XCTAssertEqual(game.strikeCount, 0)
+        XCTAssertEqual(game.spareCount, 1)
+        XCTAssertEqual(game.openFrameCount, 0)
+    }
+
+    func testLastFrame_NineZero() {
+        let game = Game(frames: [
+            Frame(rolls: [
+                Roll.roll9,
+                Roll.roll0
+            ], index: 10)
+        ])
+        
+        XCTAssertEqual(game.strikeCount, 0)
+        XCTAssertEqual(game.spareCount, 0)
+        XCTAssertEqual(game.openFrameCount, 1)
+    }
+}

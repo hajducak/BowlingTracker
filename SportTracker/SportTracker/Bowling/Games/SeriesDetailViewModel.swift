@@ -25,14 +25,18 @@ class SeriesDetailViewModel: ObservableObject {
 
     func setupContent() {
         if series.isCurrentGameActive() {
-            state = .playing(series.currentGame)
+            guard let currentGame = series.currentGame else {
+                state = series.games.isEmpty ? .empty : .content(games)
+                return
+            }
+            state = .playing(currentGame)
         } else {
             state = series.games.isEmpty ? .empty : .content(games)
         }
     }
 
     func getCurrentGameScore() -> Int {
-        series.getCurrentGameScore()
+        series.getCurrentGameScore() ?? 0
     }
     
     /// Localy saved the current game

@@ -16,15 +16,48 @@ struct Game: Codable, Identifiable {
     }
     
     var strikeCount: Int {
-        return frames.filter { $0.frameType == .strike }.count
+        frames.filter { $0.frameType == .strike }.count + lastFrameCount().strikes
     }
     
     var spareCount: Int {
-        return frames.filter { $0.frameType == .spare }.count
+        frames.filter { $0.frameType == .spare }.count + lastFrameCount().spares
     }
     
     var openFrameCount: Int {
-        return frames.filter { $0.frameType == .open }.count
+        frames.filter { $0.frameType == .open }.count + lastFrameCount().opens
+    }
+
+    func lastFrameCount() -> (strikes: Int, spares: Int, opens: Int) {
+        guard let lastFrame = frames.last, lastFrame.frameType == .last else {
+            return (0, 0, 0)
+        }
+        
+        let rolls = lastFrame.rolls.map { $0.knockedDownPins.count }
+        let rollCount = rolls.count
+        
+        var strikes = 0
+        var spares = 0
+        var opens = 0
+
+        if rollCount >= 1, rolls[0] == 10 {
+            strikes += 1
+
+            if rollCount >= 3, rolls[1] + rolls[2] == 10 {
+                spares += 1
+            } else {
+                if rollCount >= 2, rolls[1] == 10 { strikes += 1 }
+                if rollCount >= 3, rolls[2] == 10 { strikes += 1 }
+            }
+        } else if rollCount >= 2 {
+            if rolls[0] + rolls[1] == 10 {
+                spares += 1
+                if rollCount == 3, rolls[2] == 10 { strikes += 1 }
+            } else {
+                opens += 1
+            }
+        }
+
+        return (strikes, spares, opens)
     }
 
     var currentScore: Int {

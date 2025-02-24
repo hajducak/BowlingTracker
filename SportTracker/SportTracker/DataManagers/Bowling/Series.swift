@@ -10,9 +10,9 @@ struct Series: Codable, Identifiable {
     let name: String
     let tag: SeriesType
     var games: [Game]
-    var currentGame: Game
+    var currentGame: Game?
 
-    init(id: String? = nil, date: Date = Date.now, name: String, tag: SeriesType, games: [Game] = [], currentGame: Game = Game()) {
+    init(id: String? = nil, date: Date = Date.now, name: String, tag: SeriesType, games: [Game] = [], currentGame: Game? = Game()) {
         self.id = id
         self.date = date
         self.name = name
@@ -30,15 +30,49 @@ struct Series: Codable, Identifiable {
         return Double(getSeriesScore() / games.count)
     }
     
+    func getSeriesStrikePercentage() -> Double {
+        let normalFrames = games.count * 9
+        let totalStrikes = games.reduce(0) { $0 + $1.strikeCount }
+        
+        let extraFrames = games.reduce(0) { $0 + $1.lastFrameCount().strikes + $1.lastFrameCount().spares + $1.lastFrameCount().opens }
+        let totalFramesPlusExtraRolls = normalFrames + extraFrames
+
+        return totalFramesPlusExtraRolls > 0 ? (Double(totalStrikes) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
+    }
+
+    func getSeriesSparePercentage() -> Double {
+        let normalFrames = games.count * 9
+        let totalSpares = games.reduce(0) { $0 + $1.spareCount }
+        
+        let extraFrames = games.reduce(0) { $0 + $1.lastFrameCount().strikes + $1.lastFrameCount().spares + $1.lastFrameCount().opens }
+        let totalFramesPlusExtraRolls = normalFrames + extraFrames
+
+        return totalFramesPlusExtraRolls > 0 ? (Double(totalSpares) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
+    }
+
+    func getSeriesOpenPercentage() -> Double {
+        let normalFrames = games.count * 9
+        let totalOpenFrames = games.reduce(0) { $0 + $1.openFrameCount }
+
+        let extraFrames = games.reduce(0) { $0 + $1.lastFrameCount().strikes + $1.lastFrameCount().spares + $1.lastFrameCount().opens }
+        let totalFramesPlusExtraRolls = normalFrames + extraFrames
+
+        return totalFramesPlusExtraRolls > 0 ? (Double(totalOpenFrames) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
+    }
+
+
     func isCurrentGameActive() -> Bool {
+        guard let currentGame else { return false }
         return currentGame.frames.contains { $0.frameType == .unfinished }
     }
 
-    func getCurrentGameScore() -> Int {
+    func getCurrentGameScore() -> Int? {
+        guard let currentGame else { return nil }
         return currentGame.currentScore
     }
     
     mutating func saveCurrentGame() {
+        guard let currentGame else { return }
         games.append(currentGame)
     }
     
@@ -55,45 +89,9 @@ extension Series {
     }
 }
 
-extension Series {
-    static func mockSeries(name: String) -> Series {
-        Series(id: UUID().uuidString, name: name, tag: .league, games: [
-            Game(frames: [
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-            ]),
-            Game(frames: [
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-            ]),
-            Game(frames: [
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-            ])
-        ])
+extension Double {
+    func rounded(toPlaces places: Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
     }
 }

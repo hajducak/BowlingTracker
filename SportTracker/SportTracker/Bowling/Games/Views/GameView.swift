@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GameView: View {
     @State var game: Game
+    var showMax: Bool = true
 
     var body: some View {
         HStack(alignment: .bottom) {
@@ -11,10 +12,16 @@ struct GameView: View {
                     scoreSoFar: game.frames[index].frameType == .unfinished ? nil : game.cumulativeScoreForFrame(at: index)
                 )
             }
-            Text("\(game.maxPossibleScore)")
+            if showMax {
+                VStack(alignment: .center, spacing: 8) {
+                    Text("MAX")
+                    Text("\(game.maxPossibleScore)")
+                        .bold()
+                }
                 .padding(4)
                 .background(Color.gray.opacity(0.2))
                 .border(Color.black)
+            }
         }
     }
 }

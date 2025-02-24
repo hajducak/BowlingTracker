@@ -61,6 +61,8 @@ To install and run the app on your local machine:
 
 3. Build and run the app on a simulator or a physical device.
 
+4. use `main` branch only
+
 ## Testing
 
 The app includes both **Unit Tests** and **UI Tests** to ensure its reliability:

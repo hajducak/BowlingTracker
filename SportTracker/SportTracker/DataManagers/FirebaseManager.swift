@@ -12,15 +12,11 @@ public class FirebaseManager {
     
     // MARK: - Bowling
     func saveSeries(_ series: Series) -> AnyPublisher<Void, AppError> {
-        let documentID = UUID().uuidString
-        var seriesToSave = series
-        seriesToSave.id = documentID
-
         do {
-            let data = try Firestore.Encoder().encode(seriesToSave)
+            let data = try Firestore.Encoder().encode(series)
             return Future<Void, AppError> { promise in
                 self.db.collection(self.seriesCollection)
-                    .document(documentID)
+                    .document(series.id)
                     .setData(data) { error in
                         if let error = error {
                             promise(.failure(.saveError(error)))

@@ -12,39 +12,49 @@ struct FrameView: View {
     var showframeType: Bool = false
     
     var body: some View {
-        VStack {
-            HStack(spacing: 2) {
-                if frame.rolls.count == 0 { emptyBox }
-                if frame.frameType == .strike {
-                    Text("").frame(width: 20, height: 20)
-                }
-                ForEach(frame.rolls.indices, id: \.self) { index in
-                    formatRoll(frame.rolls[index], index).map {
-                        Text($0)
-                            .frame(width: 20, height: 20)
-                            .background(Color.white)
-                            .border(Color.black)
+        VStack(spacing: 4) {
+            Text("\(frame.index)")
+                .font(.caption).bold()
+                .frame(width: 58)
+                .padding(.vertical, 2)
+                .background(Color.gray.opacity(0.2))
+                .border(Color.black)
+            VStack {
+                HStack(spacing: 2) {
+                    if frame.rolls.count == 0 { emptyBox }
+                    if frame.frameType == .strike {
+                        Text("").frame(width: 20, height: 20)
+                    }
+                    ForEach(frame.rolls.indices, id: \.self) { index in
+                        formatRoll(frame.rolls[index], index).map {
+                            Text($0)
+                                .frame(width: 20, height: 20)
+                                .background(Color.white)
+                                .border(Color.black)
+                        }
+                    }
+                    if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
+                        emptyBox
                     }
                 }
-                if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
-                    emptyBox
+                Text(scoreSoFarFormatted)
+                    .font(.caption)
+                    .frame(width: 50, height: 20)
+            }
+            .overlay {
+                #if DEBUG
+                if showframeType {
+                    Text(frame.frameType.rawValue)
+                        .foregroundColor(.red)
+                        .font(.footnote)
+                        .opacity(0.5)
                 }
+                #endif
             }
-            Text(scoreSoFarFormatted)
-                .font(.caption)
-                .frame(width: 50, height: 20)
+            .padding(4)
+            .background(Color.gray.opacity(0.2))
+            .border(Color.black)
         }
-        .overlay {
-            if showframeType {
-                Text(frame.frameType.rawValue)
-                    .foregroundColor(.red)
-                    .font(.footnote)
-                    .opacity(0.5)
-            }
-        }
-        .padding(4)
-        .background(Color.gray.opacity(0.2))
-        .border(Color.black)
     }
     
     private var emptyBox: some View {
@@ -84,16 +94,16 @@ struct FrameView: View {
         Text("Empty frame:")
         HStack {
             FrameView(frame: Frame(rolls: [], index: 1))
-            FrameView(frame: Frame(rolls: [Roll.roll1], index: 1), scoreSoFar: 1)
+            FrameView(frame: Frame(rolls: [Roll.roll1], index: 2), scoreSoFar: 1)
         }
         Text("regular frame:")
         HStack {
             FrameView(frame: Frame(rolls: [Roll.roll8, Roll.roll0], index: 1), scoreSoFar: 8)
-            FrameView(frame: Frame(rolls: [Roll.roll8, Roll.roll1], index: 1), scoreSoFar: 9)
-            FrameView(frame: Frame(rolls: [Roll.roll5, Roll.roll5], index: 1), scoreSoFar: 10)
-            FrameView(frame: Frame(rolls: [Roll.roll8, Roll.roll2], index: 1), scoreSoFar: 10)
-            FrameView(frame: Frame(rolls: [Roll.roll10], index: 1), scoreSoFar: 10)
-            FrameView(frame: Frame(rolls: [Roll.roll0, Roll.roll10], index: 1), scoreSoFar: 10)
+            FrameView(frame: Frame(rolls: [Roll.roll8, Roll.roll1], index: 2), scoreSoFar: 9)
+            FrameView(frame: Frame(rolls: [Roll.roll5, Roll.roll5], index: 3), scoreSoFar: 10)
+            FrameView(frame: Frame(rolls: [Roll.roll8, Roll.roll2], index: 4), scoreSoFar: 10)
+            FrameView(frame: Frame(rolls: [Roll.roll10], index: 5), scoreSoFar: 10)
+            FrameView(frame: Frame(rolls: [Roll.roll0, Roll.roll10], index: 6), scoreSoFar: 10)
         }
         Text("10th frame:")
         VStack(alignment: .leading) {

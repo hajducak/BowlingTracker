@@ -4,18 +4,20 @@ import Combine
 enum SeriesContentState {
     case loading
     case empty
-    case content([Series])
+    case content([SeriesDetailViewModel])
 }
 
 class BowlingSeriesViewModel: ObservableObject {
     @Published var state: SeriesContentState = .loading
-    @Published var series: [Series] = []
+    @Published var series: [SeriesDetailViewModel] = []
     @Published var toast: Toast? = nil
 
+    let seriesViewModelFactory: SeriesViewModelFactory
     let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
 
-    init(firebaseManager: FirebaseManager) {
+    init(seriesViewModelFactory: SeriesViewModelFactory, firebaseManager: FirebaseManager) {
+        self.seriesViewModelFactory = seriesViewModelFactory
         self.firebaseManager = firebaseManager
         setupSeries()
     }
@@ -31,7 +33,20 @@ class BowlingSeriesViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] series in
                 guard let self else { return }
-                self.state = series.isEmpty ? .empty : .content(series)
+                let seriesViewModels = series.compactMap { series in
+                    let viewModel = self.seriesViewModelFactory.viewModel(series: series)
+                    self.observeSeriesSaved(viewModel)
+                    return viewModel
+                }
+                self.state = series.isEmpty ? .empty : .content(seriesViewModels)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func observeSeriesSaved(_ seriesViewModel: SeriesDetailViewModel) {
+        seriesViewModel.seriesSaved
+            .sink { [weak self] _ in
+                self?.setupSeries()
             }
             .store(in: &cancellables)
     }
@@ -57,8 +72,7 @@ class BowlingSeriesViewModel: ObservableObject {
     }
     
     func deleteSeries(_ series: Series) {
-        guard let seriesId = series.id else { return }
-        firebaseManager.deleteSeries(id: seriesId)
+        firebaseManager.deleteSeries(id: series.id)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self else { return }
                 switch completion {
@@ -71,5 +85,27 @@ class BowlingSeriesViewModel: ObservableObject {
                 self?.setupSeries()
             })
             .store(in: &cancellables)
+    }
+}
+
+
+protocol SeriesViewModelFactory {
+    func viewModel(series: Series) -> SeriesDetailViewModel
+}
+
+final class SeriesViewModelFactoryImpl: SeriesViewModelFactory {
+    private let firebaseManager: FirebaseManager
+    private let gameViewModelFactory: GameViewModelFactory
+
+    init(firebaseManager: FirebaseManager, gameViewModelFactory: GameViewModelFactory) {
+        self.firebaseManager = firebaseManager
+        self.gameViewModelFactory = gameViewModelFactory
+    }
+
+    func viewModel(series: Series) -> SeriesDetailViewModel {
+        SeriesDetailViewModel(
+            firebaseManager: firebaseManager,
+            gameViewModelFactory: gameViewModelFactory,
+            series: series)
     }
 }

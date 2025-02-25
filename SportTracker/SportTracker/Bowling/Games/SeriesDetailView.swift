@@ -2,18 +2,21 @@ import SwiftUI
 
 struct SeriesDetailView: View {
     @ObservedObject var viewModel: SeriesDetailViewModel
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             switch viewModel.state {
             case .playing(let game):
                 ScrollView {
-                    HStack(spacing: 4) {
+                    VStack(spacing: 4) {
                         ForEach(viewModel.series.games.indices, id: \.self) { index in
-                            Text("Game #\(index): \(viewModel.series.games[index].currentScore)")
+                            Text("Game #\(index + 1): \(viewModel.series.games[index].currentScore)")
                         }
                     }
                     Text("Current Game:")
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity)
                         .font(.title3)
                     RollView(viewModel: game)
                 }.navigationBarItems(
@@ -23,7 +26,7 @@ struct SeriesDetailView: View {
                         }, label: {
                             Text("Save")
                         })
-                )
+                ).onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
             case .empty:
                 VStack {
                     Spacer()
@@ -59,6 +62,7 @@ struct SeriesDetailView: View {
         }
         .padding(.horizontal, 20)
         .navigationTitle(viewModel.series.name)
+        .toast($viewModel.toast, timeout: 3)
     }
 }
 
@@ -66,7 +70,8 @@ struct SeriesDetailView: View {
     SeriesDetailView(
         viewModel: .init(
             firebaseManager: FirebaseManager.shared,
-            series:  Series(id: UUID().uuidString, name: "Finished Series", tag: .league, games: [
+            gameViewModelFactory: GameViewModelFactoryImpl(),
+            series:  Series(name: "Finished Series", tag: .league, games: [
                 Game(frames: [
                     Frame(rolls: [Roll.roll10], index: 1),
                     Frame(rolls: [Roll.roll10], index: 2),
@@ -111,6 +116,7 @@ struct SeriesDetailView: View {
 #Preview("Current Game") {
     SeriesDetailView(viewModel: .init(
         firebaseManager: FirebaseManager.shared,
-        series: Series(id: UUID().uuidString, name: "Not finished series", tag: .league, games: [])
+        gameViewModelFactory: GameViewModelFactoryImpl(),
+        series: Series(name: "Not finished series", tag: .league, games: [])
     ))
 }

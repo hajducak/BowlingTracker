@@ -33,5 +33,5 @@ struct SeriesCell: View {
 }
 
 #Preview {
-    SeriesCell(series: Series(id: "1", name: "Test name", tag: .tournament)) { _ in }
+    SeriesCell(series: Series(name: "Test name", tag: .tournament)) { _ in }
 }

@@ -20,15 +20,20 @@ struct SportTrackerApp: App {
         WindowGroup {
             let storageManager = StorageManager(modelContainer: modelContainer)
             let firebaseManager = FirebaseManager.shared
-            let performanceListViewModel = PerformanceListViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
-            let addPerformanceViewModel = AddPerformanceViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
-            let bowlingSeriesViewModel = BowlingSeriesViewModel(firebaseManager: firebaseManager)
+
+            let gameViewModelFactory = GameViewModelFactoryImpl()
+            let seriesViewModelFactory = SeriesViewModelFactoryImpl(
+                firebaseManager: firebaseManager,
+                gameViewModelFactory: gameViewModelFactory
+            )
+            let bowlingSeriesViewModel = BowlingSeriesViewModel(
+                seriesViewModelFactory: seriesViewModelFactory,
+                firebaseManager: firebaseManager
+            )
 
             ContentView(
-                addPerformanceViewModel: addPerformanceViewModel,
-                performanceListViewModel: performanceListViewModel,
                 bowlingSeriesViewModel: bowlingSeriesViewModel
-            )
+            ).preferredColorScheme(.light)
         }
     }
 }

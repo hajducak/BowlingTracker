@@ -59,14 +59,11 @@ struct BowlingSeriesView: View {
             }
         case .content(let series):
             ScrollView {
-                ForEach(series) { item in
+                ForEach(series, id: \.id) { item in
                     NavigationLink(destination: SeriesDetailView(
-                        viewModel: SeriesDetailViewModel(
-                            firebaseManager: viewModel.firebaseManager,
-                            series: item
-                        )
+                        viewModel: item
                     )) {
-                        SeriesCell(series: item) { viewModel.deleteSeries($0) }
+                        SeriesCell(series: item.series) { viewModel.deleteSeries($0) }
                     }.buttonStyle(PlainButtonStyle())
                 }
                 Spacer()

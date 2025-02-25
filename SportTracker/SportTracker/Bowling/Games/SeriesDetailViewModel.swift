@@ -7,18 +7,23 @@ enum SeriesDetailContentState {
     case playing(GameViewModel)
 }
 
-class SeriesDetailViewModel: ObservableObject {
+class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var games: [Game] = []
     @Published var state: SeriesDetailContentState = .empty
     @Published var toast: Toast? = nil
     @Published var series: Series
     @Published var gameViewModel: GameViewModel?
+    @Published var shouldDismiss: Bool = false
 
+    private let gameViewModelFactory: GameViewModelFactory
     private let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
+    
+    let seriesSaved = PassthroughSubject<Series, Never>()
 
-    init(firebaseManager: FirebaseManager, series: Series) {
+    init(firebaseManager: FirebaseManager, gameViewModelFactory: GameViewModelFactory, series: Series) {
         self.firebaseManager = firebaseManager
+        self.gameViewModelFactory = gameViewModelFactory
         self.series = series
         self.games = series.games
         setupContent()
@@ -38,9 +43,9 @@ class SeriesDetailViewModel: ObservableObject {
                 state = series.games.isEmpty ? .empty : .content(games)
                 return
             }
-            let gameVieModel = GameViewModel(game: currentGame)
-            state = .playing(gameVieModel)
-            self.gameViewModel = gameVieModel
+            let viewModel = gameViewModelFactory.viewModel(game: currentGame)
+            self.gameViewModel = viewModel
+            state = .playing(viewModel)
         } else {
             state = series.games.isEmpty ? .empty : .content(games)
         }
@@ -50,27 +55,20 @@ class SeriesDetailViewModel: ObservableObject {
         series.getCurrentGameScore() ?? 0
     }
     
-    /// Localy saved the current game
+    /// Locally saves the current game
     private func saveCurrent(game: Game) {
-        series.save(game: game)
-        newGame()
+        saveGameIntoSeries(game: game)
     }
     
-    /// Localy created new current game
+    /// Creates a new current game locally
     func newGame() {
         series.newGame()
         setupContent()
     }
-    
-    /// Save game into series on firebase
+
+    /// Saves the game to Firebase and updates the local series data
     func saveGameIntoSeries(game: Game) {
-        //firebaseManager.saveGameToSeries(seriesID: <#T##String#>, game: <#T##Game#>)
-    }
-    
-    /// Save all games in series
-    func saveSeries() {
-        // FIXME: seeries are saved into new object in database, it should save all games in current series, becosue self.series is using object from database, use saveGameIntoSeries and save all of them into created self.sereis
-        firebaseManager.saveSeries(series)
+        firebaseManager.saveGameToSeries(seriesID: series.id, game: game)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
@@ -78,9 +76,63 @@ class SeriesDetailViewModel: ObservableObject {
                     self.toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
-                self?.toast = Toast(type: .success("Successfully saved in Database"))
-                self?.series.currentGame = nil
-                self?.setupContent()
-            }.store(in: &cancellables)
+                guard let self else { return }
+                DispatchQueue.main.async {
+                    self.toast = Toast(type: .success("Successfully saved in Database"))
+                }
+                self.newGame()
+                self.fetchUpdatedSeries()
+            }
+            .store(in: &cancellables)
+    }
+    
+    /// Fetches the updated series from Firebase
+    private func fetchUpdatedSeries() {
+        firebaseManager.fetchAllSeries()
+            .receive(on: DispatchQueue.main)
+            .sink { _ in } receiveValue: { [weak self] allSeries in
+                guard let self, let updatedSeries = allSeries.first(where: { $0.id == self.series.id }) else { return }
+                self.series = updatedSeries
+            }
+            .store(in: &cancellables)
+    }
+    
+    /// Saves the entire series and ensures `BowlingSeriesViewModel` updates the UI
+    func saveSeries() {
+        guard !series.games.isEmpty else {
+            toast = Toast(type: .error(.customError("No games in series to save")))
+            return
+        }
+        save()
+    }
+    
+    func save() {
+        series.currentGame = nil
+        firebaseManager.saveSeries(series)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                guard let self else { return }
+                if case .failure(let error) = completion {
+                    toast = Toast(type: .error(error))
+                }
+            } receiveValue: { [weak self] _ in
+                guard let self else { return }
+                toast = Toast(type: .success("Series successfully saved"))
+                seriesSaved.send(self.series)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    self.shouldDismiss = true
+                }
+            }
+            .store(in: &cancellables)
+    }
+}
+
+protocol GameViewModelFactory {
+    func viewModel(game: Game) -> GameViewModel
+}
+
+final class GameViewModelFactoryImpl: GameViewModelFactory {
+    func viewModel(game: Game) -> GameViewModel {
+        GameViewModel(game: game)
     }
 }

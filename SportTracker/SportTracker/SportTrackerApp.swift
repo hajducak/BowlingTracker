@@ -4,21 +4,21 @@ import SwiftData
 
 @main
 struct SportTrackerApp: App {
-    private var modelContainer: ModelContainer
+//    private var modelContainer: ModelContainer
 
     init() {
         FirebaseApp.configure()
 
-        do {
-            modelContainer = try ModelContainer(for: SportPerformance.self)
-        } catch {
-            fatalError("Failed to initialize ModelContainer: \(error.localizedDescription)")
-        }
+//        do {
+//            modelContainer = try ModelContainer(for: SportPerformance.self)
+//        } catch {
+//            fatalError("Failed to initialize ModelContainer: \(error.localizedDescription)")
+//        }
     }
 
     var body: some Scene {
         WindowGroup {
-            let storageManager = StorageManager(modelContainer: modelContainer)
+//             let storageManager = StorageManager(modelContainer: modelContainer)
             let firebaseManager = FirebaseManager.shared
 
             let gameViewModelFactory = GameViewModelFactoryImpl()

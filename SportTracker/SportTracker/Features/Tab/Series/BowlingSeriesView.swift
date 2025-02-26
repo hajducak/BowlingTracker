@@ -44,7 +44,7 @@ struct BowlingSeriesView: View {
     private var contentView: some View {
         switch viewModel.state {
         case .loading:
-            ProgressView("Loading performances...")
+            ProgressView("Loading series...")
                 .progressViewStyle(CircularProgressViewStyle())
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

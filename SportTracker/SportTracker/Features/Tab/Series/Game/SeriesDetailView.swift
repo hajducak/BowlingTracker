@@ -9,24 +9,29 @@ struct SeriesDetailView: View {
             switch viewModel.state {
             case .playing(let game):
                 ScrollView {
-                    VStack(spacing: 4) {
-                        ForEach(viewModel.series.games.indices, id: \.self) { index in
-                            Text("Game #\(index + 1): \(viewModel.series.games[index].currentScore)")
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(viewModel.series.games.indices, id: \.self) { index in
+                                Text("Game #\(index + 1): \(viewModel.series.games[index].currentScore)")
+                            }
+                            Text("Current Game:").font(.title3).bold()
+                                .padding(.top, 10)
                         }
+                        Spacer()
                     }
-                    Text("Current Game:")
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity)
-                        .font(.title3)
+                    .padding(.horizontal, Padding.defaultPadding)
                     RollView(viewModel: game)
-                }.navigationBarItems(
+                }
+                .navigationBarItems(
                     trailing:
                         Button(action: {
                             viewModel.saveSeries()
                         }, label: {
                             Text("Save")
                         })
-                ).onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
+                )
+                .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
+                .loadingOverlay(when: $viewModel.savingIsLoading)
             case .empty:
                 VStack {
                     Spacer()
@@ -38,8 +43,10 @@ struct SeriesDetailView: View {
             case .content:
                 Text("Series score: \(viewModel.series.getSeriesScore())")
                     .font(.title2)
+                    .padding(.horizontal, Padding.defaultPadding)
                 Text("Series avarage: " + String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
                     .font(.title2)
+                    .padding(.horizontal, Padding.defaultPadding)
                 VStack(alignment: .leading) {
                     Text("Strikes: " + String(format: "%.2f%%", viewModel.series.getSeriesStrikePercentage()))
                     Text("Spares: " + String(format: "%.2f%%", viewModel.series.getSeriesSparePercentage()))
@@ -47,20 +54,24 @@ struct SeriesDetailView: View {
                 }
                 .font(.title3)
                 .foregroundColor(.gray)
+                .padding(.horizontal, Padding.defaultPadding)
                 // TODO: do circle graphs from statistics
                 ScrollView(.vertical) {
                     ForEach(viewModel.games.indices, id: \.self) { index in
                         VStack(alignment: .leading) {
                             Text("Game #\(index + 1): \(viewModel.games[index].currentScore)")
+                                .padding(.horizontal, Padding.defaultPadding)
+                            // TODO: add collapsable gameview and show just score and chevron?
                             ScrollView(.horizontal) {
                                 GameView(game: $viewModel.games[index], showMax: false)
+                                    .padding(.horizontal, Padding.defaultPadding)
+                                    .padding(.bottom, 8)
                             }
                         }
-                    }
+                    }.padding(.bottom, Padding.defaultPadding)
                 }
             }
         }
-        .padding(.horizontal, 20)
         .navigationTitle(viewModel.series.name)
         .toast($viewModel.toast, timeout: 3)
     }

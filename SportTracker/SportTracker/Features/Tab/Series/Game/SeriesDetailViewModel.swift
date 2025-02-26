@@ -14,6 +14,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var series: Series
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
+    @Published var savingIsLoading: Bool = false
 
     private let gameViewModelFactory: GameViewModelFactory
     private let firebaseManager: FirebaseManager
@@ -68,6 +69,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
 
     /// Saves the game to Firebase and updates the local series data
     func saveGameIntoSeries(game: Game) {
+        savingIsLoading = true
         firebaseManager.saveGameToSeries(seriesID: series.id, game: game)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
@@ -93,6 +95,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             .sink { _ in } receiveValue: { [weak self] allSeries in
                 guard let self, let updatedSeries = allSeries.first(where: { $0.id == self.series.id }) else { return }
                 self.series = updatedSeries
+                self.savingIsLoading = false
             }
             .store(in: &cancellables)
     }

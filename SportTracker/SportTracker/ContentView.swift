@@ -1,39 +1,15 @@
 import SwiftUI
 
 struct ContentView: View {
-//    @StateObject private var addPerformanceViewModel: AddPerformanceViewModel
-//    @StateObject private var performanceListViewModel: PerformanceListViewModel
     @StateObject private var bowlingSeriesViewModel: BowlingSeriesViewModel
     @StateObject private var tabSelectionViewModel = TabSelectionViewModel()
 
-    init(
-//        addPerformanceViewModel: AddPerformanceViewModel,
-//        performanceListViewModel: PerformanceListViewModel,
-        bowlingSeriesViewModel: BowlingSeriesViewModel
-    ) {
-//        _addPerformanceViewModel = StateObject(wrappedValue: addPerformanceViewModel)
-//        _performanceListViewModel = StateObject(wrappedValue: performanceListViewModel)
+    init(bowlingSeriesViewModel: BowlingSeriesViewModel) {
         _bowlingSeriesViewModel = StateObject(wrappedValue: bowlingSeriesViewModel)
     }
 
     var body: some View {
         TabView(selection: $tabSelectionViewModel.selectedTab) {
-//                NavigationView {
-//                    AddPerformanceView(viewModel: addPerformanceViewModel)
-//                        .navigationBarTitle("Add Performance")
-//                }
-//                .tabItem {
-//                    Image(systemName: "plus.circle.fill")
-//                    Text("Add")
-//                }.tag(0)
-//                NavigationView {
-//                    PerformanceListView(viewModel: performanceListViewModel)
-//                        .navigationBarTitle("Performance List")
-//                }
-//                .tabItem {
-//                    Image(systemName: "list.dash")
-//                    Text("List")
-//                }.tag(1)
             NavigationView {
                 BowlingSeriesView(viewModel: bowlingSeriesViewModel)
                     .navigationBarTitle("My Series")
@@ -42,6 +18,15 @@ struct ContentView: View {
                 Image(systemName: "figure.bowling")
                 Text("Bowling")
             }.tag(0)
+            
+            NavigationView {
+                Text("TODO")
+                    .navigationBarTitle("My statistics")
+            }
+            .tabItem {
+                Image(systemName: "person.crop.circle")
+                Text("Profile")
+            }.tag(1)
         }
         .onAppear {
             let appearance = UITabBarAppearance()

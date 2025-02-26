@@ -25,7 +25,7 @@ class GameViewModel: ObservableObject {
             .map { game in
                 let lastUnfinishedFrame = game.frames.first { $0.frameType == .unfinished }
                 return (
-                    // FIXME: last frame not working properly woth disabling X and /
+                    // FIXME: last frame not working properly with disabling X and /
                     lastUnfinishedFrame?.rolls.count == 1,
                     (
                         lastUnfinishedFrame?.rolls.isEmpty ?? false ||
@@ -92,13 +92,17 @@ struct RollView: View {
         VStack {
             ScrollView(.horizontal) {
                 GameView(game: $viewModel.game)
+                    .padding(.horizontal, Padding.defaultPadding)
             }
             Text("Select Fallen Pins")
                 .font(.headline)
-
-            PinsGrid(selectedPins: $viewModel.selectedPins, disabledPins: viewModel.disabledPins)
-                .padding()
-            HStack {
+            PinsGrid(
+                selectedPins: $viewModel.selectedPins,
+                disabledPins: viewModel.disabledPins
+            )
+                .padding(.horizontal, Padding.defaultPadding)
+                .padding(.bottom, Padding.defaultPadding)
+            HStack(spacing: 4) {
                 Button(action: viewModel.addRoll) {
                     Text("Add Roll")
                         .font(.title2)
@@ -108,7 +112,6 @@ struct RollView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .padding()
                 Button(action: viewModel.addStrike) {
                     Text("X")
                         .font(.title2)
@@ -128,6 +131,7 @@ struct RollView: View {
                         .cornerRadius(10)
                 }.disabled(!viewModel.spareIsEnabled)
             }
+                .padding(.horizontal, Padding.defaultPadding)
             Button(action: viewModel.saveGame) {
                 Text("Save Game")
                     .font(.title2)
@@ -138,10 +142,9 @@ struct RollView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
-                .padding()
+                .padding(.horizontal, Padding.defaultPadding)
                 .disabled(!viewModel.saveGameIsEnabled)
         }
-        .padding()
     }
 }
 

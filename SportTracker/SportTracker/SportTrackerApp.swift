@@ -8,7 +8,6 @@ struct SportTrackerApp: App {
 
     init() {
         FirebaseApp.configure()
-
 //        do {
 //            modelContainer = try ModelContainer(for: SportPerformance.self)
 //        } catch {

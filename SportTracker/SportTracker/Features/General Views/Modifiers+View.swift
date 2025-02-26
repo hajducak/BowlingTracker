@@ -33,6 +33,26 @@ struct CustomTextFieldStyle: ViewModifier {
     }
 }
 
+struct LoadingOverlayModifier: ViewModifier {
+    @Binding var isLoading: Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                if isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView("Saving game...")
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        Spacer()
+                    }.background(Color.gray.opacity(0.3))
+                }
+            }
+    }
+}
+
 struct LabeledStyle: ViewModifier {
     let label: String
     func body(content: Content) -> some View {
@@ -65,4 +85,12 @@ extension View {
     func labled(label: String) -> some View {
         modifier(LabeledStyle(label: label))
     }
+    
+    func loadingOverlay(when isLoading: Binding<Bool>) -> some View {
+        modifier(LoadingOverlayModifier(isLoading: isLoading))
+    }
+}
+
+struct Padding {
+    static var defaultPadding: CGFloat = 20
 }

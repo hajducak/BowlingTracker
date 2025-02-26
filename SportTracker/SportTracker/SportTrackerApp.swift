@@ -4,29 +4,35 @@ import SwiftData
 
 @main
 struct SportTrackerApp: App {
-    private var modelContainer: ModelContainer
+//    private var modelContainer: ModelContainer
 
     init() {
         FirebaseApp.configure()
-
-        do {
-            modelContainer = try ModelContainer(for: SportPerformance.self)
-        } catch {
-            fatalError("Failed to initialize ModelContainer: \(error.localizedDescription)")
-        }
+//        do {
+//            modelContainer = try ModelContainer(for: SportPerformance.self)
+//        } catch {
+//            fatalError("Failed to initialize ModelContainer: \(error.localizedDescription)")
+//        }
     }
 
     var body: some Scene {
         WindowGroup {
-            let storageManager = StorageManager(modelContainer: modelContainer)
+//             let storageManager = StorageManager(modelContainer: modelContainer)
             let firebaseManager = FirebaseManager.shared
-            let performanceListViewModel = PerformanceListViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
-            let addPerformanceViewModel = AddPerformanceViewModel(storageManager: storageManager, firebaseManager: firebaseManager)
+
+            let gameViewModelFactory = GameViewModelFactoryImpl()
+            let seriesViewModelFactory = SeriesViewModelFactoryImpl(
+                firebaseManager: firebaseManager,
+                gameViewModelFactory: gameViewModelFactory
+            )
+            let bowlingSeriesViewModel = BowlingSeriesViewModel(
+                seriesViewModelFactory: seriesViewModelFactory,
+                firebaseManager: firebaseManager
+            )
 
             ContentView(
-                addPerformanceViewModel: addPerformanceViewModel,
-                performanceListViewModel: performanceListViewModel
-            )
+                bowlingSeriesViewModel: bowlingSeriesViewModel
+            ).preferredColorScheme(.light)
         }
     }
 }

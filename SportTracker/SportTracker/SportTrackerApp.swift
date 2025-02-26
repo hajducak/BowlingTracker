@@ -21,11 +21,11 @@ struct SportTrackerApp: App {
             let firebaseManager = FirebaseManager.shared
 
             let gameViewModelFactory = GameViewModelFactoryImpl()
-            let seriesViewModelFactory = SeriesViewModelFactoryImpl(
+            let seriesViewModelFactory = SeriesDetailViewModelFactoryImpl(
                 firebaseManager: firebaseManager,
                 gameViewModelFactory: gameViewModelFactory
             )
-            let bowlingSeriesViewModel = BowlingSeriesViewModel(
+            let bowlingSeriesViewModel = SeriesViewModel(
                 seriesViewModelFactory: seriesViewModelFactory,
                 firebaseManager: firebaseManager
             )

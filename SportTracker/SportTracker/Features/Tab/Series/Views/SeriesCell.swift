@@ -11,7 +11,7 @@ struct SeriesCell: View {
                     .font(.caption2)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 4)
-                    .background(Color.blue.cornerRadius(8))
+                    .background(Color.orange.cornerRadius(8))
                 Text(series.name)
                     .padding(.bottom, 6)
                 HStack {

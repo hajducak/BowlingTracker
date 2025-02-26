@@ -20,7 +20,7 @@ struct SeriesDetailView: View {
                         Spacer()
                     }
                     .padding(.horizontal, Padding.defaultPadding)
-                    RollView(viewModel: game)
+                    GameView(viewModel: game)
                 }
                 .navigationBarItems(
                     trailing:
@@ -41,21 +41,38 @@ struct SeriesDetailView: View {
                     Spacer()
                 }
             case .content:
-                Text("Series score: \(viewModel.series.getSeriesScore())")
-                    .font(.title2)
-                    .padding(.horizontal, Padding.defaultPadding)
-                Text("Series avarage: " + String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
-                    .font(.title2)
-                    .padding(.horizontal, Padding.defaultPadding)
-                VStack(alignment: .leading) {
-                    Text("Strikes: " + String(format: "%.2f%%", viewModel.series.getSeriesStrikePercentage()))
-                    Text("Spares: " + String(format: "%.2f%%", viewModel.series.getSeriesSparePercentage()))
-                    Text("Opens: " + String(format: "%.2f%%", viewModel.series.getSeriesOpenPercentage()))
+                LinearProgressView(
+                    value: Double(viewModel.series.getSeriesScore()),
+                    maxValue: Double(viewModel.series.gerSeriesMaxScore()),
+                    title: "Series score:",
+                    width: 300,
+                    height: 9
+                ).padding(.horizontal, Padding.defaultPadding)
+                LinearProgressView(
+                    value: Double(viewModel.series.getSeriesAvarage()),
+                    maxValue: Double(300),
+                    title: "Series avarage:",
+                    width: 300,
+                    height: 9
+                ).padding(.horizontal, Padding.defaultPadding)
+                HStack(alignment: .center, spacing: Padding.defaultPadding) {
+                    CircularProgressView(
+                        percentage: viewModel.series.getSeriesStrikePercentage(),
+                        title: "Strikes",
+                        size: .init(width: 75, height: 75)
+                    )
+                    CircularProgressView(
+                        percentage: viewModel.series.getSeriesSparePercentage(),
+                        title: "Spares",
+                        size: .init(width: 75, height: 75)
+                    )
+                    CircularProgressView(
+                        percentage: viewModel.series.getSeriesOpenPercentage(),
+                        title: "Opens",
+                        size: .init(width: 75, height: 75)
+                    )
                 }
-                .font(.title3)
-                .foregroundColor(.gray)
-                .padding(.horizontal, Padding.defaultPadding)
-                // TODO: do circle graphs from statistics
+                .padding(Padding.defaultPadding)
                 ScrollView(.vertical) {
                     ForEach(viewModel.games.indices, id: \.self) { index in
                         VStack(alignment: .leading) {
@@ -63,7 +80,7 @@ struct SeriesDetailView: View {
                                 .padding(.horizontal, Padding.defaultPadding)
                             // TODO: add collapsable gameview and show just score and chevron?
                             ScrollView(.horizontal) {
-                                GameView(game: $viewModel.games[index], showMax: false)
+                                SheetView(game: $viewModel.games[index], showMax: false)
                                     .padding(.horizontal, Padding.defaultPadding)
                                     .padding(.bottom, 8)
                             }

@@ -24,6 +24,10 @@ struct Series: Codable, Identifiable {
     func getSeriesScore() -> Int {
         return games.reduce(0) { $0 + $1.currentScore }
     }
+    
+    func gerSeriesMaxScore() -> Int  {
+        return games.count * 300
+    }
 
     func getSeriesAvarage() -> Double {
         guard getSeriesScore() != 0, games.count != 0 else { return 0 }

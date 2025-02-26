@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct BowlingSeriesView: View {
-    @ObservedObject var viewModel: BowlingSeriesViewModel
+struct SeriesView: View {
+    @ObservedObject var viewModel: SeriesViewModel
     @State private var showPopup = false
     @State private var seriesName = ""
     @State private var selectedType: SeriesType = .league

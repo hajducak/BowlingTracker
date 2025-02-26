@@ -7,16 +7,16 @@ enum SeriesContentState {
     case content([SeriesDetailViewModel])
 }
 
-class BowlingSeriesViewModel: ObservableObject {
+class SeriesViewModel: ObservableObject {
     @Published var state: SeriesContentState = .loading
     @Published var series: [SeriesDetailViewModel] = []
     @Published var toast: Toast? = nil
 
-    let seriesViewModelFactory: SeriesViewModelFactory
+    let seriesViewModelFactory: SeriesDetailViewModelFactory
     let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
 
-    init(seriesViewModelFactory: SeriesViewModelFactory, firebaseManager: FirebaseManager) {
+    init(seriesViewModelFactory: SeriesDetailViewModelFactory, firebaseManager: FirebaseManager) {
         self.seriesViewModelFactory = seriesViewModelFactory
         self.firebaseManager = firebaseManager
         setupSeries()
@@ -85,27 +85,5 @@ class BowlingSeriesViewModel: ObservableObject {
                 self?.setupSeries()
             })
             .store(in: &cancellables)
-    }
-}
-
-
-protocol SeriesViewModelFactory {
-    func viewModel(series: Series) -> SeriesDetailViewModel
-}
-
-final class SeriesViewModelFactoryImpl: SeriesViewModelFactory {
-    private let firebaseManager: FirebaseManager
-    private let gameViewModelFactory: GameViewModelFactory
-
-    init(firebaseManager: FirebaseManager, gameViewModelFactory: GameViewModelFactory) {
-        self.firebaseManager = firebaseManager
-        self.gameViewModelFactory = gameViewModelFactory
-    }
-
-    func viewModel(series: Series) -> SeriesDetailViewModel {
-        SeriesDetailViewModel(
-            firebaseManager: firebaseManager,
-            gameViewModelFactory: gameViewModelFactory,
-            series: series)
     }
 }

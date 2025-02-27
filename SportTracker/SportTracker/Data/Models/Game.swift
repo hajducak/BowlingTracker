@@ -26,6 +26,10 @@ struct Game: Codable, Identifiable {
     var openFrameCount: Int {
         frames.filter { $0.frameType == .open }.count + lastFrameCount().opens
     }
+    
+    var splitCount: Int {
+        frames.filter { $0.isSplitFrame }.count
+    }
 
     func lastFrameCount() -> (strikes: Int, spares: Int, opens: Int) {
         guard let lastFrame = frames.last, lastFrame.frameType == .last else {

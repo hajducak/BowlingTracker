@@ -24,10 +24,6 @@ struct Series: Codable, Identifiable {
     func getSeriesScore() -> Int {
         return games.reduce(0) { $0 + $1.currentScore }
     }
-    
-    func gerSeriesMaxScore() -> Int  {
-        return games.count * 300
-    }
 
     func getSeriesAvarage() -> Double {
         guard getSeriesScore() != 0, games.count != 0 else { return 0 }
@@ -63,7 +59,13 @@ struct Series: Codable, Identifiable {
 
         return totalFramesPlusExtraRolls > 0 ? (Double(totalOpenFrames) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
     }
+    
+    func getSeriesSplitPercentage() -> Double {
+        let totalFrames = games.count * 10
+        let totalSplits = games.reduce(0) { $0 + $1.splitCount }
 
+        return totalFrames > 0 ? (Double(totalSplits) / Double(totalFrames) * 100).rounded(toPlaces: 2) : 0.0
+    }
 
     func isCurrentGameActive() -> Bool {
         guard let currentGame else { return false }

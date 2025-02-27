@@ -28,9 +28,10 @@ struct FrameView: View {
                     ForEach(frame.rolls.indices, id: \.self) { index in
                         formatRoll(frame.rolls[index], index).map {
                             Text($0)
+                                .foregroundColor(frame.isSplitFrame && index == 0 ? .white : .black)
                                 .frame(width: 20, height: 20)
-                                .background(Color.white)
                                 .border(Color.black)
+                                .background(frame.isSplitFrame && index == 0 ? Color.orange : Color.white)
                         }
                     }
                     if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
@@ -95,6 +96,11 @@ struct FrameView: View {
         HStack {
             FrameView(frame: Frame(rolls: [], index: 1))
             FrameView(frame: Frame(rolls: [Roll.roll1], index: 2), scoreSoFar: 1)
+            FrameView(frame: Frame(rolls: [
+                Roll.init(knockedDownPins: [
+                    Pin(id: 1), Pin(id: 2), Pin(id: 3), Pin(id: 4), Pin(id: 5), Pin(id: 6), Pin(id: 8), Pin(id: 9)
+                ])
+            ], index: 1))
         }
         Text("regular frame:")
         HStack {

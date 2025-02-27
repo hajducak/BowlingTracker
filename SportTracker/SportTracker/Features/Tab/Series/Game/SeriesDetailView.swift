@@ -3,7 +3,7 @@ import SwiftUI
 struct SeriesDetailView: View {
     @ObservedObject var viewModel: SeriesDetailViewModel
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             switch viewModel.state {
@@ -40,57 +40,64 @@ struct SeriesDetailView: View {
                         .foregroundColor(.gray)
                     Spacer()
                 }
-            case .content:
-                LinearProgressView(
-                    value: Double(viewModel.series.getSeriesScore()),
-                    maxValue: Double(viewModel.series.gerSeriesMaxScore()),
-                    title: "Series score:",
-                    width: 300,
-                    height: 9
-                ).padding(.horizontal, Padding.defaultPadding)
-                LinearProgressView(
-                    value: Double(viewModel.series.getSeriesAvarage()),
-                    maxValue: Double(300),
-                    title: "Series avarage:",
-                    width: 300,
-                    height: 9
-                ).padding(.horizontal, Padding.defaultPadding)
-                HStack(alignment: .center, spacing: Padding.defaultPadding) {
-                    CircularProgressView(
-                        percentage: viewModel.series.getSeriesStrikePercentage(),
-                        title: "Strikes",
-                        size: .init(width: 75, height: 75)
-                    )
-                    CircularProgressView(
-                        percentage: viewModel.series.getSeriesSparePercentage(),
-                        title: "Spares",
-                        size: .init(width: 75, height: 75)
-                    )
-                    CircularProgressView(
-                        percentage: viewModel.series.getSeriesOpenPercentage(),
-                        title: "Opens",
-                        size: .init(width: 75, height: 75)
-                    )
-                }
-                .padding(Padding.defaultPadding)
-                ScrollView(.vertical) {
-                    ForEach(viewModel.games.indices, id: \.self) { index in
-                        VStack(alignment: .leading) {
-                            Text("Game #\(index + 1): \(viewModel.games[index].currentScore)")
-                                .padding(.horizontal, Padding.defaultPadding)
-                            // TODO: add collapsable gameview and show just score and chevron?
-                            ScrollView(.horizontal) {
-                                SheetView(game: $viewModel.games[index], showMax: false)
-                                    .padding(.horizontal, Padding.defaultPadding)
-                                    .padding(.bottom, 8)
-                            }
-                        }
-                    }.padding(.bottom, Padding.defaultPadding)
-                }
+            case .content: content
             }
         }
         .navigationTitle(viewModel.series.name)
         .toast($viewModel.toast, timeout: 3)
+    }
+    
+    private var content: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Statistics")
+                .font(.system(size: 24, weight: .bold))
+                .padding(.horizontal, Padding.defaultPadding)
+            HStack(alignment: .center, spacing: 0) {
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesStrikePercentage(),
+                    title: "Strikes",
+                    size: .init(width: 75, height: 75)
+                )
+                Spacer()
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesSparePercentage(),
+                    title: "Spares",
+                    size: .init(width: 75, height: 75)
+                )
+                Spacer()
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesOpenPercentage(),
+                    title: "Opens",
+                    size: .init(width: 75, height: 75)
+                )
+                Spacer()
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesSplitPercentage(),
+                    title: "Splits",
+                    size: .init(width: 75, height: 75)
+                )
+            }
+            .padding(Padding.defaultPadding)
+            LinearProgressView(
+                graphIsDisabled: true,
+                value: Double(viewModel.series.getSeriesScore()),
+                maxValue: Double(viewModel.series.games.count * 300),
+                title: "Series score:",
+                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                height: 9
+            ).padding(.horizontal, Padding.defaultPadding)
+            LinearProgressView(
+                value: Double(viewModel.series.getSeriesAvarage()),
+                maxValue: Double(300),
+                title: "Series avarage:",
+                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                height: 9
+            ).padding(.horizontal, Padding.defaultPadding)
+            Text("Games played")
+                .font(.system(size: 24, weight: .bold))
+                .padding([.horizontal, .top], Padding.defaultPadding)
+            GamesListView(viewModel: viewModel)
+        }
     }
 }
 

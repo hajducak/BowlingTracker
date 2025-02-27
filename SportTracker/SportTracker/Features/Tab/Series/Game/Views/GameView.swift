@@ -9,8 +9,22 @@ struct GameView: View {
                 SheetView(game: $viewModel.game)
                     .padding(.horizontal, Padding.defaultPadding)
             }
-            Text("Select Fallen Pins")
-                .font(.headline)
+            HStack(alignment: .center, spacing: 8) {
+                Image(systemName: "pin.circle")
+                Text("Select")
+                    .font(.system(size: 14, weight: .bold))
+                Spacer()
+                Text("Left Over Pins")
+                    .font(.system(size: 14, weight: viewModel.selectingFallenPins ? .regular : .bold))
+                    .multilineTextAlignment(.leading)
+                Toggle("", isOn: $viewModel.selectingFallenPins)
+                    .tint(Color.orange)
+                    .frame(width: 50)
+                    .padding(.trailing, 10)
+                Text("Fallen Pins")
+                    .font(.system(size: 14, weight: viewModel.selectingFallenPins ? .bold : .regular))
+                    .multilineTextAlignment(.trailing)
+            }.padding(.horizontal, Padding.defaultPadding)
             PinsGrid(
                 selectedPins: $viewModel.selectedPins,
                 disabledPins: viewModel.disabledPins
@@ -20,16 +34,17 @@ struct GameView: View {
             HStack(spacing: 4) {
                 Button(action: viewModel.addRoll) {
                     Text("Add Roll")
-                        .font(.title2).bold()
+                        .font(.system(size: 16, weight: .bold))
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
+                        .opacity(viewModel.addRollIsEnabled ? 1 : 0.3)
                         .foregroundColor(.white)
                         .cornerRadius(10)
-                }
+                }.disabled(!viewModel.addRollIsEnabled)
                 Button(action: viewModel.addStrike) {
                     Text("X")
-                        .font(.title2).bold()
+                        .font(.system(size: 16, weight: .bold))
                         .padding()
                         .background(Color.orange)
                         .opacity(viewModel.strikeIsEnabled ? 1 : 0.3)
@@ -38,7 +53,7 @@ struct GameView: View {
                 }.disabled(!viewModel.strikeIsEnabled)
                 Button(action: viewModel.addSpare) {
                     Text("/")
-                        .font(.title2).bold()
+                        .font(.system(size: 16, weight: .bold))
                         .padding()
                         .background(Color.orange)
                         .opacity(viewModel.spareIsEnabled ? 1 : 0.3)
@@ -49,7 +64,7 @@ struct GameView: View {
                 .padding(.horizontal, Padding.defaultPadding)
             Button(action: viewModel.saveGame) {
                 Text("Save Game")
-                    .font(.title2).bold()
+                    .font(.system(size: 16, weight: .bold))
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.orange)

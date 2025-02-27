@@ -16,13 +16,13 @@ struct GamesListView: View {
                             .foregroundColor(Color.orange)
                             .rotationEffect(.degrees(expandedIndices.contains(index) ? 180 : 0))
                             .animation(.easeInOut(duration: 0.3), value: expandedIndices.contains(index))
-                            .tap {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    toggleExpansion(for: index)
-                                }
-                            }
                     }
                         .padding(.horizontal, Padding.defaultPadding)
+                        .tap {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                toggleExpansion(for: index)
+                            }
+                        }
                     if expandedIndices.contains(index) {
                         ScrollView(.horizontal) {
                             SheetView(game: $viewModel.games[index], showMax: false)

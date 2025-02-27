@@ -42,16 +42,6 @@ struct FrameView: View {
                     .font(.caption)
                     .frame(width: 50, height: 20)
             }
-            .overlay {
-                #if DEBUG
-                if showframeType {
-                    Text(frame.frameType.rawValue)
-                        .foregroundColor(.red)
-                        .font(.footnote)
-                        .opacity(0.5)
-                }
-                #endif
-            }
             .padding(4)
             .background(Color.gray.opacity(0.2))
             .border(Color.black)
@@ -66,21 +56,23 @@ struct FrameView: View {
     }
 
     private func formatRoll(_ roll: Roll,_ index: Int) -> String? {
-        let pinCount = roll.knockedDownPins.count == 0 ? "-" : "\(roll.knockedDownPins.count)"
+        let lastRollPinCount = roll.knockedDownPins.count
+        let pinCount = lastRollPinCount == 0 ? "-" : "\(lastRollPinCount)"
         switch frame.frameType {
-        case .strike:
-            return "X"
-        case .spare:
-            return index == 0 ? "\(pinCount)" : "/"
-        case .open:
-            return "\(pinCount)"
+        case .strike: return "X"
+        case .spare: return index == 0 ? pinCount : "/"
+        case .open: return pinCount
         case .unfinished, .last:
-            if index == 0 {
-                return roll.knockedDownPins.count == 10 ? "X" : "\(pinCount)"
-            } else if index == 1 {
-                return roll.knockedDownPins.count == 10 ? "X" : ((frame.rolls[0].knockedDownPins.count + roll.knockedDownPins.count) == 10 ? "/" : "\(pinCount)")
-            } else {
-                return roll.knockedDownPins.count == 10 ? "X" : ((frame.rolls[1].knockedDownPins.count + roll.knockedDownPins.count) == 10 ? "/" : "\(pinCount)")
+            let firstRollPins = frame.rolls.first?.knockedDownPins.count ?? 0
+            let secondRollPins = frame.rolls.indices.contains(1) ? frame.rolls[1].knockedDownPins.count : 0
+            switch index {
+            case 0: return lastRollPinCount.isTen ? "X" : pinCount
+            case 1:
+                return lastRollPinCount.isTen && firstRollPins.isTen ? "X" :
+                    ((firstRollPins + lastRollPinCount).isTen && lastRollPinCount != 0 ? "/" : pinCount)
+            default:
+                return lastRollPinCount.isTen ? "X" :
+                    ((secondRollPins + lastRollPinCount).isTen && firstRollPins.isTen ? "/" : pinCount)
             }
         }
     }
@@ -129,5 +121,11 @@ struct FrameView: View {
                 FrameView(frame: Frame(rolls: [Roll.roll7, Roll.roll3, Roll.roll10], index: 10), scoreSoFar: 20)
             }
         }
+    }
+}
+
+fileprivate extension Int {
+    var isTen: Bool {
+        self == 10
     }
 }

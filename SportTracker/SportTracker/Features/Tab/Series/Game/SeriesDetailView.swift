@@ -10,13 +10,7 @@ struct SeriesDetailView: View {
             case .playing(let game):
                 ScrollView {
                     HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            ForEach(viewModel.series.games.indices, id: \.self) { index in
-                                Text("Game #\(index + 1): \(viewModel.series.games[index].currentScore)")
-                            }
-                            Text("Current Game:").font(.title3).bold()
-                                .padding(.top, 10)
-                        }
+                        PreviousSeriesGameView(viewModel: viewModel)
                         Spacer()
                     }
                     .padding(.horizontal, Padding.defaultPadding)
@@ -32,14 +26,7 @@ struct SeriesDetailView: View {
                 )
                 .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
                 .loadingOverlay(when: $viewModel.savingIsLoading)
-            case .empty:
-                VStack {
-                    Spacer()
-                    Text("No games found")
-                        .font(.title)
-                        .foregroundColor(.gray)
-                    Spacer()
-                }
+            case .empty: empty
             case .content: content
             }
         }
@@ -99,6 +86,16 @@ struct SeriesDetailView: View {
             GamesListView(viewModel: viewModel)
         }
     }
+    
+    private var empty: some View {
+        VStack {
+            Spacer()
+            Text("No games found")
+                .font(.title)
+                .foregroundColor(.gray)
+            Spacer()
+        }
+    }
 }
 
 #Preview("Finished Series") {
@@ -154,4 +151,39 @@ struct SeriesDetailView: View {
         gameViewModelFactory: GameViewModelFactoryImpl(),
         series: Series(name: "Not finished series", tag: .league, games: [])
     ))
+}
+
+extension SeriesDetailView {
+    struct PreviousSeriesGameView: View {
+        @ObservedObject var viewModel: SeriesDetailViewModel
+        @State var isCollapsed: Bool = false
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("Previous games")
+                        .font(.system(size: 24, weight: .bold))
+                    Spacer()
+                    Image(systemName: "chevron.up.circle.fill")
+                        .foregroundColor(Color.orange)
+                        .rotationEffect(.degrees(isCollapsed ? 0 : 180))
+                        .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                }
+                .tap {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        isCollapsed.toggle()
+                    }
+                }
+                if !isCollapsed {
+                    ForEach(viewModel.series.games.indices, id: \.self) { index in
+                        Text("Game #\(index + 1): ")
+                            .font(.system(size: 14, weight: .medium))
+                        + Text("\(viewModel.series.games[index].currentScore)")
+                            .font(.system(size: 16, weight: .bold))
+                    }
+                    .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                }
+            }
+        }
+    }
 }

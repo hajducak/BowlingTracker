@@ -15,10 +15,8 @@ struct SeriesPopupView: View {
             Group {
                 Text("Series name")
                     .font(.system(size: 14, weight: .medium))
-                    .padding(.horizontal)
                 TextField("Enter series name", text: $seriesName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
                 
                 Picker("Select type", selection: $selectedType) {
                     Text("League").tag(SeriesType.league)
@@ -28,13 +26,11 @@ struct SeriesPopupView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .font(.system(size: 14, weight: .medium))
-                .padding(.horizontal)
                 
                 DatePicker("Select date", selection: $selectedDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
-                    .padding(.horizontal)
                     .font(.system(size: 14, weight: .medium))
-            }
+            }.padding(.horizontal, Padding.defaultPadding)
         } onConfirm: {
             if !seriesName.isEmpty { // TODO: texfield validation
                 onSave()

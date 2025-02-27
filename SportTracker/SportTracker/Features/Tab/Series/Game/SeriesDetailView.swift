@@ -9,12 +9,14 @@ struct SeriesDetailView: View {
             switch viewModel.state {
             case .playing(let game):
                 ScrollView {
-                    HStack {
+                    VStack(alignment: .leading) {
                         PreviousSeriesGameView(viewModel: viewModel)
-                        Spacer()
+                            .padding(.horizontal, Padding.defaultPadding)
+                        Text("Current game")
+                            .font(.system(size: 24, weight: .bold))
+                            .padding(.horizontal, Padding.defaultPadding)
+                        GameView(viewModel: game)
                     }
-                    .padding(.horizontal, Padding.defaultPadding)
-                    GameView(viewModel: game)
                 }
                 .navigationBarItems(
                     trailing:

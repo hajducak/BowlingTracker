@@ -56,13 +56,16 @@ class GameViewModel: ObservableObject {
     }
 
     func addRoll() {
-        // TODO: made functionality based on selectingFallenPins
         guard addRollIsEnabled else { return }
+        
+        var fallenPins: Set<Int> {
+            self.disabledPins.isEmpty ? Set(1...10) : Set(1...10).subtracting(self.disabledPins)
+        }
 
-        let knockedDownPins = selectedPins.map { Pin(id: $0) }
+        let knockedDownPins = selectingFallenPins ? selectedPins.map { Pin(id: $0) } : fallenPins.subtracting(selectedPins).map { Pin(id: $0) }
         game.addRoll(knockedDownPins: knockedDownPins)
         
-        disabledPins = selectedPins
+        disabledPins = selectingFallenPins ? selectedPins : Set(1...10).subtracting(selectedPins)
         selectedPins.removeAll()
         
         if game.frames.first(where: { $0.frameType == .unfinished })?.rolls.isEmpty == true {
@@ -84,13 +87,13 @@ class GameViewModel: ObservableObject {
     
     func addStrike() {
         guard strikeIsEnabled else { return }
-        selectedPins = Set(1...10)
+        selectedPins = selectingFallenPins ? Set(1...10) : []
         addRoll()
     }
 
     func addSpare() {
         guard spareIsEnabled else { return }
-        let enabledPins = Set(1...10).subtracting(disabledPins)
+        let enabledPins = selectingFallenPins ? Set(1...10).subtracting(disabledPins) : []
         selectedPins = enabledPins
         addRoll()
     }

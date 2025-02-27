@@ -38,6 +38,7 @@ struct SeriesDetailView: View {
     
     private var content: some View {
         VStack(alignment: .leading, spacing: 4) {
+            let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
             Text("Statistics")
                 .font(.system(size: 24, weight: .bold))
                 .padding(.horizontal, Padding.defaultPadding)
@@ -45,25 +46,25 @@ struct SeriesDetailView: View {
                 CircularProgressView(
                     percentage: viewModel.series.getSeriesStrikePercentage(),
                     title: "Strikes",
-                    size: .init(width: 75, height: 75)
+                    size: .init(width: graphSize, height: graphSize)
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.series.getSeriesSparePercentage(),
                     title: "Spares",
-                    size: .init(width: 75, height: 75)
+                    size: .init(width: graphSize, height: graphSize)
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.series.getSeriesOpenPercentage(),
                     title: "Opens",
-                    size: .init(width: 75, height: 75)
+                    size: .init(width: graphSize, height: graphSize)
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.series.getSeriesSplitPercentage(),
                     title: "Splits",
-                    size: .init(width: 75, height: 75)
+                    size: .init(width: graphSize, height: graphSize)
                 )
             }
             .padding(Padding.defaultPadding)

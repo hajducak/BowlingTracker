@@ -13,6 +13,9 @@ struct SeriesPopupView: View {
             title: "Create new series"
         ) {
             Group {
+                Text("Series name")
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(.horizontal)
                 TextField("Enter series name", text: $seriesName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
@@ -24,11 +27,13 @@ struct SeriesPopupView: View {
                     Text("Other").tag(SeriesType.other)
                 }
                 .pickerStyle(SegmentedPickerStyle())
+                .font(.system(size: 14, weight: .medium))
                 .padding(.horizontal)
                 
                 DatePicker("Select date", selection: $selectedDate, displayedComponents: .date)
                     .datePickerStyle(CompactDatePickerStyle())
                     .padding(.horizontal)
+                    .font(.system(size: 14, weight: .medium))
             }
         } onConfirm: {
             if !seriesName.isEmpty { // TODO: texfield validation

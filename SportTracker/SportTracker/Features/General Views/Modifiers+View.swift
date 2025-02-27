@@ -53,6 +53,22 @@ struct LoadingOverlayModifier: ViewModifier {
     }
 }
 
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        Path(
+            UIBezierPath(
+                roundedRect: rect,
+                byRoundingCorners: corners,
+                cornerRadii: CGSize(width: radius, height: radius)
+            ).cgPath
+        )
+    }
+}
+
+
 struct LabeledStyle: ViewModifier {
     let label: String
     func body(content: Content) -> some View {
@@ -88,6 +104,10 @@ extension View {
     
     func loadingOverlay(when isLoading: Binding<Bool>) -> some View {
         modifier(LoadingOverlayModifier(isLoading: isLoading))
+    }
+
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
     }
 }
 

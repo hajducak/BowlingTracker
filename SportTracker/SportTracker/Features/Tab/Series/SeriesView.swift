@@ -36,7 +36,7 @@ struct SeriesView: View {
             }
         }) {
             Label("Add", systemImage: "plus.circle.fill")
-                .foregroundColor(.black)
+                .foregroundColor(.orange)
         }
     }
     
@@ -64,9 +64,9 @@ struct SeriesView: View {
                         viewModel: item
                     )) {
                         SeriesCell(series: item.series) { viewModel.deleteSeries($0) }
+                            .padding(.bottom, 8)
                     }.buttonStyle(PlainButtonStyle())
                 }
-                Spacer()
             }
         }
     }

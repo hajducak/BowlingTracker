@@ -1,8 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Simulator Screenshot - iPhone 16 18.1 - 2025-02-28 at 14.21.03.png",
-      "idiom" : "universal"
+      "filename" : "screenshot1.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

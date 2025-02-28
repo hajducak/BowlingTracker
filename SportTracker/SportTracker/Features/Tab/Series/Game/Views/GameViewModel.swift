@@ -72,7 +72,7 @@ class GameViewModel: ObservableObject {
             disabledPins.removeAll()
             return
         }
-        
+        // 10th frame:
         guard let lastFrame = game.frames.first(where: { $0.index == 10 }), !lastFrame.rolls.isEmpty else { return }
         
         let rolls = lastFrame.rolls
@@ -84,7 +84,34 @@ class GameViewModel: ObservableObject {
             disabledPins = Set(1...10)
         }
     }
-    
+
+    func undoRoll() {
+        game.undoRoll()
+        
+        selectedPins.removeAll()
+        disabledPins.removeAll()
+        
+        guard let currentFrame = game.frames.first(where: { $0.frameType == .unfinished }) else { return }
+        if currentFrame.index != 10 {
+            disabledPins = Set(currentFrame.rolls.flatMap { $0.knockedDownPins.map { $0.id } })
+            return
+        }
+       
+        // 10th frame:
+        let rolls = currentFrame.rolls
+        let rollCount = rolls.count
+        guard rollCount != 0 else { return }
+
+        let knockedDownPins = rolls[rollCount - 1].knockedDownPins.map { $0.id }
+
+        if rollCount == 1 {
+            disabledPins = knockedDownPins.count == 10 ? [] : Set(knockedDownPins)
+        } else if rollCount == 2 {
+            let totalPins = rolls[0].knockedDownPins.count + knockedDownPins.count
+            disabledPins = (totalPins == 10 || totalPins == 20) ? [] : Set(knockedDownPins)
+        }
+    }
+
     func addStrike() {
         guard strikeIsEnabled else { return }
         selectedPins = selectingFallenPins ? Set(1...10) : []

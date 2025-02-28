@@ -33,7 +33,7 @@ struct GameView: View {
                 .padding(.horizontal, Padding.defaultPadding)
                 .padding(.bottom, Padding.defaultPadding)
             HStack(spacing: 4) {
-                Button(action: viewModel.addRoll) {
+                Button(action: viewModel.undoRoll) {
                     HStack {
                         Image(systemName: "chevron.backward")
                         Text("Back")

@@ -159,7 +159,7 @@ struct SeriesDetailView: View {
 extension SeriesDetailView {
     struct PreviousSeriesGameView: View {
         @ObservedObject var viewModel: SeriesDetailViewModel
-        @State var isCollapsed: Bool = false
+        @State var isCollapsed: Bool = true
         
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {

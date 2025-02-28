@@ -2,17 +2,22 @@ import Foundation
 struct Game: Codable, Identifiable {
     var id: String = UUID().uuidString
     var frames: [Frame]
-
+    
     init(frames: [Frame] = []) {
         self.frames = frames.isEmpty ? (1...10).map { Frame(rolls: [], index: $0) } : frames
     }
-
+    
     mutating func addRoll(knockedDownPins: [Pin]) {
         let roll = Roll(knockedDownPins: knockedDownPins)
-
+        
         if let unfinishedFrameIndex = frames.firstIndex(where: { $0.frameType == .unfinished }) {
             frames[unfinishedFrameIndex].rolls.append(roll)
         }
+    }
+
+    mutating func undoRoll() {
+        guard let lastFrameIndex = frames.lastIndex(where: { !$0.rolls.isEmpty }) else { return }
+        frames[lastFrameIndex].rolls.removeLast()
     }
     
     var strikeCount: Int {

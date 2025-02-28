@@ -20,28 +20,44 @@ struct BasicPopup<Content: View>: View {
 
             VStack(alignment: .leading, spacing: 20) {
                 Text(title)
-                    .font(.largeTitle).bold()
+                    .font(.system(size: 24, weight: .bold))
                     .padding(.horizontal, 20)
                 content()
                 HStack {
-                    Button("Close") {
+                    Button {
                         withAnimation(.easeInOut) {
                             isVisible = false
                             onDismiss?()
                         }
+                    } label: {
+                        Text("Close")
+                            .font(.system(size: 16, weight: .bold))
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white)
+                            .foregroundColor(.orange)
                     }
-                    .foregroundColor(.red)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.orange, lineWidth: 1)
+                    )
                     .frame(maxWidth: .infinity)
                     Spacer()
                     onConfirm.map { _ in
-                        Button("Save") {
+                        Button {
                             onConfirm?()
                             withAnimation(.easeInOut) {
                                 isVisible = false
                             }
+                        } label: {
+                            Text("Save")
+                                .font(.system(size: 16, weight: .bold))
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.orange)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
                         }
-                        .foregroundColor(.blue)
-                        .bold()
                         .frame(maxWidth: .infinity)
                     }
                 }

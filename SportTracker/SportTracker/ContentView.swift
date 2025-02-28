@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var bowlingSeriesViewModel: BowlingSeriesViewModel
+    @StateObject private var bowlingSeriesViewModel: SeriesViewModel
     @StateObject private var tabSelectionViewModel = TabSelectionViewModel()
 
-    init(bowlingSeriesViewModel: BowlingSeriesViewModel) {
+    init(bowlingSeriesViewModel: SeriesViewModel) {
         _bowlingSeriesViewModel = StateObject(wrappedValue: bowlingSeriesViewModel)
     }
 
     var body: some View {
         TabView(selection: $tabSelectionViewModel.selectedTab) {
             NavigationView {
-                BowlingSeriesView(viewModel: bowlingSeriesViewModel)
+                SeriesView(viewModel: bowlingSeriesViewModel)
                     .navigationBarTitle("My Series")
             }
             .tabItem {
@@ -34,8 +34,8 @@ struct ContentView: View {
             appearance.backgroundColor = .black
             appearance.stackedLayoutAppearance.normal.iconColor = .white
             appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
-            appearance.stackedLayoutAppearance.selected.iconColor = .blue
-            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.blue]
+            appearance.stackedLayoutAppearance.selected.iconColor = .orange
+            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.orange]
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }

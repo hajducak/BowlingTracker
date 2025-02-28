@@ -3,24 +3,20 @@ import SwiftUI
 struct SeriesDetailView: View {
     @ObservedObject var viewModel: SeriesDetailViewModel
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             switch viewModel.state {
             case .playing(let game):
                 ScrollView {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            ForEach(viewModel.series.games.indices, id: \.self) { index in
-                                Text("Game #\(index + 1): \(viewModel.series.games[index].currentScore)")
-                            }
-                            Text("Current Game:").font(.title3).bold()
-                                .padding(.top, 10)
-                        }
-                        Spacer()
+                    VStack(alignment: .leading) {
+                        PreviousSeriesGameView(viewModel: viewModel)
+                            .padding(.horizontal, Padding.defaultPadding)
+                        Text("Current game")
+                            .font(.system(size: 24, weight: .bold))
+                            .padding(.horizontal, Padding.defaultPadding)
+                        GameView(viewModel: game)
                     }
-                    .padding(.horizontal, Padding.defaultPadding)
-                    RollView(viewModel: game)
                 }
                 .navigationBarItems(
                     trailing:
@@ -32,48 +28,76 @@ struct SeriesDetailView: View {
                 )
                 .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
                 .loadingOverlay(when: $viewModel.savingIsLoading)
-            case .empty:
-                VStack {
-                    Spacer()
-                    Text("No games found")
-                        .font(.title)
-                        .foregroundColor(.gray)
-                    Spacer()
-                }
-            case .content:
-                Text("Series score: \(viewModel.series.getSeriesScore())")
-                    .font(.title2)
-                    .padding(.horizontal, Padding.defaultPadding)
-                Text("Series avarage: " + String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
-                    .font(.title2)
-                    .padding(.horizontal, Padding.defaultPadding)
-                VStack(alignment: .leading) {
-                    Text("Strikes: " + String(format: "%.2f%%", viewModel.series.getSeriesStrikePercentage()))
-                    Text("Spares: " + String(format: "%.2f%%", viewModel.series.getSeriesSparePercentage()))
-                    Text("Opens: " + String(format: "%.2f%%", viewModel.series.getSeriesOpenPercentage()))
-                }
-                .font(.title3)
-                .foregroundColor(.gray)
-                .padding(.horizontal, Padding.defaultPadding)
-                // TODO: do circle graphs from statistics
-                ScrollView(.vertical) {
-                    ForEach(viewModel.games.indices, id: \.self) { index in
-                        VStack(alignment: .leading) {
-                            Text("Game #\(index + 1): \(viewModel.games[index].currentScore)")
-                                .padding(.horizontal, Padding.defaultPadding)
-                            // TODO: add collapsable gameview and show just score and chevron?
-                            ScrollView(.horizontal) {
-                                GameView(game: $viewModel.games[index], showMax: false)
-                                    .padding(.horizontal, Padding.defaultPadding)
-                                    .padding(.bottom, 8)
-                            }
-                        }
-                    }.padding(.bottom, Padding.defaultPadding)
-                }
+            case .empty: empty
+            case .content: content
             }
         }
         .navigationTitle(viewModel.series.name)
         .toast($viewModel.toast, timeout: 3)
+    }
+    
+    private var content: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
+            Text("Statistics")
+                .font(.system(size: 24, weight: .bold))
+                .padding(.horizontal, Padding.defaultPadding)
+            HStack(alignment: .center, spacing: 0) {
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesStrikePercentage(),
+                    title: "Strikes",
+                    size: .init(width: graphSize, height: graphSize)
+                )
+                Spacer()
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesSparePercentage(),
+                    title: "Spares",
+                    size: .init(width: graphSize, height: graphSize)
+                )
+                Spacer()
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesOpenPercentage(),
+                    title: "Opens",
+                    size: .init(width: graphSize, height: graphSize)
+                )
+                Spacer()
+                CircularProgressView(
+                    percentage: viewModel.series.getSeriesSplitPercentage(),
+                    title: "Splits",
+                    size: .init(width: graphSize, height: graphSize)
+                )
+            }
+            .padding(Padding.defaultPadding)
+            LinearProgressView(
+                graphIsDisabled: true,
+                value: Double(viewModel.series.getSeriesScore()),
+                maxValue: Double(viewModel.series.games.count * 300),
+                title: "Series score:",
+                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                height: 9
+            ).padding(.horizontal, Padding.defaultPadding)
+            LinearProgressView(
+                value: Double(viewModel.series.getSeriesAvarage()),
+                maxValue: Double(300),
+                title: "Series avarage:",
+                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                height: 9
+            ).padding(.horizontal, Padding.defaultPadding)
+            Text("Games played")
+                .font(.system(size: 24, weight: .bold))
+                .padding([.horizontal, .top], Padding.defaultPadding)
+            GamesListView(viewModel: viewModel)
+        }
+    }
+    
+    private var empty: some View {
+        VStack {
+            Spacer()
+            Text("No games found")
+                .font(.title)
+                .foregroundColor(.gray)
+            Spacer()
+        }
     }
 }
 
@@ -130,4 +154,39 @@ struct SeriesDetailView: View {
         gameViewModelFactory: GameViewModelFactoryImpl(),
         series: Series(name: "Not finished series", tag: .league, games: [])
     ))
+}
+
+extension SeriesDetailView {
+    struct PreviousSeriesGameView: View {
+        @ObservedObject var viewModel: SeriesDetailViewModel
+        @State var isCollapsed: Bool = false
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("Previous games")
+                        .font(.system(size: 24, weight: .bold))
+                    Spacer()
+                    Image(systemName: "chevron.up.circle.fill")
+                        .foregroundColor(Color.orange)
+                        .rotationEffect(.degrees(isCollapsed ? 0 : 180))
+                        .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                }
+                .tap {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        isCollapsed.toggle()
+                    }
+                }
+                if !isCollapsed {
+                    ForEach(viewModel.series.games.indices, id: \.self) { index in
+                        Text("Game #\(index + 1): ")
+                            .font(.system(size: 14, weight: .medium))
+                        + Text("\(viewModel.series.games[index].currentScore)")
+                            .font(.system(size: 16, weight: .bold))
+                    }
+                    .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                }
+            }
+        }
+    }
 }

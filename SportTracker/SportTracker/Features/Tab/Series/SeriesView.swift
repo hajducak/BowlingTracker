@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct BowlingSeriesView: View {
-    @ObservedObject var viewModel: BowlingSeriesViewModel
+struct SeriesView: View {
+    @ObservedObject var viewModel: SeriesViewModel
     @State private var showPopup = false
     @State private var seriesName = ""
     @State private var selectedType: SeriesType = .league
@@ -36,7 +36,7 @@ struct BowlingSeriesView: View {
             }
         }) {
             Label("Add", systemImage: "plus.circle.fill")
-                .foregroundColor(.black)
+                .foregroundColor(.orange)
         }
     }
     
@@ -64,9 +64,9 @@ struct BowlingSeriesView: View {
                         viewModel: item
                     )) {
                         SeriesCell(series: item.series) { viewModel.deleteSeries($0) }
+                            .padding(.bottom, 8)
                     }.buttonStyle(PlainButtonStyle())
                 }
-                Spacer()
             }
         }
     }

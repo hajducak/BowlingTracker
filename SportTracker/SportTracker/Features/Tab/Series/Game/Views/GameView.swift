@@ -34,6 +34,17 @@ struct GameView: View {
                 .padding(.bottom, Padding.defaultPadding)
             HStack(spacing: 4) {
                 Button(action: viewModel.addRoll) {
+                    HStack {
+                        Image(systemName: "chevron.backward")
+                        Text("Back")
+                    }
+                        .font(.system(size: 16, weight: .bold))
+                        .padding()
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                Button(action: viewModel.addRoll) {
                     Text("Add Roll")
                         .font(.system(size: 16, weight: .bold))
                         .padding()

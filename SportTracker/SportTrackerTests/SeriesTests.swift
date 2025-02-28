@@ -31,7 +31,7 @@ final class SeriesTests: XCTestCase {
         
         XCTAssertFalse(series.isCurrentGameActive())
         
-        series.saveCurrentGame()
+        series.save(game: series.currentGame!)
         XCTAssertEqual(series.games.count, 1)
         
         series.newGame()
@@ -135,7 +135,7 @@ final class SeriesTests: XCTestCase {
 
 extension Series {
     static func mock300Series(name: String) -> Series {
-        Series(id: UUID().uuidString, name: name, tag: .league, games: [
+        Series(name: name, tag: .league, games: [
             Game(frames: [
                 Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
                 Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
@@ -176,7 +176,7 @@ extension Series {
     }
     
     static func mockAllSparesAndOneXSeries(name: String) -> Series {
-        Series(id: UUID().uuidString, name: name, tag: .league, games: [
+        Series(name: name, tag: .league, games: [
             Game(frames: [
                 Frame(rolls: [Roll.roll9, Roll.roll1], index: 1),
                 Frame(rolls: [Roll.roll9, Roll.roll1], index: 2),
@@ -217,7 +217,7 @@ extension Series {
     }
     
     static func mockAllOpensSeries(name: String) -> Series {
-        Series(id: UUID().uuidString, name: name, tag: .league, games: [
+        Series(name: name, tag: .league, games: [
             Game(frames: [
                 Frame(rolls: [Roll.roll8, Roll.roll1], index: 1),
                 Frame(rolls: [Roll.roll8, Roll.roll1], index: 2),

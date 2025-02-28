@@ -34,7 +34,7 @@ struct LinearProgressView: View {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: height / 2)
                         .frame(width: width, height: height)
-                        .foregroundColor(Color.gray.opacity(0.2))
+                        .foregroundColor(UIColor.systemGray6.color)
                     RoundedRectangle(cornerRadius: height / 2)
                         .frame(width: progress * width, height: height * 0.75)
                         .foregroundStyle(

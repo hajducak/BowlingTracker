@@ -5,74 +5,67 @@ struct FrameView: View {
     var scoreSoFar: Int?
     var scoreSoFarFormatted: String {
         get {
-            guard let scoreSoFar else { return "" }
+            guard let scoreSoFar else { return "0" }
             return "\(scoreSoFar)"
         }
     }
     var showframeType: Bool = false
     
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 0) {
             Text("\(frame.index)")
-                .font(.caption).bold()
-                .frame(width: 58)
-                .padding(.vertical, 2)
-                .background(Color.gray.opacity(0.2))
-                .border(Color.black)
-            VStack {
-                HStack(spacing: 2) {
-                    if frame.rolls.count == 0 { emptyBox }
-                    if frame.frameType == .strike {
-                        Text("").frame(width: 20, height: 20)
-                    }
-                    ForEach(frame.rolls.indices, id: \.self) { index in
-                        formatRoll(frame.rolls[index], index).map {
-                            Text($0)
-                                .foregroundColor(frame.isSplitFrame && index == 0 ? .white : .black)
-                                .frame(width: 20, height: 20)
-                                .border(Color.black)
-                                .background(frame.isSplitFrame && index == 0 ? Color.orange : Color.white)
-                        }
-                    }
-                    if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
-                        emptyBox
-                    }
+                .font(.system(size: 12, weight: .bold))
+                .frame(width: max(65, CGFloat(frame.rolls.count) * 32.5))
+                .padding(.vertical, 4)
+                .background(UIColor.systemGray6.color)
+            HStack(spacing: 3) {
+                if frame.rolls.count == 0 { emptyBox }
+                if frame.frameType == .strike {
+                    Text("").frame(width: 25, height: 25)
                 }
-                Text(scoreSoFarFormatted)
-                    .font(.caption)
-                    .frame(width: 50, height: 20)
-            }
-            .padding(4)
-            .background(Color.gray.opacity(0.2))
-            .border(Color.black)
+                ForEach(frame.rolls.indices, id: \.self) { index in
+                    formatRoll(frame.rolls[index], index)
+                }
+                if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
+                    emptyBox
+                }
+            }.padding(3)
+            Text(scoreSoFarFormatted)
+                .font(.system(size: 14, weight: .medium))
+                .padding(.bottom, 3)
         }
+        .background(.white)
+        .border(UIColor.systemGray6.color, width: 2)
     }
     
     private var emptyBox: some View {
         Text("")
-            .frame(width: 20, height: 20)
+            .frame(width: 25, height: 25)
             .background(Color.white)
-            .border(Color.black)
+            .border(UIColor.systemGray6.color, width: 2)
     }
 
-    private func formatRoll(_ roll: Roll,_ index: Int) -> String? {
+    private func formatRoll(_ roll: Roll,_ index: Int) -> some View {
         let lastRollPinCount = roll.knockedDownPins.count
-        let pinCount = lastRollPinCount == 0 ? "-" : "\(lastRollPinCount)"
+        let pinCountView = lastRollPinCount == 0 ? AnyView(MissShape()) : AnyView(OpenFrameShape(
+            number: "\(lastRollPinCount)",
+            isSplit: frame.isSplitFrame
+        ))
         switch frame.frameType {
-        case .strike: return "X"
-        case .spare: return index == 0 ? pinCount : "/"
-        case .open: return pinCount
+        case .strike: return AnyView(StrikeShape())
+        case .spare: return index == 0 ? pinCountView : AnyView(SpareShape())
+        case .open: return pinCountView
         case .unfinished, .last:
             let firstRollPins = frame.rolls.first?.knockedDownPins.count ?? 0
             let secondRollPins = frame.rolls.indices.contains(1) ? frame.rolls[1].knockedDownPins.count : 0
             switch index {
-            case 0: return lastRollPinCount.isTen ? "X" : pinCount
+            case 0: return lastRollPinCount.isTen ? AnyView(StrikeShape()) : pinCountView
             case 1:
-                return lastRollPinCount.isTen && firstRollPins.isTen ? "X" :
-                    ((firstRollPins + lastRollPinCount).isTen && lastRollPinCount != 0 ? "/" : pinCount)
+                return lastRollPinCount.isTen && firstRollPins.isTen ? AnyView(StrikeShape()) :
+                    ((firstRollPins + lastRollPinCount).isTen && lastRollPinCount != 0 ? AnyView(SpareShape() ): pinCountView)
             default:
-                return lastRollPinCount.isTen ? "X" :
-                    ((secondRollPins + lastRollPinCount).isTen && firstRollPins.isTen ? "/" : pinCount)
+                return lastRollPinCount.isTen ? AnyView(StrikeShape()) :
+                    ((secondRollPins + lastRollPinCount).isTen && firstRollPins.isTen ? AnyView(SpareShape()) : pinCountView)
             }
         }
     }
@@ -127,5 +120,11 @@ struct FrameView: View {
 fileprivate extension Int {
     var isTen: Bool {
         self == 10
+    }
+}
+
+extension UIColor {
+    var color: Color {
+        Color(self)
     }
 }

@@ -19,6 +19,7 @@ struct SheetView: View {
                         .padding(4)
                         .background(UIColor.systemGray6.color)
                         .border(UIColor.systemGray6.color, width: 2)
+                    // FIXME: Backgorund not working as it is in frame index
                     Text("\(game.maxPossibleScore)")
                         .font(.system(size: 14, weight: .medium))
                 }

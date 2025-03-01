@@ -3,7 +3,7 @@ import SwiftUI
 struct StrikeShape: View {
     var frameSize: CGSize = .init(width: 25, height: 25)
     var color: Color = UIColor.systemGray6.color
-    var innerOffset: CGFloat = 4
+    var innerOffset: CGFloat = 6
     var body: some View {
         ZStack {
             Rectangle()
@@ -23,7 +23,7 @@ struct StrikeShape: View {
 struct SpareShape: View {
     var frameSize: CGSize = .init(width: 25, height: 25)
     var color: Color = UIColor.systemGray6.color
-    var innerOffset: CGFloat = 4
+    var innerOffset: CGFloat = 6
     var body: some View {
         ZStack {
             Rectangle()

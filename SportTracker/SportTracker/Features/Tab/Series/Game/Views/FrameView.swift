@@ -15,7 +15,7 @@ struct FrameView: View {
         VStack(spacing: 0) {
             Text("\(frame.index)")
                 .font(.system(size: 12, weight: .bold))
-                .frame(width: max(65, CGFloat(frame.rolls.count) * 32.5))
+                .frame(width: max(65, CGFloat(frame.rolls.count) * 32.5)) // FIXME: not working if 10th frame have 2 rolls pins == 10
                 .padding(.vertical, 4)
                 .background(UIColor.systemGray6.color)
             HStack(spacing: 3) {

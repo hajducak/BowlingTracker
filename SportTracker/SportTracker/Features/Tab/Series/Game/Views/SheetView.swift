@@ -5,22 +5,29 @@ struct SheetView: View {
     var showMax: Bool = true
 
     var body: some View {
-        HStack(alignment: .bottom) {
+        HStack(alignment: .bottom, spacing: 0) {
             ForEach(game.frames.indices, id: \.self) { index in
                 FrameView(
                     frame: game.frames[index],
                     scoreSoFar: game.frames[index].frameType == .unfinished ? nil : game.cumulativeScoreForFrame(at: index)
-                )
-            }
+                ).padding(.leading, -2)
+            }.padding(.bottom, 8)
             if showMax {
                 VStack(alignment: .center, spacing: 8) {
                     Text("MAX")
+                        .font(.system(size: 12, weight: .bold))
+                        .padding(4)
+                        .background(UIColor.systemGray6.color)
+                        .border(UIColor.systemGray6.color, width: 2)
+                    // FIXME: Backgorund not working as it is in frame index
                     Text("\(game.maxPossibleScore)")
-                        .bold()
+                        .font(.system(size: 14, weight: .medium))
                 }
-                .padding(4)
-                .background(Color.gray.opacity(0.2))
-                .border(Color.black)
+                .padding(3)
+                .background(.white)
+                .border(UIColor.systemGray6.color, width: 2)
+                .frame(width: 50)
+                .padding(.bottom, 8)
             }
         }
     }

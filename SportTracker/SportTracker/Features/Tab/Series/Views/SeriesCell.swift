@@ -42,7 +42,7 @@ struct SeriesCell: View {
             }
         )
         .padding(.horizontal, 20)
-        .tap(count: 3) { onDeleteSeries(series) }
+        // .tap(count: 3) { onDeleteSeries(series) }
     }
 }
 

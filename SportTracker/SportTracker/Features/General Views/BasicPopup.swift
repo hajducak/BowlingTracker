@@ -65,7 +65,7 @@ struct BasicPopup<Content: View>: View {
             }
             .padding(.vertical, 20)
             .background(Color.white)
-            .cornerRadius(16)
+            .cornerRadius(16, corners: [.topLeft, .topRight])
             .shadow(radius: 10)
             .frame(maxWidth: .infinity)
             .offset(y: isVisible ? 0 : UIScreen.main.bounds.height)

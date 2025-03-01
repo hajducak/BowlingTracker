@@ -5,35 +5,53 @@ struct SeriesDetailView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            switch viewModel.state {
-            case .playing(let game):
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        PreviousSeriesGameView(viewModel: viewModel)
-                            .padding(.horizontal, Padding.defaultPadding)
-                        Text("Current game")
-                            .font(.system(size: 24, weight: .bold))
-                            .padding(.horizontal, Padding.defaultPadding)
-                        GameView(viewModel: game)
+        NavigationView {
+            VStack(alignment: .leading, spacing: 8) {
+                switch viewModel.state {
+                case .playing(let game):
+                    ScrollView {
+                        VStack(alignment: .leading) {
+                            Text("Current game")
+                                .font(.system(size: 24, weight: .bold))
+                                .padding(.horizontal, Padding.defaultPadding)
+                            GameView(viewModel: game)
+                            
+                            PreviousSeriesGameView(viewModel: viewModel)
+                                .padding(.horizontal, Padding.defaultPadding)
+                                .padding(.top, 10)
+                        }
                     }
+                    .navigationBarItems(
+                        trailing:
+                            Button(action: {
+                                viewModel.saveSeries()
+                            }, label: {
+                                Text("Save")
+                                    .font(.system(size: 16, weight: .medium))
+                            })
+                    )
+                    .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
+                    .loadingOverlay(when: $viewModel.savingIsLoading)
+                case .empty: empty
+                case .content: content
                 }
-                .navigationBarItems(
-                    trailing:
-                        Button(action: {
-                            viewModel.saveSeries()
-                        }, label: {
-                            Text("Save")
-                        })
-                )
-                .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
-                .loadingOverlay(when: $viewModel.savingIsLoading)
-            case .empty: empty
-            case .content: content
             }
+            .navigationTitle(viewModel.series.name)
+            .toast($viewModel.toast, timeout: 3)
+            .navigationBarItems(
+                leading:
+                    Button(action: {
+                        dismiss()
+                    }, label: {
+                        HStack {
+                            Image(systemName: "chevron.backward")
+                            Text("Back")
+                        }.font(.system(size: 16, weight: .medium))
+                    })
+            )
         }
-        .navigationTitle(viewModel.series.name)
-        .toast($viewModel.toast, timeout: 3)
+        .accentColor(.orange)
+        .navigationBarBackButtonHidden()
     }
     
     private var content: some View {
@@ -185,6 +203,15 @@ extension SeriesDetailView {
                             .font(.system(size: 16, weight: .bold))
                     }
                     .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                } else {
+                    Text("\(viewModel.series.games.count)")
+                        .font(.system(size: 14, weight: .bold))
+                    + Text(" games with ")
+                        .font(.system(size: 14, weight: .regular))
+                    + Text(String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
+                        .font(.system(size: 14, weight: .bold))
+                    + Text(" avarage so far")
+                        .font(.system(size: 14, weight: .regular))
                 }
             }
         }

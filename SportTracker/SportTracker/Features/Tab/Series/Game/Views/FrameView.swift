@@ -9,13 +9,14 @@ struct FrameView: View {
             return "\(scoreSoFar)"
         }
     }
+    var maxPossibleScore: Int?
     var showframeType: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
             Text("\(frame.index)")
                 .font(.system(size: 12, weight: .bold))
-                .frame(width: max(65, CGFloat(frame.rolls.count) * 32.5)) // FIXME: not working if 10th frame have 2 rolls pins == 10
+                .frame(width: max(65, CGFloat(frame.index != 10 ? frame.rolls.count : 3) * 32.5))
                 .padding(.vertical, 4)
                 .background(UIColor.systemGray6.color)
             HStack(spacing: 3) {
@@ -30,9 +31,15 @@ struct FrameView: View {
                     emptyBox
                 }
             }.padding(3)
-            Text(scoreSoFarFormatted)
-                .font(.system(size: 14, weight: .medium))
-                .padding(.bottom, 3)
+            if let score = maxPossibleScore, frame.index == 10 {
+                Text("\(score)")
+                    .font(.system(size: 14, weight: .bold))
+                    .padding(.bottom, 3)
+            } else {
+                Text(scoreSoFarFormatted)
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(.bottom, 3)
+            }
         }
         .background(.white)
         .border(UIColor.systemGray6.color, width: 2)

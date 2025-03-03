@@ -25,19 +25,20 @@ struct Frame: Codable {
     }
     var index: Int
 
-    var isSplitFrame: Bool {
+    /// Used for formating splits in individual frame Rolls colums
+    func isSplitRoll(for index: Int) -> Bool {
         guard let firstRoll = rolls.first else { return false }
-        let knockedDownPinIDs = Set(firstRoll.knockedDownPins.map { $0.id })
-        let allPins: Set<Int> = Set(1...10)
-        let standingPins = allPins.subtracting(knockedDownPinIDs)
-        
-        let splitCombinations: Set<Set<Int>> = [
-            [7, 10], [7, 9], [8, 10], [4, 6], [5, 7], [4, 9], [5, 10], [5, 7, 10], [3, 7],
-            [2, 10], [3, 10], [2, 7], [4, 7, 10], [6, 7, 10], [4, 9], [6, 8],
-            [4, 6, 7, 10], [4, 6, 7, 8, 10], [4, 6, 7, 9, 10], [7, 6, 9, 10], [7, 8, 4, 10],
-            [3, 4, 6, 7, 10], [2, 4, 6, 7, 10], [2, 4, 6, 7, 8, 10], [3, 4, 6, 7, 9, 10]
-        ]
-        
-        return splitCombinations.contains(standingPins)
+        guard self.index != 10 else {
+            switch index {
+            case 0: return firstRoll.isSplitRoll
+            case 1: return firstRoll.knockedDownPins.count == 10 && rolls[1].isSplitRoll || !firstRoll.isSplitRoll && rolls[1].isSplitRoll
+            case 2: return firstRoll.knockedDownPins.count + rolls[1].knockedDownPins.count == 20 && rolls[2].isSplitRoll || rolls[2].isSplitRoll && !rolls[1].isSplitRoll
+            default: return false
+            }
+        }
+        return index == 0 ? firstRoll.isSplitRoll : false
+    }
+    var isSplitFrame: Bool {
+        rolls.contains { $0.isSplitRoll }
     }
 }

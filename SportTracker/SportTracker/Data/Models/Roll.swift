@@ -3,6 +3,23 @@ struct Roll: Codable, Hashable {
 }
 
 extension Roll {
+    var isSplitRoll: Bool {
+        let knockedDownPinIDs = Set(self.knockedDownPins.map { $0.id })
+        let allPins: Set<Int> = Set(1...10)
+        let standingPins = allPins.subtracting(knockedDownPinIDs)
+        
+        let splitCombinations: Set<Set<Int>> = [
+            [7, 10], [7, 9], [8, 10], [4, 6], [5, 7], [4, 9], [5, 10], [5, 7, 10], [3, 7],
+            [2, 10], [3, 10], [2, 7], [4, 7, 10], [6, 7, 10], [4, 9], [6, 8],
+            [4, 6, 7, 10], [4, 6, 7, 8, 10], [4, 6, 7, 9, 10], [7, 6, 9, 10], [7, 8, 4, 10],
+            [3, 4, 6, 7, 10], [2, 4, 6, 7, 10], [2, 4, 6, 7, 8, 10], [3, 4, 6, 7, 9, 10]
+        ]
+        
+        return splitCombinations.contains(standingPins)
+    }
+}
+
+extension Roll {
     static let tenPins = Array((1...10).map { Pin(id: $0) })
     static let ninePins = Array((1...9).map { Pin(id: $0) })
     static let eightPins = Array((1...8).map { Pin(id: $0) })

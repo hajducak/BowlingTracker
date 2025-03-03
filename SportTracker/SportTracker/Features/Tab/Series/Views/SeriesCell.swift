@@ -10,6 +10,10 @@ struct SeriesCell: View {
                 Text(series.name)
                     .font(.system(size: 16, weight: .medium))
                     .padding(.top, 15)
+                if !series.description.isEmpty {
+                    Text(series.description)
+                        .font(.system(size: 14, weight: .regular))
+                }
                 HStack {
                     Text(series.formattedDate)
                     Text("games: \(series.games.count)")

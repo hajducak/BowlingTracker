@@ -5,17 +5,19 @@ enum SeriesType: String, Codable {
 }
 
 struct Series: Codable, Identifiable {
-    var id: String
-    var date: Date
+    let id: String
+    let date: Date
     let name: String
+    let description: String
     let tag: SeriesType
     var games: [Game]
     var currentGame: Game?
 
-    init(date: Date = Date.now, name: String, tag: SeriesType, games: [Game] = [], currentGame: Game? = Game()) {
+    init(date: Date = Date.now, name: String, description: String = "", tag: SeriesType, games: [Game] = [], currentGame: Game? = Game()) {
         self.id = UUID().uuidString
         self.date = date
         self.name = name
+        self.description = description
         self.tag = tag
         self.games = games
         self.currentGame = currentGame

@@ -56,7 +56,7 @@ struct FrameView: View {
         let lastRollPinCount = roll.knockedDownPins.count
         let pinCountView = lastRollPinCount == 0 ? AnyView(MissShape()) : AnyView(OpenFrameShape(
             number: "\(lastRollPinCount)",
-            isSplit: frame.isSplitFrame
+            isSplit: frame.isSplitRoll(for: index)
         ))
         switch frame.frameType {
         case .strike: return AnyView(StrikeShape())

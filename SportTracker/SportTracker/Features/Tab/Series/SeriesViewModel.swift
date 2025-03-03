@@ -11,6 +11,10 @@ class SeriesViewModel: ObservableObject {
     @Published var state: SeriesContentState = .loading
     @Published var series: [SeriesDetailViewModel] = []
     @Published var toast: Toast? = nil
+    @Published var newSeriesName = ""
+    @Published var newSeriesDescription = ""
+    @Published var newSeriesSelectedType: SeriesType = .league
+    @Published var newSeriesSelectedDate = Date()
 
     let seriesViewModelFactory: SeriesDetailViewModelFactory
     let firebaseManager: FirebaseManager
@@ -33,7 +37,7 @@ class SeriesViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] series in
                 guard let self else { return }
-                let seriesViewModels = series.compactMap { series in
+                let seriesViewModels = series.sorted(by: { $0.date > $1.date }).compactMap { series in
                     let viewModel = self.seriesViewModelFactory.viewModel(series: series)
                     self.observeSeriesSaved(viewModel)
                     return viewModel
@@ -51,8 +55,8 @@ class SeriesViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func addSeries(name: String, type: SeriesType, date: Date) {
-        let newSeries = Series(date: date, name: name, tag: type)
+    func addSeries() {
+        let newSeries = Series(date: newSeriesSelectedDate, name: newSeriesName, description: newSeriesDescription, tag: newSeriesSelectedType)
         save(series: newSeries)
     }
 

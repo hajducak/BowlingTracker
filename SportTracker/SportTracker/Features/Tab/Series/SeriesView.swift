@@ -2,37 +2,34 @@ import SwiftUI
 
 struct SeriesView: View {
     @ObservedObject var viewModel: SeriesViewModel
-    @State private var showPopup = false
-    @State private var seriesName = ""
-    @State private var selectedType: SeriesType = .league
-    @State private var selectedDate = Date()
+    @State private var showCreateSeries = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
             contentView
                 .navigationBarItems(trailing: addButton)
-            if showPopup {
-                Color.black.opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                    .tap {
-                        showPopup = false
-                    }
-                SeriesPopupView(
-                    isVisible: $showPopup,
-                    seriesName: $seriesName,
-                    selectedType: $selectedType,
-                    selectedDate: $selectedDate
-                ) {
-                    viewModel.addSeries(name: seriesName, type: selectedType, date: selectedDate)
+                .fullScreenCover(isPresented: $showCreateSeries) {
+                    CreateSeriesView(
+                        seriesName: $viewModel.newSeriesName,
+                        seriesDescription: $viewModel.newSeriesDescription,
+                        selectedType: $viewModel.newSeriesSelectedType,
+                        selectedDate: $viewModel.newSeriesSelectedDate,
+                        onSave: {
+                            viewModel.addSeries()
+                            showCreateSeries = false
+                        },
+                        onClose: {
+                            showCreateSeries = false
+                        }
+                    )
                 }
-            }
         }
     }
 
     private var addButton: some View {
         Button(action: {
             withAnimation(.easeInOut) {
-                showPopup = true
+                showCreateSeries = true
             }
         }) {
             Label("Add", systemImage: "plus.circle.fill")

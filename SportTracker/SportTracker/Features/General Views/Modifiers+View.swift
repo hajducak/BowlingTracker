@@ -72,8 +72,9 @@ struct RoundedCorner: Shape {
 struct LabeledStyle: ViewModifier {
     let label: String
     func body(content: Content) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label).font(.subheadline).bold()
+        VStack(alignment: .leading, spacing: 8) {
+            Text(label)
+                .font(.system(size: 16, weight: .medium))
             content.padding(.bottom, 15)
         }
     }

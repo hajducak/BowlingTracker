@@ -15,6 +15,7 @@ final class SeriesDetailViewModelFactoryImpl: SeriesDetailViewModelFactory {
         SeriesDetailViewModel(
             firebaseManager: firebaseManager,
             gameViewModelFactory: gameViewModelFactory,
-            series: series)
+            series: series
+        )
     }
 }

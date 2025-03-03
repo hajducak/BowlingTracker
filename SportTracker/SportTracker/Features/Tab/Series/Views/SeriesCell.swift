@@ -35,7 +35,7 @@ struct SeriesCell: View {
                     .font(.system(size: 10, weight: .bold))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 4)
-                    .background(Color.orange)
+                    .background(series.tag.color)
                     .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
                     .cornerRadius(2, corners: [.topLeft, .topRight])
                     .offset(x: 10, y: -2)
@@ -47,5 +47,25 @@ struct SeriesCell: View {
 }
 
 #Preview {
-    SeriesCell(series: Series(name: "Test name", tag: .tournament)) { _ in }
+    VStack {
+        SeriesCell(series: Series(name: "Tournament", tag: .tournament)) { _ in }
+        SeriesCell(series: Series(name: "League", tag: .league)) { _ in }
+        SeriesCell(series: Series(name: "Training", tag: .training)) { _ in }
+        SeriesCell(series: Series(name: "Camp", tag: .other)) { _ in }
+    }
+}
+
+extension SeriesType {
+    var color: Color {
+        switch self {
+        case .tournament:
+            return .red
+        case .league:
+            return .orange
+        case .training:
+            return .yellow
+        case .other:
+            return UIColor.systemGray4.color
+        }
+    }
 }

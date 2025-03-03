@@ -47,11 +47,6 @@
 			path = SportTrackerTests;
 			sourceTree = "<group>";
 		};
-		528E48E52D638625008755A1 /* SportTrackerUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SportTrackerUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,7 +83,6 @@
 			children = (
 				528E48C82D638623008755A1 /* SportTracker */,
 				528E48DB2D638625008755A1 /* SportTrackerTests */,
-				528E48E52D638625008755A1 /* SportTrackerUITests */,
 				528E48C72D638623008755A1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -167,9 +161,6 @@
 			);
 			dependencies = (
 				528E48E42D638625008755A1 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				528E48E52D638625008755A1 /* SportTrackerUITests */,
 			);
 			name = SportTrackerUITests;
 			packageProductDependencies = (

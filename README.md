@@ -15,7 +15,8 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 - Calculate statistics such as average score, strike percentage, and spare percentage
 - Save data to Firebase
 - Resume an ongoing game
-- **Pin selection mode** – manually select standing or left over pins before rolling  
+- **Pin selection mode** – manually select standing or left over pins before rolling
+- **Pinfall visualization** – view pinfall results for each individual frame  
 
 ## Technologies Used
 - **SwiftUI** – modern UI framework for iOS apps
@@ -44,4 +45,3 @@ This project is available under the MIT license.
 - **Offline game saving** – store games locally when offline and sync with the cloud once reconnected  
 - **Comprehensive statistics** – detailed insights, including pinfall percentages  
 - **Frame editing** – edit the current game frame in case of a misclick  
-- **Pinfall visualization** – view pinfall results for each individual frame  

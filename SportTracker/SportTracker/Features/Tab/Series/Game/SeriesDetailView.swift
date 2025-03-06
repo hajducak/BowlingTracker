@@ -16,7 +16,6 @@ struct SeriesDetailView: View {
                                 .padding(.horizontal, Padding.defaultPadding)
                             GameView(viewModel: game)
                             PreviousGamesView(viewModel: viewModel)
-                                .padding(.horizontal, Padding.defaultPadding)
                                 .padding(.top, 10)
                         }.padding(.bottom, Padding.defaultPadding)
                     }

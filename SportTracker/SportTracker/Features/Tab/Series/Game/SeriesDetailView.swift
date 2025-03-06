@@ -12,7 +12,7 @@ struct SeriesDetailView: View {
                     ScrollView {
                         VStack(alignment: .leading) {
                             Text("Current game")
-                                .font(.system(size: 24, weight: .bold))
+                                .title()
                                 .padding(.horizontal, Padding.defaultPadding)
                             GameView(viewModel: game)
                             PreviousGamesView(viewModel: viewModel)
@@ -25,7 +25,7 @@ struct SeriesDetailView: View {
                                 viewModel.saveSeries()
                             }, label: {
                                 Text("Save")
-                                    .font(.system(size: 16, weight: .medium))
+                                    .heading()
                             })
                     )
                     .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
@@ -44,7 +44,7 @@ struct SeriesDetailView: View {
                         HStack {
                             Image(systemName: "chevron.backward")
                             Text("Back")
-                        }.font(.system(size: 16, weight: .medium))
+                        }.heading()
                     })
             )
         }
@@ -56,7 +56,7 @@ struct SeriesDetailView: View {
         VStack(alignment: .leading, spacing: 4) {
             let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
             Text("Statistics")
-                .font(.system(size: 24, weight: .bold))
+                .title()
                 .padding(.horizontal, Padding.defaultPadding)
             HStack(alignment: .center, spacing: 0) {
                 CircularProgressView(
@@ -100,7 +100,7 @@ struct SeriesDetailView: View {
                 height: 9
             ).padding(.horizontal, Padding.defaultPadding)
             Text("Games played")
-                .font(.system(size: 24, weight: .bold))
+                .title()
                 .padding([.horizontal, .top], Padding.defaultPadding)
             GamesListView(viewModel: viewModel)
         }.padding(.bottom, Padding.defaultPadding)
@@ -110,7 +110,7 @@ struct SeriesDetailView: View {
         VStack {
             Spacer()
             Text("No games found")
-                .font(.title)
+                .title()
                 .foregroundColor(.gray)
             Spacer()
         }

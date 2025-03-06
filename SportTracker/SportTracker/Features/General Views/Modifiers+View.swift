@@ -24,10 +24,10 @@ struct CustomTextFieldStyle: ViewModifier {
         content
             .padding()
             .frame(height: 50)
-            .background(Color.gray.opacity(0.2).cornerRadius(8))
+            .background(Color.white.cornerRadius(8))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                    .stroke(UIColor.systemGray6.color, lineWidth: 1)
             )
             .labled(label: label)
     }
@@ -74,7 +74,7 @@ struct LabeledStyle: ViewModifier {
     func body(content: Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(.system(size: 16, weight: .medium))
+                .heading()
             content.padding(.bottom, 15)
         }
     }

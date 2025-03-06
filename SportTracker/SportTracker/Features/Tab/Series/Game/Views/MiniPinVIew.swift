@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct MiniPinView: View {
-    let firstRollPins: [Pin]? // Používame Pin namiesto Int
-    let secondRollPins: [Pin]? // Používame Pin namiesto Int
+    let firstRollPins: [Pin]?
+    let secondRollPins: [Pin]?
     
     let innerSpacing: CGFloat = 4
     let rowSpacing: CGFloat = 2

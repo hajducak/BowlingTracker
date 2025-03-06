@@ -20,7 +20,7 @@ struct BasicPopup<Content: View>: View {
 
             VStack(alignment: .leading, spacing: 20) {
                 Text(title)
-                    .font(.system(size: 24, weight: .bold))
+                    .title()
                     .padding(.horizontal, 20)
                 content()
                 HStack {
@@ -31,7 +31,7 @@ struct BasicPopup<Content: View>: View {
                         }
                     } label: {
                         Text("Close")
-                            .font(.system(size: 16, weight: .bold))
+                            .heading()
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color.white)
@@ -51,7 +51,7 @@ struct BasicPopup<Content: View>: View {
                             }
                         } label: {
                             Text("Save")
-                                .font(.system(size: 16, weight: .bold))
+                                .heading()
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(Color.orange)

@@ -8,7 +8,7 @@ struct PreviousGamesView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text("Previous games")
-                    .font(.system(size: 24, weight: .bold))
+                    .title()
                 Spacer()
                 Image(systemName: "chevron.up.circle.fill")
                     .foregroundColor(Color.orange)
@@ -41,21 +41,25 @@ struct PreviousGamesView: View {
         }
     }
     
-    func gameTitle(at index: Int) -> Text {
-        Text("Game #\(index + 1): ")
-            .font(.system(size: 14, weight: .medium))
-        + Text("\(viewModel.series.games[index].currentScore)")
-            .font(.system(size: 16, weight: .bold))
+    func gameTitle(at index: Int) -> some View {
+        HStack(alignment: .center, spacing: 2) {
+            Text("Game #\(index + 1): ")
+                .subheading(weight: .regular)
+            Text("\(viewModel.series.games[index].currentScore)")
+                .heading()
+        }
     }
     
-    var previousGamesDescription: Text {
-        Text("\(viewModel.series.games.count)")
-            .font(.system(size: 14, weight: .bold))
-        + Text(" games with ")
-            .font(.system(size: 14, weight: .regular))
-        + Text(String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
-            .font(.system(size: 14, weight: .bold))
-        + Text(" avarage so far")
-            .font(.system(size: 14, weight: .regular))
+    var previousGamesDescription: some View {
+        HStack(alignment: .center, spacing: 2) {
+            Text("\(viewModel.series.games.count)")
+                .subheading()
+            Text(" games with ")
+                .subheading(weight: .regular)
+            Text(String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
+                .subheading()
+            Text(" avarage so far")
+                .subheading(weight: .regular)
+        }
     }
 }

@@ -41,11 +41,13 @@ struct GamesListView: View {
         .padding(.top, Padding.defaultPadding)
     }
     
-    private func gameTitle(index: Int) -> Text {
-        Text("Game #\(index + 1): ")
-            .font(.system(size: 14, weight: .medium))
-        + Text("\(viewModel.games[index].currentScore)")
-            .font(.system(size: 16, weight: .bold))
+    private func gameTitle(index: Int) -> some View {
+        HStack(alignment: .center, spacing: 2) {
+            Text("Game #\(index + 1): ")
+                .subheading(weight: .regular)
+            Text("\(viewModel.games[index].currentScore)")
+                .subheading()
+        }
     }
     
     private func toggleExpansion(for index: Int) {

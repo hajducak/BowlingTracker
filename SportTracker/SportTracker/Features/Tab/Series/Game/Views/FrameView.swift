@@ -33,11 +33,11 @@ struct FrameView: View {
             }.padding(3)
             if let score = maxPossibleScore, frame.index == 10 {
                 Text("\(score)")
-                    .font(.system(size: 14, weight: .bold))
+                    .subheading()
                     .padding(.bottom, 3)
             } else {
                 Text(scoreSoFarFormatted)
-                    .font(.system(size: 14, weight: .medium))
+                    .subheading(weight: .medium)
                     .padding(.bottom, 3)
             }
         }

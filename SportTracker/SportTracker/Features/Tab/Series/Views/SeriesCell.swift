@@ -8,32 +8,29 @@ struct SeriesCell: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(series.name)
-                    .font(.system(size: 16, weight: .medium))
+                    .heading()
                     .padding(.top, 15)
                 if !series.description.isEmpty {
                     Text(series.description)
-                        .font(.system(size: 14, weight: .regular))
+                        .subheading(weight: .regular)
                 }
                 HStack {
                     Text(series.formattedDate)
                     Text("games: \(series.games.count)")
-                }
-                .font(.system(size: 12, weight: .regular))
-                .foregroundColor(.gray)
+                }.caption()
             }
             Spacer()
             Image(systemName: "chevron.right.circle.fill")
                 .foregroundColor(.orange)
         }
         .flexWidthModifier(alignment: .leading)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(8)
         .background(Color.white)
         .cornerRadius(12)
         .overlay(
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                    .stroke(UIColor.systemGray6.color, lineWidth: 1)
                 Text(series.tag.rawValue)
                     .foregroundColor(.white)
                     .font(.system(size: 10, weight: .bold))
@@ -42,7 +39,7 @@ struct SeriesCell: View {
                     .background(series.tag.color)
                     .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
                     .cornerRadius(2, corners: [.topLeft, .topRight])
-                    .offset(x: 10, y: -2)
+                    .offset(x: 16, y: -2)
             }
         )
         .padding(.horizontal, 20)

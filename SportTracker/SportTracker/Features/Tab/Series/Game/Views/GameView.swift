@@ -16,7 +16,7 @@ struct GameView: View {
                     .frame(width: 50)
                     .padding(.trailing, 10)
                 Text("Select \(viewModel.selectingFallenPins ? "Fallen Pins" : "Left Over Pins")")
-                    .font(.system(size: 16, weight: .bold))
+                    .heading()
                     .multilineTextAlignment(.trailing)
                 Spacer()
             }.padding(.horizontal, Padding.defaultPadding)
@@ -32,7 +32,7 @@ struct GameView: View {
                         Image(systemName: "chevron.backward")
                         Text("Back")
                     }
-                        .font(.system(size: 16, weight: .bold))
+                        .heading()
                         .padding()
                         .background(Color.orange)
                         .foregroundColor(.white)
@@ -40,7 +40,7 @@ struct GameView: View {
                 }
                 Button(action: viewModel.addRoll) {
                     Text("Add Roll")
-                        .font(.system(size: 16, weight: .bold))
+                        .heading()
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
@@ -50,7 +50,7 @@ struct GameView: View {
                 }.disabled(!viewModel.addRollIsEnabled)
                 Button(action: viewModel.addStrike) {
                     Text("X")
-                        .font(.system(size: 16, weight: .bold))
+                        .heading()
                         .padding()
                         .background(Color.orange)
                         .opacity(viewModel.strikeIsEnabled ? 1 : 0.3)
@@ -59,7 +59,7 @@ struct GameView: View {
                 }.disabled(!viewModel.strikeIsEnabled)
                 Button(action: viewModel.addSpare) {
                     Text("/")
-                        .font(.system(size: 16, weight: .bold))
+                        .heading()
                         .padding()
                         .background(Color.orange)
                         .opacity(viewModel.spareIsEnabled ? 1 : 0.3)
@@ -70,7 +70,7 @@ struct GameView: View {
                 .padding(.horizontal, Padding.defaultPadding)
             Button(action: viewModel.saveGame) {
                 Text("Save Game")
-                    .font(.system(size: 16, weight: .bold))
+                    .heading()
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.orange)

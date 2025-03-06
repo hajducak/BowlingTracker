@@ -13,7 +13,7 @@ struct CreateSeriesView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Create new series")
-                        .font(.largeTitle).bold()
+                        .title()
                     TextField("Enter series name", text: $seriesName)
                         .textFieldStyle(labeled: "Series name")
                     TextField("Enter series description", text: $seriesDescription)
@@ -25,7 +25,7 @@ struct CreateSeriesView: View {
                         Text("Other").tag(SeriesType.other)
                     }
                     .pickerStyle(SegmentedPickerStyle())
-                    .font(.system(size: 16, weight: .medium))
+                    .heading()
                     .labled(label: "Type of series")
                     DatePicker("", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(GraphicalDatePickerStyle())
@@ -43,7 +43,7 @@ struct CreateSeriesView: View {
                 .background {
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.white)
-                        .stroke(UIColor.systemGray4.color, lineWidth: 1)
+                        .stroke(UIColor.systemGray6.color, lineWidth: 1)
                 }
         }.edgesIgnoringSafeArea(.bottom)
     }
@@ -54,7 +54,7 @@ struct CreateSeriesView: View {
                 onClose()
             } label: {
                 Text("Close")
-                    .font(.system(size: 16, weight: .bold))
+                    .heading()
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.white)
@@ -71,7 +71,7 @@ struct CreateSeriesView: View {
                     onSave?()
                 } label: {
                     Text("Save")
-                        .font(.system(size: 16, weight: .bold))
+                        .heading()
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)

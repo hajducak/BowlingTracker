@@ -51,8 +51,7 @@ struct OpenFrameShape: View {
                     .fill(.orange)
             }
             Text(number)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundColor(isSplit ? .white : .black)
+                .heading(color: isSplit ? .white : .black)
         }.frame(width: frameSize.width, height: frameSize.height)
     }
 }

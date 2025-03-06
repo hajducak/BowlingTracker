@@ -49,7 +49,7 @@ struct SeriesView: View {
             VStack {
                 Spacer()
                 Text("No series found")
-                    .font(.title)
+                    .title()
                     .foregroundColor(.gray)
                     .padding()
                 Spacer()

@@ -16,9 +16,8 @@ struct SeriesDetailView: View {
                                 .padding(.horizontal, Padding.defaultPadding)
                             GameView(viewModel: game)
                             PreviousGamesView(viewModel: viewModel)
-                                .padding(.horizontal, Padding.defaultPadding)
                                 .padding(.top, 10)
-                        }
+                        }.padding(.bottom, Padding.defaultPadding)
                     }
                     .navigationBarItems(
                         trailing:
@@ -104,7 +103,7 @@ struct SeriesDetailView: View {
                 .font(.system(size: 24, weight: .bold))
                 .padding([.horizontal, .top], Padding.defaultPadding)
             GamesListView(viewModel: viewModel)
-        }
+        }.padding(.bottom, Padding.defaultPadding)
     }
     
     private var empty: some View {

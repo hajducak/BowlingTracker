@@ -8,6 +8,7 @@ struct GameView: View {
             ScrollView(.horizontal) {
                 SheetView(game: $viewModel.game)
                     .padding(.horizontal, Padding.defaultPadding)
+                    .padding(.bottom, 8)
             }
             HStack(alignment: .center, spacing: 8) {
                 Toggle("", isOn: $viewModel.selectingFallenPins)

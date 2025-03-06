@@ -54,11 +54,10 @@ struct CreateSeriesView: View {
                 onClose()
             } label: {
                 Text("Close")
-                    .heading()
+                    .heading(color: .orange)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.white)
-                    .foregroundColor(.orange)
             }
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
@@ -71,11 +70,10 @@ struct CreateSeriesView: View {
                     onSave?()
                 } label: {
                     Text("Save")
-                        .heading()
+                        .heading(color: .white)
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
-                        .foregroundColor(.white)
                         .cornerRadius(12)
                 }
                 .frame(maxWidth: .infinity)

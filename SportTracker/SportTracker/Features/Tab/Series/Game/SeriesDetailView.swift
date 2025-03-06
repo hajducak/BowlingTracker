@@ -25,7 +25,7 @@ struct SeriesDetailView: View {
                                 viewModel.saveSeries()
                             }, label: {
                                 Text("Save")
-                                    .heading()
+                                    .heading(color: .orange)
                             })
                     )
                     .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
@@ -44,7 +44,7 @@ struct SeriesDetailView: View {
                         HStack {
                             Image(systemName: "chevron.backward")
                             Text("Back")
-                        }.heading()
+                        }.heading(color: .orange)
                     })
             )
         }

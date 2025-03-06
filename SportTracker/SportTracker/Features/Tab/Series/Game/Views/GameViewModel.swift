@@ -3,7 +3,7 @@ import Combine
 class GameViewModel: ObservableObject {
     @Published var selectedPins: Set<Int> = []
     @Published var disabledPins: Set<Int> = []
-    @Published var selectingFallenPins: Bool = true
+    @Published var selectingFallenPins: Bool = false
     @Published var currentFrameIndex: Int = 0
     @Published var game: Game
     @Published var saveGameIsEnabled: Bool = false

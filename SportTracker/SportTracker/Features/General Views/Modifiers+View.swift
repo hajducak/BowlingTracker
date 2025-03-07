@@ -24,9 +24,9 @@ struct CustomTextFieldStyle: ViewModifier {
         content
             .padding()
             .frame(height: 50)
-            .background(Color.white.cornerRadius(8))
+            .background(Color.white.cornerRadius(Corners.corenrRadiusS))
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusS)
                     .stroke(DefaultColor.border, lineWidth: 1)
             )
             .labled(label: label)
@@ -72,7 +72,7 @@ struct RoundedCorner: Shape {
 struct LabeledStyle: ViewModifier {
     let label: String
     func body(content: Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Padding.spacingS) {
             Text(label)
                 .heading()
             content.padding(.bottom, 15)

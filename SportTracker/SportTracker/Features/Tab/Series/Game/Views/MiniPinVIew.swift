@@ -4,8 +4,8 @@ struct MiniPinView: View {
     let firstRollPins: [Pin]?
     let secondRollPins: [Pin]?
     
-    let innerSpacing: CGFloat = 4
-    let rowSpacing: CGFloat = 2
+    let innerSpacing: CGFloat = Padding.spacingXXS
+    let rowSpacing: CGFloat = Padding.spacingXXXS
 
     var body: some View {
         VStack(spacing: rowSpacing) {

@@ -61,7 +61,7 @@ struct SeriesView: View {
                         viewModel: item
                     )) {
                         SeriesCell(series: item.series) { viewModel.deleteSeries($0) }
-                            .padding(.bottom, 8)
+                            .padding(.bottom, Padding.spacingS)
                     }.buttonStyle(PlainButtonStyle())
                 }
             }

@@ -7,10 +7,10 @@ struct SeriesCell: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Padding.spacingXXS) {
                 Text(series.name)
                     .heading()
-                    .padding(.top, 15)
+                    .padding(.top, Padding.spacingM)
                 if !series.description.isEmpty {
                     Text(series.description)
                         .subheading(weight: .regular)
@@ -25,21 +25,21 @@ struct SeriesCell: View {
                 .foregroundColor(.orange)
         }
         .flexWidthModifier(alignment: .leading)
-        .padding(8)
+        .padding(Padding.spacingS)
         .background(Color.white)
-        .cornerRadius(12)
+        .cornerRadius(Corners.corenrRadiusM)
         .overlay(
             ZStack(alignment: .topLeading) {
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
                     .stroke(DefaultColor.border, lineWidth: 1)
                 HStack {
                     Text(series.tag.rawValue)
                         .smallNegative()
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, Padding.spacingXS)
+                        .padding(.vertical, Padding.spacingXXS)
                         .background(series.tag.color)
-                        .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
-                        .cornerRadius(2, corners: [.topLeft, .topRight])
+                        .cornerRadius(Corners.corenrRadiusS, corners: [.bottomLeft, .bottomRight])
+                        .cornerRadius(Corners.corenrRadiusXXS, corners: [.topLeft, .topRight])
                     if series.currentGame != nil {
                         HStack {
                             Image(systemName: "livephoto.play")
@@ -47,11 +47,11 @@ struct SeriesCell: View {
                             Text("Live")
                         }
                             .smallNegative()
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 4)
+                            .padding(.horizontal, Padding.spacingXS)
+                            .padding(.vertical, Padding.spacingXXS)
                             .background(.red)
-                            .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
-                            .cornerRadius(2, corners: [.topLeft, .topRight])
+                            .cornerRadius(Corners.corenrRadiusS, corners: [.bottomLeft, .bottomRight])
+                            .cornerRadius(Corners.corenrRadiusXXS, corners: [.topLeft, .topRight])
                             .onAppear {
                                 withAnimation(
                                     Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true)
@@ -63,7 +63,7 @@ struct SeriesCell: View {
                 }.offset(x: 16, y: -2)
             }
         )
-        .padding(.horizontal, 20)
+        .padding(.horizontal, Padding.defaultPadding)
         // .tap(count: 3) { onDeleteSeries(series) }
     }
 }

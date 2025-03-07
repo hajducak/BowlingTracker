@@ -18,10 +18,10 @@ struct BasicPopup<Content: View>: View {
                     }
                 }
 
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: Padding.defaultPadding) {
                 Text(title)
                     .title()
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, Padding.defaultPadding)
                 content()
                 HStack {
                     Button {
@@ -38,7 +38,7 @@ struct BasicPopup<Content: View>: View {
                             .foregroundColor(.orange)
                     }
                     .overlay(
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
                             .stroke(Color.orange, lineWidth: 1)
                     )
                     .frame(maxWidth: .infinity)
@@ -56,16 +56,16 @@ struct BasicPopup<Content: View>: View {
                                 .frame(maxWidth: .infinity)
                                 .background(Color.orange)
                                 .foregroundColor(.white)
-                                .cornerRadius(12)
+                                .cornerRadius(Corners.corenrRadiusM)
                         }
                         .frame(maxWidth: .infinity)
                     }
                 }
                 .padding()
             }
-            .padding(.vertical, 20)
+            .padding(.vertical, Padding.defaultPadding)
             .background(Color.white)
-            .cornerRadius(16, corners: [.topLeft, .topRight])
+            .cornerRadius(Corners.corenrRadiusL, corners: [.topLeft, .topRight])
             .shadow(radius: 10)
             .frame(maxWidth: .infinity)
             .offset(y: isVisible ? 0 : UIScreen.main.bounds.height)
@@ -78,7 +78,7 @@ struct BasicPopup<Content: View>: View {
 
 #Preview {
     BasicPopup(isVisible: .constant(true), title: "Popup title") {
-        Text("Popup Content").padding(.horizontal, 20)
+        Text("Popup Content").padding(.horizontal, Padding.defaultPadding)
     } onDismiss: {
         
     } onConfirm: {

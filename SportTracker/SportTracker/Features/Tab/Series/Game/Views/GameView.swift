@@ -8,13 +8,13 @@ struct GameView: View {
             ScrollView(.horizontal) {
                 SheetView(game: $viewModel.game)
                     .padding(.horizontal, Padding.defaultPadding)
-                    .padding(.bottom, 8)
+                    .padding(.bottom, Padding.spacingS)
             }
-            HStack(alignment: .center, spacing: 8) {
+            HStack(alignment: .center, spacing: Padding.spacingS) {
                 Toggle("", isOn: $viewModel.selectingFallenPins)
                     .tint(Color.orange)
                     .frame(width: 50)
-                    .padding(.trailing, 10)
+                    .padding(.trailing, Padding.spacingXXM)
                 Text("Select \(viewModel.selectingFallenPins ? "Fallen Pins" : "Left Over Pins")")
                     .heading()
                     .multilineTextAlignment(.trailing)
@@ -26,7 +26,7 @@ struct GameView: View {
             )
                 .padding(.horizontal, Padding.defaultPadding)
                 .padding(.bottom, Padding.defaultPadding)
-            HStack(spacing: 4) {
+            HStack(spacing: Padding.spacingXXS) {
                 Button(action: viewModel.undoRoll) {
                     HStack {
                         Image(systemName: "chevron.backward")
@@ -35,7 +35,7 @@ struct GameView: View {
                         .heading(color: .white)
                         .padding()
                         .background(Color.orange)
-                        .cornerRadius(10)
+                        .cornerRadius(Corners.corenrRadiusM)
                 }
                 Button(action: viewModel.addRoll) {
                     Text("Add Roll")
@@ -44,7 +44,7 @@ struct GameView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
                         .opacity(viewModel.addRollIsEnabled ? 1 : 0.3)
-                        .cornerRadius(10)
+                        .cornerRadius(Corners.corenrRadiusM)
                 }.disabled(!viewModel.addRollIsEnabled)
                 Button(action: viewModel.addStrike) {
                     Text("X")
@@ -52,7 +52,7 @@ struct GameView: View {
                         .padding()
                         .background(Color.orange)
                         .opacity(viewModel.strikeIsEnabled ? 1 : 0.3)
-                        .cornerRadius(10)
+                        .cornerRadius(Corners.corenrRadiusM)
                 }.disabled(!viewModel.strikeIsEnabled)
                 Button(action: viewModel.addSpare) {
                     Text("/")
@@ -60,7 +60,7 @@ struct GameView: View {
                         .padding()
                         .background(Color.orange)
                         .opacity(viewModel.spareIsEnabled ? 1 : 0.3)
-                        .cornerRadius(10)
+                        .cornerRadius(Corners.corenrRadiusM)
                 }.disabled(!viewModel.spareIsEnabled)
             }
                 .padding(.horizontal, Padding.defaultPadding)
@@ -71,7 +71,7 @@ struct GameView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.orange)
                     .opacity(viewModel.saveGameIsEnabled ? 1 : 0.3)
-                    .cornerRadius(10)
+                    .cornerRadius(Corners.corenrRadiusM)
             }
                 .padding(.horizontal, Padding.defaultPadding)
                 .disabled(!viewModel.saveGameIsEnabled)
@@ -96,9 +96,9 @@ struct PinsGrid: View {
     ]
     
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: Padding.spacingXXM) {
             ForEach(pinLayout, id: \.self) { row in
-                HStack(spacing: 10) {
+                HStack(spacing: Padding.spacingXXM) {
                     ForEach(row, id: \.self) { pin in
                         PinView(
                             pin: pin,

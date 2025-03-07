@@ -11,7 +11,7 @@ struct CreateSeriesView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXM) {
                     Text("Create new series")
                         .title()
                     TextField("Enter series name", text: $seriesName)
@@ -30,7 +30,7 @@ struct CreateSeriesView: View {
                     DatePicker("", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .tint(.orange)
-                        .background(DefaultColor.grey6.cornerRadius(8))
+                        .background(DefaultColor.grey6.cornerRadius(Corners.corenrRadiusS))
                         .labled(label: "Select date")
                     Spacer()
                 }
@@ -41,7 +41,7 @@ struct CreateSeriesView: View {
                 .padding(.vertical, Padding.defaultPadding)
                 .padding(.bottom, Padding.defaultPadding)
                 .background {
-                    RoundedRectangle(cornerRadius: 20)
+                    RoundedRectangle(cornerRadius: Corners.corenrRadiusL)
                         .fill(Color.white)
                         .stroke(DefaultColor.border, lineWidth: 1)
                 }
@@ -60,7 +60,7 @@ struct CreateSeriesView: View {
                     .background(Color.white)
             }
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
                     .stroke(Color.orange, lineWidth: 1)
             )
             .frame(maxWidth: .infinity)
@@ -74,7 +74,7 @@ struct CreateSeriesView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
-                        .cornerRadius(12)
+                        .cornerRadius(Corners.corenrRadiusM)
                 }
                 .frame(maxWidth: .infinity)
             }

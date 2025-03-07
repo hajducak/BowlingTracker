@@ -28,7 +28,7 @@ struct SheetView: View {
                         Spacer()
                     }
                 }
-            }.padding(.bottom, 8)
+            }.padding(.bottom, Padding.spacingS)
         }
     }
 }

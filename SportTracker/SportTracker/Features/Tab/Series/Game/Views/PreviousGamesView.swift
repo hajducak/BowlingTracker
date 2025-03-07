@@ -5,7 +5,7 @@ struct PreviousGamesView: View {
     @State var isCollapsed: Bool = true
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
             HStack {
                 Text("Previous games")
                     .title()
@@ -29,7 +29,7 @@ struct PreviousGamesView: View {
                         ScrollView(.horizontal) {
                             SheetView(game: $viewModel.series.games[index], showMax: false)
                                 .padding(.horizontal, Padding.defaultPadding)
-                                .padding(.bottom, 8)
+                                .padding(.bottom, Padding.spacingS)
                         }.clipped()
                     }
                 }
@@ -42,7 +42,7 @@ struct PreviousGamesView: View {
     }
     
     func gameTitle(at index: Int) -> some View {
-        HStack(alignment: .center, spacing: 2) {
+        HStack(alignment: .center, spacing: Padding.spacingXXXS) {
             Text("Game #\(index + 1): ")
                 .subheading(weight: .regular)
             Text("\(viewModel.series.games[index].currentScore)")
@@ -51,7 +51,7 @@ struct PreviousGamesView: View {
     }
     
     var previousGamesDescription: some View {
-        HStack(alignment: .center, spacing: 2) {
+        HStack(alignment: .center, spacing: Padding.spacingXXXS) {
             Text("\(viewModel.series.games.count)")
                 .subheading()
             Text(" games with ")

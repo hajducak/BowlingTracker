@@ -17,7 +17,7 @@ struct FrameView: View {
             Text("\(frame.index)")
                 .caption(color: .primary, weight: .bold)
                 .frame(width: max(65, CGFloat(frame.index != 10 ? frame.rolls.count : 3) * 32.5))
-                .padding(.vertical, 4)
+                .padding(.vertical, Padding.spacingXXS)
                 .background(DefaultColor.grey6)
             HStack(spacing: 3) {
                 if frame.rolls.count == 0 { emptyBox }

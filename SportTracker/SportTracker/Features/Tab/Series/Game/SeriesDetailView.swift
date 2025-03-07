@@ -16,7 +16,7 @@ struct SeriesDetailView: View {
                                 .padding(.horizontal, Padding.defaultPadding)
                             GameView(viewModel: game)
                             PreviousGamesView(viewModel: viewModel)
-                                .padding(.top, 10)
+                                .padding(.top, Padding.spacingXXM)
                         }.padding(.bottom, Padding.defaultPadding)
                     }
                     .navigationBarItems(
@@ -53,7 +53,7 @@ struct SeriesDetailView: View {
     }
     
     private var content: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
             let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
             Text("Statistics")
                 .title()

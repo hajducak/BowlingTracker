@@ -15,7 +15,7 @@ struct LinearProgressView: View {
     }
     
     var titleDescription: some View {
-        HStack(alignment: .center, spacing: 2) {
+        HStack(alignment: .center, spacing: Padding.spacingXXXS) {
             Text(title)
                 .custom(size: height * 1.5, weight: .medium)
             Text (" \(String(format: "%.2f%", value))")
@@ -24,7 +24,7 @@ struct LinearProgressView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Padding.spacingS) {
             HStack {
                 titleDescription
                 Spacer()

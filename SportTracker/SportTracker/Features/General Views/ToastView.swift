@@ -8,7 +8,7 @@ struct ToastView: View {
             .padding()
             .background(DefaultColor.grey1)
             .foregroundColor(.white)
-            .cornerRadius(8)
+            .cornerRadius(Corners.corenrRadiusS)
             .padding(.bottom, 70)
     }
 }

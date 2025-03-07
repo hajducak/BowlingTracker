@@ -3,6 +3,7 @@ import SwiftUI
 struct SeriesCell: View {
     var series: Series
     var onDeleteSeries: (Series) -> Void
+    @State private var isPulsing = false
 
     var body: some View {
         HStack {
@@ -31,15 +32,37 @@ struct SeriesCell: View {
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(UIColor.systemGray6.color, lineWidth: 1)
-                Text(series.tag.rawValue)
-                    .foregroundColor(.white)
-                    .font(.system(size: 10, weight: .bold))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 4)
-                    .background(series.tag.color)
-                    .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
-                    .cornerRadius(2, corners: [.topLeft, .topRight])
-                    .offset(x: 16, y: -2)
+                HStack {
+                    Text(series.tag.rawValue)
+                        .foregroundColor(.white)
+                        .font(.system(size: 10, weight: .bold))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(series.tag.color)
+                        .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
+                        .cornerRadius(2, corners: [.topLeft, .topRight])
+                    if series.currentGame != nil {
+                        HStack {
+                            Image(systemName: "livephoto.play")
+                                .scaleEffect(isPulsing ? 1.2 : 1.0)
+                            Text("Live")
+                        }
+                            .foregroundColor(.white)
+                            .font(.system(size: 10, weight: .bold))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 4)
+                            .background(.red)
+                            .cornerRadius(8, corners: [.bottomLeft, .bottomRight])
+                            .cornerRadius(2, corners: [.topLeft, .topRight])
+                            .onAppear {
+                                withAnimation(
+                                    Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true)
+                                ) {
+                                    isPulsing.toggle()
+                                }
+                            }
+                    }
+                }.offset(x: 16, y: -2)
             }
         )
         .padding(.horizontal, 20)

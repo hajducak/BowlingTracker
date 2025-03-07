@@ -14,11 +14,13 @@ struct LinearProgressView: View {
         max(0, min(animatedValue / maxValue, 1))
     }
     
-    var titleDescription: Text {
-        Text(title)
-            .font(.system(size: height * 1.5, weight: .medium))
-        + Text (" \(String(format: "%.2f%", value))")
-            .font(.system(size: height * 1.8, weight: .bold))
+    var titleDescription: some View {
+        HStack(alignment: .center, spacing: 2) {
+            Text(title)
+                .custom(size: height * 1.5, weight: .medium)
+            Text (" \(String(format: "%.2f%", value))")
+                .custom(size: height * 1.8, weight: .bold)
+        }
     }
 
     var body: some View {
@@ -27,8 +29,7 @@ struct LinearProgressView: View {
                 titleDescription
                 Spacer()
                 Text(String(format: "%.2f%", maxValue))
-                    .foregroundColor(.gray)
-                    .font(.system(size: height, weight: .regular))
+                    .custom(size: height, color: UIColor.systemGray.color)
             }
             if !graphIsDisabled {
                 ZStack(alignment: .leading) {

@@ -15,7 +15,7 @@ struct FrameView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("\(frame.index)")
-                .font(.system(size: 12, weight: .bold))
+                .caption(color: .primary, weight: .bold)
                 .frame(width: max(65, CGFloat(frame.index != 10 ? frame.rolls.count : 3) * 32.5))
                 .padding(.vertical, 4)
                 .background(UIColor.systemGray6.color)

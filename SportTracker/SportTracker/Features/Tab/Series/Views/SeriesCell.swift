@@ -34,8 +34,7 @@ struct SeriesCell: View {
                     .stroke(UIColor.systemGray6.color, lineWidth: 1)
                 HStack {
                     Text(series.tag.rawValue)
-                        .foregroundColor(.white)
-                        .font(.system(size: 10, weight: .bold))
+                        .smallNegative()
                         .padding(.horizontal, 6)
                         .padding(.vertical, 4)
                         .background(series.tag.color)
@@ -47,8 +46,7 @@ struct SeriesCell: View {
                                 .scaleEffect(isPulsing ? 1.2 : 1.0)
                             Text("Live")
                         }
-                            .foregroundColor(.white)
-                            .font(.system(size: 10, weight: .bold))
+                            .smallNegative()
                             .padding(.horizontal, 6)
                             .padding(.vertical, 4)
                             .background(.red)

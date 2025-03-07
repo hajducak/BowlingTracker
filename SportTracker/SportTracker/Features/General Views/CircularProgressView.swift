@@ -30,9 +30,9 @@ struct CircularProgressView: View {
                     .animation(.easeOut(duration: 1.5), value: animatedPercentage)
                 VStack {
                     Text("\(Int(percentage))%")
-                        .font(.system(size: size.width * 0.24, weight: .bold))
+                        .custom(size: size.width * 0.24, weight: .bold)
                     Text(title)
-                        .font(.system(size: size.width * 0.16, weight: .medium))
+                        .custom(size: size.width * 0.16, weight: .medium)
                 }
             }
             .frame(width: size.width, height: size.height)

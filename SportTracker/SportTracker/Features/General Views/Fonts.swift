@@ -17,8 +17,19 @@ extension View {
     }
     
     /// 12px, .regular, .systemGrey2
-    func caption(color: Color = UIColor.systemGray2.color) -> some View {
-        self.modifier(CaptionModifier(color: color))
+    func caption(color: Color = UIColor.systemGray2.color, weight: Font.Weight? = .regular) -> some View {
+        self.modifier(CaptionModifier(color: color, weight: weight))
+    }
+
+    /// 10px, .bold, .white
+    func smallNegative(color: Color = .white) -> some View {
+        self.modifier(SmallNegativeModifier(color: color))
+    }
+    
+    /// default size: 12, .regular, .primary
+    /// You can set all parameters based on needs
+    func custom(size: CGFloat, color: Color = .primary, weight: Font.Weight? = .regular) -> some View {
+        self.modifier(CustomTextModifier(size: size, color: color, weight: weight))
     }
 }
 
@@ -59,10 +70,36 @@ struct SubheadingModifier: ViewModifier {
 /// size: 12, .regular, .systemGray4
 struct CaptionModifier: ViewModifier {
     var color: Color = UIColor.systemGray2.color
+    var weight: Font.Weight? = .regular
 
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 12, weight: .regular))
+            .font(.system(size: 12, weight: weight))
+            .foregroundColor(color)
+    }
+}
+
+/// size: 10, .bold, .white
+struct SmallNegativeModifier: ViewModifier {
+    var color: Color = .white
+
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 10, weight: .bold))
+            .foregroundColor(color)
+    }
+}
+
+/// default size: 12, .regular, .primary
+/// you can set all parameters based on needs
+struct CustomTextModifier: ViewModifier {
+    var size: CGFloat = 12
+    var color: Color = .primary
+    var weight: Font.Weight? = .regular
+
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: size, weight: weight))
             .foregroundColor(color)
     }
 }

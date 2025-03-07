@@ -14,22 +14,21 @@ struct SheetView: View {
                         maxPossibleScore: game.frames[index].frameType == .unfinished && showMax ? game.maxPossibleScore : nil
                     ).padding(.leading, -2)
                     if game.frames[index].index != 10 {
-                        // TODO: Make specific behavior for 10th frame
-                        // TODO: add into settings if miniPins should be displayed or not
+                        // FIXME: Make specific behavior for 10th frame ???
                         MiniPinView(
                             firstRollPins: game.frames[index].rolls.first?.knockedDownPins,
                             secondRollPins: game.frames[index].rolls.last?.knockedDownPins
                         )
                         .padding(7)
                         .background(.white)
-                        .border(UIColor.systemGray6.color, width: 2)
+                        .defaultBorder()
                         .padding(.leading, -2)
                         .padding(.top, -2)
                     } else {
                         Spacer()
                     }
                 }
-            }.padding(.bottom, 8)
+            }.padding(.bottom, Padding.spacingS)
         }
     }
 }

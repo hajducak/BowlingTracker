@@ -27,7 +27,7 @@ struct GamesListView: View {
                         ScrollView(.horizontal) {
                             SheetView(game: $viewModel.games[index], showMax: false)
                                 .padding(.horizontal, Padding.defaultPadding)
-                                .padding(.bottom, 8)
+                                .padding(.bottom, Padding.spacingS)
                                 .matchedGeometryEffect(id: "sheet\(index)", in: animationNamespace)
                         }
                         .frame(maxHeight: expandedIndices.contains(index) ? .infinity : 0)
@@ -35,17 +35,19 @@ struct GamesListView: View {
                         .animation(.easeInOut(duration: 0.3), value: expandedIndices.contains(index))
                     }
                 }
-                .padding(.bottom, 10)
+                .padding(.bottom, Padding.spacingXXM)
             }
         }
         .padding(.top, Padding.defaultPadding)
     }
     
-    private func gameTitle(index: Int) -> Text {
-        Text("Game #\(index + 1): ")
-            .font(.system(size: 14, weight: .medium))
-        + Text("\(viewModel.games[index].currentScore)")
-            .font(.system(size: 16, weight: .bold))
+    private func gameTitle(index: Int) -> some View {
+        HStack(alignment: .center, spacing: Padding.spacingXXXS) {
+            Text("Game #\(index + 1): ")
+                .subheading(weight: .regular)
+            Text("\(viewModel.games[index].currentScore)")
+                .subheading()
+        }
     }
     
     private func toggleExpansion(for index: Int) {

@@ -49,7 +49,7 @@ struct SeriesView: View {
             VStack {
                 Spacer()
                 Text("No series found")
-                    .font(.title)
+                    .title()
                     .foregroundColor(.gray)
                     .padding()
                 Spacer()
@@ -61,7 +61,7 @@ struct SeriesView: View {
                         viewModel: item
                     )) {
                         SeriesCell(series: item.series) { viewModel.deleteSeries($0) }
-                            .padding(.bottom, 8)
+                            .padding(.bottom, Padding.spacingS)
                     }.buttonStyle(PlainButtonStyle())
                 }
             }

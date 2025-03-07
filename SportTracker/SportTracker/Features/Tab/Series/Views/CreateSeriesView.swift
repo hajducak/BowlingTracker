@@ -11,9 +11,9 @@ struct CreateSeriesView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXM) {
                     Text("Create new series")
-                        .font(.largeTitle).bold()
+                        .title()
                     TextField("Enter series name", text: $seriesName)
                         .textFieldStyle(labeled: "Series name")
                     TextField("Enter series description", text: $seriesDescription)
@@ -25,12 +25,12 @@ struct CreateSeriesView: View {
                         Text("Other").tag(SeriesType.other)
                     }
                     .pickerStyle(SegmentedPickerStyle())
-                    .font(.system(size: 16, weight: .medium))
+                    .heading()
                     .labled(label: "Type of series")
                     DatePicker("", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .tint(.orange)
-                        .background(UIColor.systemGray6.color.cornerRadius(8))
+                        .background(DefaultColor.grey6.cornerRadius(Corners.corenrRadiusS))
                         .labled(label: "Select date")
                     Spacer()
                 }
@@ -41,9 +41,9 @@ struct CreateSeriesView: View {
                 .padding(.vertical, Padding.defaultPadding)
                 .padding(.bottom, Padding.defaultPadding)
                 .background {
-                    RoundedRectangle(cornerRadius: 20)
+                    RoundedRectangle(cornerRadius: Corners.corenrRadiusL)
                         .fill(Color.white)
-                        .stroke(UIColor.systemGray4.color, lineWidth: 1)
+                        .stroke(DefaultColor.border, lineWidth: 1)
                 }
         }.edgesIgnoringSafeArea(.bottom)
     }
@@ -54,14 +54,13 @@ struct CreateSeriesView: View {
                 onClose()
             } label: {
                 Text("Close")
-                    .font(.system(size: 16, weight: .bold))
+                    .heading(color: .orange)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.white)
-                    .foregroundColor(.orange)
             }
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
                     .stroke(Color.orange, lineWidth: 1)
             )
             .frame(maxWidth: .infinity)
@@ -71,12 +70,11 @@ struct CreateSeriesView: View {
                     onSave?()
                 } label: {
                     Text("Save")
-                        .font(.system(size: 16, weight: .bold))
+                        .heading(color: .white)
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+                        .cornerRadius(Corners.corenrRadiusM)
                 }
                 .frame(maxWidth: .infinity)
             }

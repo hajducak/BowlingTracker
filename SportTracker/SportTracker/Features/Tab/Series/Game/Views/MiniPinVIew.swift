@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct MiniPinView: View {
-    let firstRollPins: [Pin]? // Používame Pin namiesto Int
-    let secondRollPins: [Pin]? // Používame Pin namiesto Int
+    let firstRollPins: [Pin]?
+    let secondRollPins: [Pin]?
     
-    let innerSpacing: CGFloat = 4
-    let rowSpacing: CGFloat = 2
+    let innerSpacing: CGFloat = Padding.spacingXXS
+    let rowSpacing: CGFloat = Padding.spacingXXXS
 
     var body: some View {
         VStack(spacing: rowSpacing) {
@@ -40,8 +40,8 @@ struct PinCircle: View {
         Circle()
             .frame(width: 10, height: 10)
             .foregroundColor(
-                firstRollPins == nil && secondRollPins == nil ? UIColor.systemGray3.color :
-                firstRollPins?.contains(where: { $0.id == id }) == true ? UIColor.systemGray6.color :
+                firstRollPins == nil && secondRollPins == nil ? DefaultColor.grey3 :
+                firstRollPins?.contains(where: { $0.id == id }) == true ? DefaultColor.grey6 :
                 secondRollPins?.contains(where: { $0.id == id }) == true ? .green :
                 .red
             )

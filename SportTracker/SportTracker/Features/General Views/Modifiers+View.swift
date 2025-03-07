@@ -24,10 +24,10 @@ struct CustomTextFieldStyle: ViewModifier {
         content
             .padding()
             .frame(height: 50)
-            .background(Color.gray.opacity(0.2).cornerRadius(8))
+            .background(Color.white.cornerRadius(Corners.corenrRadiusS))
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusS)
+                    .stroke(DefaultColor.border, lineWidth: 1)
             )
             .labled(label: label)
     }
@@ -72,11 +72,18 @@ struct RoundedCorner: Shape {
 struct LabeledStyle: ViewModifier {
     let label: String
     func body(content: Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Padding.spacingS) {
             Text(label)
-                .font(.system(size: 16, weight: .medium))
+                .heading()
             content.padding(.bottom, 15)
         }
+    }
+}
+
+struct DefaultBorderModifier: ViewModifier {
+    var lineWith: CGFloat = 2
+    func body(content: Content) -> some View {
+        content.border(DefaultColor.border, width: lineWith)
     }
 }
 
@@ -110,8 +117,11 @@ extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
-}
-
-struct Padding {
-    static var defaultPadding: CGFloat = 20
+    
+    /// default border color with default line width
+    /// - color: UIColor.systemgray6
+    /// - lineWith: 2
+    func defaultBorder(lineWith: CGFloat = 2) -> some View {
+        modifier(DefaultBorderModifier(lineWith: lineWith))
+    }
 }

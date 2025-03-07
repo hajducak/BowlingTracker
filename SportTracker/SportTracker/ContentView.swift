@@ -21,7 +21,7 @@ struct ContentView: View {
             
             NavigationView {
                 Text("TODO")
-                    .navigationBarTitle("My statistics")
+                    .navigationBarTitle("My Statistics")
             }
             .tabItem {
                 Image(systemName: "person.crop.circle")

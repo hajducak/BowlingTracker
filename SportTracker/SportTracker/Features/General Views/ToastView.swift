@@ -6,7 +6,7 @@ struct ToastView: View {
     var body: some View {
         Text(toast.toastMessage)
             .padding()
-            .background(UIColor.systemGray.color)
+            .background(DefaultColor.grey1)
             .foregroundColor(.white)
             .cornerRadius(8)
             .padding(.bottom, 70)

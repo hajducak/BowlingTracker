@@ -17,7 +17,7 @@ extension View {
     }
     
     /// 12px, .regular, .systemGrey2
-    func caption(color: Color = UIColor.systemGray2.color, weight: Font.Weight? = .regular) -> some View {
+    func caption(color: Color = DefaultColor.grey2, weight: Font.Weight? = .regular) -> some View {
         self.modifier(CaptionModifier(color: color, weight: weight))
     }
 
@@ -69,7 +69,7 @@ struct SubheadingModifier: ViewModifier {
 
 /// size: 12, .regular, .systemGray4
 struct CaptionModifier: ViewModifier {
-    var color: Color = UIColor.systemGray2.color
+    var color: Color = DefaultColor.grey2
     var weight: Font.Weight? = .regular
 
     func body(content: Content) -> some View {

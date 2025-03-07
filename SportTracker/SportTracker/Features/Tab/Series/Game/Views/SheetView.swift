@@ -21,7 +21,7 @@ struct SheetView: View {
                         )
                         .padding(7)
                         .background(.white)
-                        .border(UIColor.systemGray6.color, width: 2)
+                        .defaultBorder()
                         .padding(.leading, -2)
                         .padding(.top, -2)
                     } else {

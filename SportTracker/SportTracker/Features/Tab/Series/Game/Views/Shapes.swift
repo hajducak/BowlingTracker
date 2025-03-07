@@ -2,7 +2,7 @@ import SwiftUI
 
 struct StrikeShape: View {
     var frameSize: CGSize = .init(width: 25, height: 25)
-    var color: Color = UIColor.systemGray6.color
+    var color: Color = DefaultColor.grey6
     var innerOffset: CGFloat = 6
     var body: some View {
         ZStack {
@@ -22,7 +22,7 @@ struct StrikeShape: View {
 
 struct SpareShape: View {
     var frameSize: CGSize = .init(width: 25, height: 25)
-    var color: Color = UIColor.systemGray6.color
+    var color: Color = DefaultColor.grey6
     var innerOffset: CGFloat = 6
     var body: some View {
         ZStack {
@@ -41,7 +41,7 @@ struct OpenFrameShape: View {
     let number: String
     var frameSize: CGSize = .init(width: 25, height: 25)
     let isSplit: Bool
-    var color: Color = UIColor.systemGray6.color
+    var color: Color = DefaultColor.grey6
     var body: some View {
         ZStack {
             Rectangle()
@@ -58,7 +58,7 @@ struct OpenFrameShape: View {
 
 struct MissShape: View {
     var frameSize: CGSize = .init(width: 25, height: 25)
-    var color: Color = UIColor.systemGray6.color
+    var color: Color = DefaultColor.grey6
     var body: some View {
         ZStack {
             Rectangle()

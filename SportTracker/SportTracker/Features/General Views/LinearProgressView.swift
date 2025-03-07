@@ -29,13 +29,13 @@ struct LinearProgressView: View {
                 titleDescription
                 Spacer()
                 Text(String(format: "%.2f%", maxValue))
-                    .custom(size: height, color: UIColor.systemGray.color)
+                    .custom(size: height, color: DefaultColor.grey1)
             }
             if !graphIsDisabled {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: height / 2)
                         .frame(width: width, height: height)
-                        .foregroundColor(UIColor.systemGray6.color)
+                        .foregroundColor(DefaultColor.grey6)
                     RoundedRectangle(cornerRadius: height / 2)
                         .frame(width: progress * width, height: height * 0.75)
                         .foregroundStyle(

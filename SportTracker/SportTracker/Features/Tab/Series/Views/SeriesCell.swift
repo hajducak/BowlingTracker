@@ -31,7 +31,7 @@ struct SeriesCell: View {
         .overlay(
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(UIColor.systemGray6.color, lineWidth: 1)
+                    .stroke(DefaultColor.border, lineWidth: 1)
                 HStack {
                     Text(series.tag.rawValue)
                         .smallNegative()
@@ -87,7 +87,7 @@ extension SeriesType {
         case .training:
             return .yellow
         case .other:
-            return UIColor.systemGray4.color
+            return DefaultColor.grey4
         }
     }
 }

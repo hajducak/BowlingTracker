@@ -133,7 +133,7 @@ struct PinView: View {
     var body: some View {
         Text("\(pin)").bold()
             .frame(width: 40, height: 40)
-            .background(isSelected ? Color.orange : isDisabled ? UIColor.systemGray6.color : UIColor.systemGray4.color)
+            .background(isSelected ? Color.orange : isDisabled ? DefaultColor.grey6 : DefaultColor.grey4)
             .foregroundColor(isSelected ? .white : .black)
             .clipShape(Circle())
             .overlay(Circle().stroke(Color.black, lineWidth: 1))

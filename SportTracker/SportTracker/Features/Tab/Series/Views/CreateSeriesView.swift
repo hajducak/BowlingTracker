@@ -30,7 +30,7 @@ struct CreateSeriesView: View {
                     DatePicker("", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .tint(.orange)
-                        .background(UIColor.systemGray6.color.cornerRadius(8))
+                        .background(DefaultColor.grey6.cornerRadius(8))
                         .labled(label: "Select date")
                     Spacer()
                 }
@@ -43,7 +43,7 @@ struct CreateSeriesView: View {
                 .background {
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.white)
-                        .stroke(UIColor.systemGray6.color, lineWidth: 1)
+                        .stroke(DefaultColor.border, lineWidth: 1)
                 }
         }.edgesIgnoringSafeArea(.bottom)
     }

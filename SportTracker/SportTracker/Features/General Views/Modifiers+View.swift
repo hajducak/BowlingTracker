@@ -27,7 +27,7 @@ struct CustomTextFieldStyle: ViewModifier {
             .background(Color.white.cornerRadius(8))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(UIColor.systemGray6.color, lineWidth: 1)
+                    .stroke(DefaultColor.border, lineWidth: 1)
             )
             .labled(label: label)
     }
@@ -80,6 +80,13 @@ struct LabeledStyle: ViewModifier {
     }
 }
 
+struct DefaultBorderModifier: ViewModifier {
+    var lineWith: CGFloat = 2
+    func body(content: Content) -> some View {
+        content.border(DefaultColor.border, width: lineWith)
+    }
+}
+
 extension View {
     @ViewBuilder
     func tap(count: Int = 1, perform: @escaping () -> Void) -> some View {
@@ -110,8 +117,11 @@ extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
     }
-}
-
-struct Padding {
-    static var defaultPadding: CGFloat = 20
+    
+    /// default border color with default line width
+    /// - color: UIColor.systemgray6
+    /// - lineWith: 2
+    func defaultBorder(lineWith: CGFloat = 2) -> some View {
+        modifier(DefaultBorderModifier(lineWith: lineWith))
+    }
 }

@@ -11,7 +11,7 @@ struct CircularProgressView: View {
         VStack {
             ZStack {
                 Circle()
-                    .stroke(UIColor.systemGray6.color, lineWidth: size.width * 0.12)
+                    .stroke(DefaultColor.border, lineWidth: size.width * 0.12)
                 Circle()
                     .trim(from: 0, to: animatedPercentage / 100)
                     .stroke(

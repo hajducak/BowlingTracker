@@ -18,7 +18,7 @@ struct FrameView: View {
                 .caption(color: .primary, weight: .bold)
                 .frame(width: max(65, CGFloat(frame.index != 10 ? frame.rolls.count : 3) * 32.5))
                 .padding(.vertical, 4)
-                .background(UIColor.systemGray6.color)
+                .background(DefaultColor.grey6)
             HStack(spacing: 3) {
                 if frame.rolls.count == 0 { emptyBox }
                 if frame.frameType == .strike {
@@ -42,14 +42,14 @@ struct FrameView: View {
             }
         }
         .background(.white)
-        .border(UIColor.systemGray6.color, width: 2)
+        .defaultBorder()
     }
     
     private var emptyBox: some View {
         Text("")
             .frame(width: 25, height: 25)
             .background(Color.white)
-            .border(UIColor.systemGray6.color, width: 2)
+            .defaultBorder()
     }
 
     private func formatRoll(_ roll: Roll,_ index: Int) -> some View {

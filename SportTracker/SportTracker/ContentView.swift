@@ -2,10 +2,12 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var bowlingSeriesViewModel: SeriesViewModel
+    @StateObject private var statisticsViewModel: StatisticsViewModel
     @StateObject private var tabSelectionViewModel = TabSelectionViewModel()
 
-    init(bowlingSeriesViewModel: SeriesViewModel) {
+    init(bowlingSeriesViewModel: SeriesViewModel, statisticsViewModel: StatisticsViewModel) {
         _bowlingSeriesViewModel = StateObject(wrappedValue: bowlingSeriesViewModel)
+        _statisticsViewModel = StateObject(wrappedValue: statisticsViewModel)
     }
 
     var body: some View {
@@ -20,7 +22,7 @@ struct ContentView: View {
             }.tag(0)
             
             NavigationView {
-                Text("TODO")
+                StatisticsView(viewModel: statisticsViewModel)
                     .navigationBarTitle("My Statistics")
             }
             .tabItem {

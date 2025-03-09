@@ -29,9 +29,14 @@ struct SportTrackerApp: App {
                 seriesViewModelFactory: seriesViewModelFactory,
                 firebaseManager: firebaseManager
             )
+            
+            let statisticsViewModel = StatisticsViewModel(
+                firebaseManager: firebaseManager
+            )
 
             ContentView(
-                bowlingSeriesViewModel: bowlingSeriesViewModel
+                bowlingSeriesViewModel: bowlingSeriesViewModel,
+                statisticsViewModel: statisticsViewModel
             ).preferredColorScheme(.light)
         }
     }

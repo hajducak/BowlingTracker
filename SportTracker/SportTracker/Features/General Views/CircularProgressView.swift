@@ -3,6 +3,7 @@ import SwiftUI
 struct CircularProgressView: View {
     var percentage: Double
     var title: String
+    var description: String?
     var size: CGSize
 
     @State private var animatedPercentage: Double = 0
@@ -33,6 +34,9 @@ struct CircularProgressView: View {
                         .custom(size: size.width * 0.24, weight: .bold)
                     Text(title)
                         .custom(size: size.width * 0.16, weight: .medium)
+                    description.map {
+                        Text($0).custom(size: size.width * 0.1, weight: .regular)
+                    }
                 }
             }
             .frame(width: size.width, height: size.height)

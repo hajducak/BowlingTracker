@@ -66,26 +66,30 @@ struct SeriesDetailView: View {
                 .padding(.horizontal, Padding.defaultPadding)
             HStack(alignment: .center, spacing: 0) {
                 CircularProgressView(
-                    percentage: viewModel.series.getSeriesStrikePercentage(),
+                    percentage: viewModel.series.seriesStrikeStatistics.percentage,
                     title: "Strikes",
+                    description: viewModel.series.seriesStrikeStatistics.count,
                     size: .init(width: graphSize, height: graphSize)
                 )
                 Spacer()
                 CircularProgressView(
-                    percentage: viewModel.series.getSeriesSparePercentage(),
+                    percentage: viewModel.series.seriesSpareStatistics.percentage,
                     title: "Spares",
+                    description: viewModel.series.seriesSpareStatistics.count,
                     size: .init(width: graphSize, height: graphSize)
                 )
                 Spacer()
                 CircularProgressView(
-                    percentage: viewModel.series.getSeriesOpenPercentage(),
+                    percentage: viewModel.series.seriesOpenStatistics.percentage,
                     title: "Opens",
+                    description: viewModel.series.seriesOpenStatistics.count,
                     size: .init(width: graphSize, height: graphSize)
                 )
                 Spacer()
                 CircularProgressView(
-                    percentage: viewModel.series.getSeriesSplitPercentage(),
+                    percentage: viewModel.series.seriesSplitStatistics.percentage,
                     title: "Splits",
+                    description: viewModel.series.seriesSplitStatistics.count,
                     size: .init(width: graphSize, height: graphSize)
                 )
             }

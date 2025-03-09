@@ -17,7 +17,7 @@ struct SeriesCell: View {
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: Padding.spacingXXS) {
                     Text("Games: \(series.games.count)")
-                    Text("Avarage: \(String(format: "%.2f%", series.getSeriesAvarage()))")
+                    Text("Avarage: \(series.getSeriesAvarage().twoPointFormat())")
                 }.caption()
                 Spacer()
                 Text("at \(series.formattedDate)").caption()

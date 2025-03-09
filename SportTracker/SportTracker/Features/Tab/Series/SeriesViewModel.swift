@@ -9,7 +9,6 @@ enum SeriesContentState {
 
 class SeriesViewModel: ObservableObject {
     @Published var state: SeriesContentState = .loading
-    @Published var series: [SeriesDetailViewModel] = []
     @Published var toast: Toast? = nil
     @Published var newSeriesName = ""
     @Published var newSeriesDescription = ""
@@ -58,6 +57,14 @@ class SeriesViewModel: ObservableObject {
     func addSeries() {
         let newSeries = Series(date: newSeriesSelectedDate, name: newSeriesName, description: newSeriesDescription, tag: newSeriesSelectedType)
         save(series: newSeries)
+        resetToDefault()
+    }
+
+    private func resetToDefault() {
+        newSeriesName = ""
+        newSeriesDescription = ""
+        newSeriesSelectedType = .league
+        newSeriesSelectedDate = Date()
     }
 
     func save(series: Series) {

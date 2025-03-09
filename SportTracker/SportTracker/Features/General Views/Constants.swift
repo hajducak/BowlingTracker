@@ -3,7 +3,7 @@ import SwiftUI
 
 struct Padding {
     /// 20px
-    static var defaultPadding: CGFloat = 20
+    static var defaultPadding: CGFloat = 16
     /// 2px
     static var spacingXXXS: CGFloat = 2
     /// 4px

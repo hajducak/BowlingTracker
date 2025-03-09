@@ -18,7 +18,7 @@ struct LinearProgressView: View {
         HStack(alignment: .center, spacing: Padding.spacingXXXS) {
             Text(title)
                 .custom(size: height * 1.5, weight: .medium)
-            Text (" \(String(format: "%.2f%", value))")
+            Text (" \(value.twoPointFormat())")
                 .custom(size: height * 1.8, weight: .bold)
         }
     }
@@ -28,7 +28,7 @@ struct LinearProgressView: View {
             HStack {
                 titleDescription
                 Spacer()
-                Text(String(format: "%.2f%", maxValue))
+                Text(maxValue.twoPointFormat())
                     .custom(size: height, color: DefaultColor.grey1)
             }
             if !graphIsDisabled {

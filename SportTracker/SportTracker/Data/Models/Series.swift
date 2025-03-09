@@ -4,6 +4,8 @@ enum SeriesType: String, Codable {
     case tournament, training, league, other
 }
 
+typealias SeriesStatistics = (percentage: Double, count: String)
+
 struct Series: Codable, Identifiable {
     let id: String
     let date: Date
@@ -32,41 +34,47 @@ struct Series: Codable, Identifiable {
         return Double(getSeriesScore()) / Double(games.count)
     }
     
-    func getSeriesStrikePercentage() -> Double {
-        let normalFrames = games.count * 9
+    var seriesStrikeStatistics: SeriesStatistics {
+        let strikesPerGame = 12
+        let strikesPossibility = strikesPerGame  * games.count
         let totalStrikes = games.reduce(0) { $0 + $1.strikeCount }
-        
-        let extraFrames = games.reduce(0) { $0 + $1.lastFrameCount().strikes + $1.lastFrameCount().spares + $1.lastFrameCount().opens }
-        let totalFramesPlusExtraRolls = normalFrames + extraFrames
 
-        return totalFramesPlusExtraRolls > 0 ? (Double(totalStrikes) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
+        let percentage = strikesPossibility > 0 ?  (Double(totalStrikes) / Double(strikesPossibility) * 100).rounded(toPlaces: 2) : 0.0
+        let count = "\(totalStrikes)/\(strikesPossibility)"
+
+        return (percentage, count)
     }
 
-    func getSeriesSparePercentage() -> Double {
-        let normalFrames = games.count * 9
+    var seriesSpareStatistics: SeriesStatistics {
+        let sparesPerGame = 10
+        let sparesPossibility = sparesPerGame * games.count
         let totalSpares = games.reduce(0) { $0 + $1.spareCount }
-        
-        let extraFrames = games.reduce(0) { $0 + $1.lastFrameCount().strikes + $1.lastFrameCount().spares + $1.lastFrameCount().opens }
-        let totalFramesPlusExtraRolls = normalFrames + extraFrames
 
-        return totalFramesPlusExtraRolls > 0 ? (Double(totalSpares) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
+
+        let percentage = sparesPossibility > 0 ? (Double(totalSpares) / Double(sparesPossibility) * 100).rounded(toPlaces: 2) : 0.0
+        let count = "\(totalSpares)/\(sparesPossibility)"
+        return (percentage, count)
     }
 
-    func getSeriesOpenPercentage() -> Double {
-        let normalFrames = games.count * 9
+    var seriesOpenStatistics: SeriesStatistics {
+        let opensPerGame = 10
+        let opensPossibility = games.count * opensPerGame
         let totalOpenFrames = games.reduce(0) { $0 + $1.openFrameCount }
 
-        let extraFrames = games.reduce(0) { $0 + $1.lastFrameCount().strikes + $1.lastFrameCount().spares + $1.lastFrameCount().opens }
-        let totalFramesPlusExtraRolls = normalFrames + extraFrames
-
-        return totalFramesPlusExtraRolls > 0 ? (Double(totalOpenFrames) / Double(totalFramesPlusExtraRolls) * 100).rounded(toPlaces: 2) : 0.0
+        let percentage = opensPossibility > 0 ? (Double(totalOpenFrames) / Double(opensPossibility) * 100).rounded(toPlaces: 2) : 0.0
+        let count = "\(totalOpenFrames)/\(opensPossibility)"
+        
+        return (percentage, count)
     }
     
-    func getSeriesSplitPercentage() -> Double {
+    var seriesSplitStatistics: SeriesStatistics {
         let totalFrames = games.count * 10
         let totalSplits = games.reduce(0) { $0 + $1.splitCount }
 
-        return totalFrames > 0 ? (Double(totalSplits) / Double(totalFrames) * 100).rounded(toPlaces: 2) : 0.0
+        let percentage = totalFrames > 0 ? (Double(totalSplits) / Double(totalFrames) * 100).rounded(toPlaces: 2) : 0.0
+        let count = "\(totalSplits)/\(totalFrames)"
+        
+        return (percentage, count)
     }
 
     func isCurrentGameActive() -> Bool {
@@ -91,7 +99,7 @@ struct Series: Codable, Identifiable {
 extension Series {
     var formattedDate: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy HH:mm"
+        formatter.dateFormat = "HH:mm dd/MM/yyyy"
         return formatter.string(from: date)
     }
 }

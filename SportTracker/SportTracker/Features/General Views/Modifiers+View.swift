@@ -125,3 +125,9 @@ extension View {
         modifier(DefaultBorderModifier(lineWith: lineWith))
     }
 }
+
+extension Double {
+    func twoPointFormat() -> String {
+        String(format: "%.2f%", self)
+    }
+}

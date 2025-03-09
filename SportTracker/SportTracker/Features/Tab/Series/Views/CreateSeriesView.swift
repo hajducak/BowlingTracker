@@ -32,6 +32,12 @@ struct CreateSeriesView: View {
                         .tint(.orange)
                         .background(DefaultColor.grey6.cornerRadius(Corners.corenrRadiusS))
                         .labled(label: "Select date")
+                    DatePicker("", selection: $selectedDate, displayedComponents: [.hourAndMinute])
+                        .datePickerStyle(WheelDatePickerStyle())
+                        .labelsHidden()
+                        .padding()
+                        .background(DefaultColor.grey6.cornerRadius(Corners.corenrRadiusS))
+                        .labled(label: "Select time")
                     Spacer()
                 }
                 .padding(.horizontal, Padding.defaultPadding)

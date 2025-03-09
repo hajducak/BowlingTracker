@@ -56,7 +56,7 @@ struct PreviousGamesView: View {
                 .subheading()
             Text(" games with ")
                 .subheading(weight: .regular)
-            Text(String(format: "%.2f%", viewModel.series.getSeriesAvarage()))
+            Text(viewModel.series.getSeriesAvarage().twoPointFormat())
                 .subheading()
             Text(" avarage so far")
                 .subheading(weight: .regular)

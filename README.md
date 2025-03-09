@@ -3,10 +3,11 @@
 Bowling Tracker is a mobile application for tracking bowling games and statistics.
 
 <div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="200">
-    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot4.imageset/screenshot4.png" width="200">
-    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="200">
-    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot3.imageset/screenshot3.png" width="200">
+    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="175">
+    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot4.imageset/screenshot4.png" width="175">
+    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="175">
+    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot3.imageset/screenshot3.png" width="175">
+    <img src="SportTracker/SportTracker/Assets.xcassets/Screenshots/screenshot5.imageset/screenshot5.png" width="175">
 </div>
 
 ## Features

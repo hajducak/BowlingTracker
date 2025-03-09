@@ -11,6 +11,9 @@ struct SeriesDetailView: View {
                 case .playing(let game):
                     ScrollView {
                         VStack(alignment: .leading) {
+                            Text(viewModel.series.description)
+                                .subheading(weight: .regular)
+                                .padding(.horizontal, Padding.defaultPadding)
                             Text("Current game")
                                 .title()
                                 .padding(.horizontal, Padding.defaultPadding)

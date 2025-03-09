@@ -64,7 +64,8 @@ struct SeriesView: View {
                             .padding(.bottom, Padding.spacingS)
                     }.buttonStyle(PlainButtonStyle())
                 }
-            }.padding(.bottom, Padding.spacingM)
+                Spacer().frame(height: Padding.spacingM)
+            }
         }
     }
 }

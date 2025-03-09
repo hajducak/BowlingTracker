@@ -91,7 +91,7 @@ struct Series: Codable, Identifiable {
 extension Series {
     var formattedDate: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy HH:mm"
+        formatter.dateFormat = "HH:mm dd/MM/yyyy"
         return formatter.string(from: date)
     }
 }

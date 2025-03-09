@@ -6,23 +6,22 @@ struct SeriesCell: View {
     @State private var isPulsing = false
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: Padding.spacingXXS) {
-                Text(series.name)
-                    .heading()
-                    .padding(.top, Padding.spacingM)
-                if !series.description.isEmpty {
-                    Text(series.description)
-                        .subheading(weight: .regular)
-                }
-                HStack {
-                    Text(series.formattedDate)
-                    Text("games: \(series.games.count)")
-                }.caption()
+        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+            Text(series.name)
+                .heading()
+                .padding(.top, Padding.spacingM)
+            if !series.description.isEmpty {
+                Text(series.description)
+                    .subheading(weight: .regular)
             }
-            Spacer()
-            Image(systemName: "chevron.right.circle.fill")
-                .foregroundColor(.orange)
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                    Text("Games: \(series.games.count)")
+                    Text("Avarage: \(String(format: "%.2f%", series.getSeriesAvarage()))")
+                }.caption()
+                Spacer()
+                Text("at \(series.formattedDate)").caption()
+            }
         }
         .flexWidthModifier(alignment: .leading)
         .padding(Padding.spacingS)

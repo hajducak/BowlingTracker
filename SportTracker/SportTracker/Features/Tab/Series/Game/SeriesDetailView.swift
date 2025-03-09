@@ -55,6 +55,9 @@ struct SeriesDetailView: View {
     private var content: some View {
         VStack(alignment: .leading, spacing: Padding.spacingXXS) {
             let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
+            Text(viewModel.series.description)
+                .subheading(weight: .regular)
+                .padding(.horizontal, Padding.defaultPadding)
             Text("Statistics")
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)

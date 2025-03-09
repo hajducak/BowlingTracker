@@ -16,7 +16,7 @@ struct ContentView: View {
             }
             .tabItem {
                 Image(systemName: "figure.bowling")
-                Text("Bowling")
+                Text("My Series")
             }.tag(0)
             
             NavigationView {
@@ -25,7 +25,7 @@ struct ContentView: View {
             }
             .tabItem {
                 Image(systemName: "person.crop.circle")
-                Text("Profile")
+                Text("Statistics")
             }.tag(1)
         }
         .onAppear {

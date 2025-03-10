@@ -47,7 +47,6 @@ class SeriesViewModel: ObservableObject {
                 }
                 self.allSeries = seriesViewModels
                 self.selectedFilter = nil
-                self.state = series.isEmpty ? .empty : .content(seriesViewModels)
             }
             .store(in: &cancellables)
     }
@@ -62,6 +61,7 @@ class SeriesViewModel: ObservableObject {
     }
 
     private func applyFilter() {
+        // FIXME: this is calling before 50 milisecund come and aply selected filter, those no data empty view is called before seting filtering
         let filteredSeries = selectedFilter == nil ?
             allSeries : allSeries.filter { $0.series.tag == selectedFilter }
         self.state = filteredSeries.isEmpty ? .empty : .content(filteredSeries)

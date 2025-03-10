@@ -79,7 +79,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         let opensPossibility = 10 * totalGames
         let totalOpenFrames = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.openFrameCount } }
         
-        let spolitsPossibility = 10 * totalGames
+        let splitsPossibility = 10 * totalGames
         let totalSplits = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.splitCount } }
 
         totalAvarage = totalGames > 0 ? Double(totalScore) / Double(totalGames) : 0.0
@@ -91,12 +91,12 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         totalStrikesPercentage = percent(totalStrikes, strikesPossibility)
         totalSparesPercentage = percent(totalSpares, sparesPossibility)
         totalOpensPercentage = percent(totalOpenFrames, opensPossibility)
-        totalSplitsPercentage = percent(totalSplits, spolitsPossibility)
+        totalSplitsPercentage = percent(totalSplits, splitsPossibility)
 
         totalStrikesCount = "\(totalStrikes)/\(strikesPossibility)"
         totalSparesCount = "\(totalSpares)/\(sparesPossibility)"
         totalOpensCount = "\(totalOpenFrames)/\(opensPossibility)"
-        totalSplitsCount = "\(totalSplits)/\(spolitsPossibility)"
+        totalSplitsCount = "\(totalSplits)/\(splitsPossibility)"
 
         pinCoverageStatistics = calculateOverallPinCoverage(for: series)
     }

@@ -55,6 +55,9 @@ struct LinearProgressView: View {
         }
         .frame(width: width)
         .onAppear { animatedValue = value }
+        .onChange(of: value, { _, newValue in
+            animatedValue = newValue
+        })
     }
 }
 

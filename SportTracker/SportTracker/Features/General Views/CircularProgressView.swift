@@ -41,6 +41,9 @@ struct CircularProgressView: View {
             }
             .frame(width: size.width, height: size.height)
             .onAppear { animatedPercentage = percentage }
+            .onChange(of: percentage, { _, newPercentage in
+                animatedPercentage = newPercentage
+            })
         }
     }
 }

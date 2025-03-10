@@ -57,58 +57,12 @@ struct SeriesDetailView: View {
     
     private var content: some View {
         VStack(alignment: .leading, spacing: Padding.spacingXXS) {
-            let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
             Text(viewModel.series.description)
                 .subheading(weight: .regular)
                 .padding(.horizontal, Padding.defaultPadding)
-            Text("Statistics")
-                .title()
-                .padding(.horizontal, Padding.defaultPadding)
-            HStack(alignment: .center, spacing: 0) {
-                CircularProgressView(
-                    percentage: viewModel.series.seriesStrikeStatistics.percentage,
-                    title: "Strikes",
-                    description: viewModel.series.seriesStrikeStatistics.count,
-                    size: .init(width: graphSize, height: graphSize)
-                )
-                Spacer()
-                CircularProgressView(
-                    percentage: viewModel.series.seriesSpareStatistics.percentage,
-                    title: "Spares",
-                    description: viewModel.series.seriesSpareStatistics.count,
-                    size: .init(width: graphSize, height: graphSize)
-                )
-                Spacer()
-                CircularProgressView(
-                    percentage: viewModel.series.seriesOpenStatistics.percentage,
-                    title: "Opens",
-                    description: viewModel.series.seriesOpenStatistics.count,
-                    size: .init(width: graphSize, height: graphSize)
-                )
-                Spacer()
-                CircularProgressView(
-                    percentage: viewModel.series.seriesSplitStatistics.percentage,
-                    title: "Splits",
-                    description: viewModel.series.seriesSplitStatistics.count,
-                    size: .init(width: graphSize, height: graphSize)
-                )
+            if let statistics = viewModel.basicStatisticsViewModel {
+                BasicStatisticsView(viewModel: statistics)
             }
-            .padding(Padding.defaultPadding)
-            LinearProgressView(
-                graphIsDisabled: true,
-                value: Double(viewModel.series.getSeriesScore()),
-                maxValue: Double(viewModel.series.games.count * 300),
-                title: "Series score:",
-                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
-                height: 9
-            ).padding(.horizontal, Padding.defaultPadding)
-            LinearProgressView(
-                value: Double(viewModel.series.getSeriesAvarage()),
-                maxValue: Double(300),
-                title: "Series avarage:",
-                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
-                height: 9
-            ).padding(.horizontal, Padding.defaultPadding)
             Text("Games played")
                 .title()
                 .padding([.horizontal, .top], Padding.defaultPadding)

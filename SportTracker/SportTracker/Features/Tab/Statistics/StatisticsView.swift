@@ -63,8 +63,8 @@ struct StatisticsView: View {
                 width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
                 height: lienarGraphLine
             ).padding(.horizontal, Padding.defaultPadding)
-            Text("TODO: Pins combinations cavarage")
-                .padding(.horizontal, Padding.defaultPadding)
+            // Text("TODO: Pins combinations cavarage")
+            //    .padding(.horizontal, Padding.defaultPadding)
             if viewModel.isLoading {
                 Spacer()
                 ProgressView("Loading series...")

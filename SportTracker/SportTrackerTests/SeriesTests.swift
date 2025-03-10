@@ -56,9 +56,9 @@ final class SeriesTests: XCTestCase {
     func testSeries_AllStrikes() {
         let series: Series = .mock300Series(name: "Series 300")
         
-        XCTAssertEqual(series.getSeriesStrikePercentage(), 100.00)
-        XCTAssertEqual(series.getSeriesSparePercentage(), 0.00)
-        XCTAssertEqual(series.getSeriesOpenPercentage(), 0.00)
+        XCTAssertEqual(series.seriesStrikeStatistics.percentage, 100.00)
+        XCTAssertEqual(series.seriesSpareStatistics.percentage, 0.00)
+        XCTAssertEqual(series.seriesOpenStatistics.percentage, 0.00)
     }
     
     func testSeries_MixedStrikesSparesOpens() {
@@ -77,25 +77,25 @@ final class SeriesTests: XCTestCase {
         
         let series = Series(name: "dummyName", tag: .tournament, games: [game])
         
-        XCTAssertEqual(series.getSeriesStrikePercentage(), 58.33) // 7 strikes in total
-        XCTAssertEqual(series.getSeriesSparePercentage(), 25.0) // 3 spares
-        XCTAssertEqual(series.getSeriesOpenPercentage(), 16.67) // 2 opens
+        XCTAssertEqual(series.seriesStrikeStatistics.percentage, 58.33) // 7 strikes in total
+        XCTAssertEqual(series.seriesSpareStatistics.percentage, 30) // 3 spares
+        XCTAssertEqual(series.seriesOpenStatistics.percentage, 20) // 2 opens
     }
     
     func testSeries_AllSparesAndOneX() {
         let series: Series = .mockAllSparesAndOneXSeries(name: "dummyName")
         
-        XCTAssertEqual(series.getSeriesStrikePercentage(), 3.23) // Only 1 strike in last frame
-        XCTAssertEqual(series.getSeriesSparePercentage(), 96.77) // 30 spares in total
-        XCTAssertEqual(series.getSeriesOpenPercentage(), 0.00)
+        XCTAssertEqual(series.seriesStrikeStatistics.percentage, 2.78) // Only 1 strike in last frame
+        XCTAssertEqual(series.seriesSpareStatistics.percentage, 100) // 30 spares in total
+        XCTAssertEqual(series.seriesOpenStatistics.percentage, 0.00)
     }
     
     func testSeries_AllOpens() {
         let series: Series = .mockAllOpensSeries(name: "dummySeries")
         
-        XCTAssertEqual(series.getSeriesStrikePercentage(), 0.00)
-        XCTAssertEqual(series.getSeriesSparePercentage(), 0.00)
-        XCTAssertEqual(series.getSeriesOpenPercentage(), 100.00)
+        XCTAssertEqual(series.seriesStrikeStatistics.percentage, 0.00)
+        XCTAssertEqual(series.seriesSpareStatistics.percentage, 0.00)
+        XCTAssertEqual(series.seriesOpenStatistics.percentage, 100.00)
     }
     
     func testSeries_MultipleGames() {
@@ -127,9 +127,9 @@ final class SeriesTests: XCTestCase {
         
         let series = Series(name: "dummySeries", tag: .tournament, games: [game1, game2])
         
-        XCTAssertEqual(series.getSeriesStrikePercentage(), 66.67) // 16 strikes
-        XCTAssertEqual(series.getSeriesSparePercentage(), 16.67) // 6 spares
-        XCTAssertEqual(series.getSeriesOpenPercentage(), 16.67) // 4 opens
+        XCTAssertEqual(series.seriesStrikeStatistics.percentage, 66.67) // 16 strikes
+        XCTAssertEqual(series.seriesSpareStatistics.percentage, 20) // 6 spares
+        XCTAssertEqual(series.seriesOpenStatistics.percentage, 20) // 4 opens
     }
 }
 

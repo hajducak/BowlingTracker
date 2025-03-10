@@ -47,6 +47,8 @@ struct SeriesView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .empty:
             VStack {
+                FilterView(selectedFilter: $viewModel.selectedFilter)
+                    .padding(.bottom, Padding.spacingS)
                 Spacer()
                 Text("No series found")
                     .title()
@@ -55,6 +57,8 @@ struct SeriesView: View {
                 Spacer()
             }
         case .content(let series):
+            FilterView(selectedFilter: $viewModel.selectedFilter)
+                .padding(.bottom, Padding.spacingS)
             ScrollView {
                 ForEach(series, id: \.id) { item in
                     NavigationLink(destination: SeriesDetailView(

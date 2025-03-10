@@ -14,18 +14,22 @@ class SeriesViewModel: ObservableObject {
     @Published var newSeriesDescription = ""
     @Published var newSeriesSelectedType: SeriesType = .league
     @Published var newSeriesSelectedDate = Date()
-
+    @Published var selectedFilter: SeriesType?
+    
     let seriesViewModelFactory: SeriesDetailViewModelFactory
     let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
 
+    private var allSeries: [SeriesDetailViewModel] = []
+    
     init(seriesViewModelFactory: SeriesDetailViewModelFactory, firebaseManager: FirebaseManager) {
         self.seriesViewModelFactory = seriesViewModelFactory
         self.firebaseManager = firebaseManager
         setupSeries()
+        setupFiltering()
     }
     
-    func setupSeries() {
+    private func setupSeries() {
         state = .loading
         firebaseManager.fetchAllSeries()
             .receive(on: DispatchQueue.main)
@@ -41,9 +45,26 @@ class SeriesViewModel: ObservableObject {
                     self.observeSeriesSaved(viewModel)
                     return viewModel
                 }
+                self.allSeries = seriesViewModels
+                self.selectedFilter = nil
                 self.state = series.isEmpty ? .empty : .content(seriesViewModels)
             }
             .store(in: &cancellables)
+    }
+    
+    private func setupFiltering() {
+        $selectedFilter
+            .delay(for: .milliseconds(50), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.applyFilter()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func applyFilter() {
+        let filteredSeries = selectedFilter == nil ?
+            allSeries : allSeries.filter { $0.series.tag == selectedFilter }
+        self.state = filteredSeries.isEmpty ? .empty : .content(filteredSeries)
     }
     
     private func observeSeriesSaved(_ seriesViewModel: SeriesDetailViewModel) {
@@ -55,7 +76,12 @@ class SeriesViewModel: ObservableObject {
     }
 
     func addSeries() {
-        let newSeries = Series(date: newSeriesSelectedDate, name: newSeriesName, description: newSeriesDescription, tag: newSeriesSelectedType)
+        let newSeries = Series(
+            date: newSeriesSelectedDate,
+            name: newSeriesName,
+            description: newSeriesDescription,
+            tag: newSeriesSelectedType
+        )
         save(series: newSeries)
         resetToDefault()
     }

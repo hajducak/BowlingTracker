@@ -18,6 +18,7 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 - Resume an ongoing game
 - **Pin selection mode** – manually select standing or left over pins before rolling
 - **Pinfall visualization** – view pinfall results for each individual frame  
+- **Series and Statistics filtering** - filter your data based on tags
 
 ## Technologies Used
 - **SwiftUI** – modern UI framework for iOS apps

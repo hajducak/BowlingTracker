@@ -14,16 +14,19 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var totalOpensCount: String = ""
     @Published var totalSplitsCount: String = ""
     
+    @Published var selectedFilter: SeriesType?
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
 
     private let firebaseManager: FirebaseManager
     private var series: [Series] = []
+    private var filteredSeries: [Series] = []
     private var cancellables: Set<AnyCancellable> = []
 
     init(firebaseManager: FirebaseManager) {
         self.firebaseManager = firebaseManager
         setUp()
+        setupFiltering()
     }
 
     func setUp() {
@@ -38,13 +41,31 @@ class StatisticsViewModel: ObservableObject, Identifiable {
                 }
             } receiveValue: { [weak self] series in
                 guard let self else { return }
-                self.series = series.sorted(by: { $0.date > $1.date })
-                setupStatistics()
+                filteredSeries = series
+                self.series = series
+                selectedFilter = nil
+                applyFilter()
             }
             .store(in: &cancellables)
     }
     
-    func setupStatistics() {
+    private func setupFiltering() {
+        $selectedFilter
+            .delay(for: .milliseconds(50), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.applyFilter()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func applyFilter() {
+        let filteredSeries = selectedFilter == nil ?
+            series : series.filter { $0.tag == selectedFilter }
+        self.filteredSeries = filteredSeries.sorted(by: { $0.date > $1.date })
+        setupStatistics(for: filteredSeries)
+    }
+    
+    func setupStatistics(for series: [Series]) {
         totalScore = series.reduce(0) { $0 + $1.getSeriesScore() }
         totalGames = series.reduce(0) { $0 + $1.games.count }
         
@@ -75,5 +96,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         totalSparesCount = "\(totalSpares)/\(sparesPossibility)"
         totalOpensCount = "\(totalOpenFrames)/\(opensPossibility)"
         totalSplitsCount = "\(totalSplits)/\(spolitsPossibility)"
+        
+        // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
     }
 }

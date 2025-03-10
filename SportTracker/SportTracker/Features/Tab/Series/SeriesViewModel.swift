@@ -1,7 +1,18 @@
 import Foundation
 import Combine
 
-enum SeriesContentState {
+enum SeriesContentState: Equatable {
+    static func == (lhs: SeriesContentState, rhs: SeriesContentState) -> Bool {
+        switch (lhs, rhs) {
+        case (.loading, .loading):
+            return true
+        case (.empty, .empty):
+            return true
+        default:
+            return false
+        }
+    }
+    
     case loading
     case empty
     case content([SeriesDetailViewModel])
@@ -47,12 +58,17 @@ class SeriesViewModel: ObservableObject {
                 }
                 self.allSeries = seriesViewModels
                 self.selectedFilter = nil
+                self.state = seriesViewModels.isEmpty ? .empty : .content(seriesViewModels)
             }
             .store(in: &cancellables)
     }
-    
+
     private func setupFiltering() {
         $selectedFilter
+            .filter { [weak self] _ in
+                guard let self = self else { return true }
+                return self.state != .loading
+            }
             .delay(for: .milliseconds(50), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.applyFilter()
@@ -61,10 +77,13 @@ class SeriesViewModel: ObservableObject {
     }
 
     private func applyFilter() {
-        // FIXME: this is calling before 50 milisecund come and aply selected filter, those no data empty view is called before seting filtering
-        let filteredSeries = selectedFilter == nil ?
-            allSeries : allSeries.filter { $0.series.tag == selectedFilter }
-        self.state = filteredSeries.isEmpty ? .empty : .content(filteredSeries)
+        switch state {
+        case .loading: return
+        default:
+           let filteredSeries = selectedFilter == nil ?
+               allSeries : allSeries.filter { $0.series.tag == selectedFilter }
+           self.state = filteredSeries.isEmpty ? .empty : .content(filteredSeries)
+       }
     }
     
     private func observeSeriesSaved(_ seriesViewModel: SeriesDetailViewModel) {

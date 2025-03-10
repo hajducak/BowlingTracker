@@ -94,6 +94,46 @@ struct Series: Codable, Identifiable {
     mutating func newGame() {
         currentGame = Game()
     }
+    
+    func calculatePinCoverage() -> [Int: SeriesStatistics] {
+        var pinAttempts: [Int: (hits: Int, total: Int)] = [:]
+
+        for game in games {
+            for (index, frame) in game.frames.enumerated() {
+                if frame.rolls.count < 2 { continue } // Preskočíme framy, kde nebol druhý hod
+
+                let firstRollPins = Set(frame.rolls[0].knockedDownPins.map { $0.id })
+                let secondRollPins = Set(frame.rolls[1].knockedDownPins.map { $0.id })
+
+                var remainingPins = Set(1...10).subtracting(firstRollPins) // Zvyšné piny po prvom hode
+
+                var thirdRollPins: Set<Int> = []
+                if index == 9, frame.rolls.count == 3 {
+                    thirdRollPins = Set(frame.rolls[2].knockedDownPins.map { $0.id })
+                    remainingPins = Set(1...10)
+                }
+
+                for pin in remainingPins {
+                    if pinAttempts[pin] == nil {
+                        pinAttempts[pin] = (hits: 0, total: 0)
+                    }
+                    pinAttempts[pin]?.total += 1 // Zvýšime počet pokusov
+
+                    if secondRollPins.contains(pin) || thirdRollPins.contains(pin) {
+                        pinAttempts[pin]?.hits += 1 // Ak bol zhodený v 2. alebo 3. hode, zvýšime úspešné pokusy
+                    }
+                }
+            }
+        }
+
+        var calculatedStatistics: [Int: SeriesStatistics] = [:]
+        for (pin, stats) in pinAttempts {
+            let percentage = stats.total > 0 ? (Double(stats.hits) / Double(stats.total) * 100).rounded(toPlaces: 2) : 0.0
+            calculatedStatistics[pin] = (percentage, "\(stats.hits)/\(stats.total)")
+        }
+
+        return calculatedStatistics
+    }
 }
 
 extension Series {

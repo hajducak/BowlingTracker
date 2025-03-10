@@ -13,7 +13,8 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var totalSparesCount: String = ""
     @Published var totalOpensCount: String = ""
     @Published var totalSplitsCount: String = ""
-    
+    @Published var pinCoverageStatistics: [Int: SeriesStatistics] = [:]
+
     @Published var selectedFilter: SeriesType?
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
@@ -96,7 +97,31 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         totalSparesCount = "\(totalSpares)/\(sparesPossibility)"
         totalOpensCount = "\(totalOpenFrames)/\(opensPossibility)"
         totalSplitsCount = "\(totalSplits)/\(spolitsPossibility)"
-        
-        // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
+
+        pinCoverageStatistics = calculateOverallPinCoverage(for: series)
+    }
+
+    func calculateOverallPinCoverage(for seriesList: [Series]) -> [Int: SeriesStatistics] {
+        var overallPinAttempts: [Int: (hits: Int, total: Int)] = [:]
+
+        for series in seriesList {
+            let seriesStats = series.calculatePinCoverage()
+
+            for (pin, stats) in seriesStats {
+                if overallPinAttempts[pin] == nil {
+                    overallPinAttempts[pin] = (hits: 0, total: 0)
+                }
+                overallPinAttempts[pin]?.hits += Int(stats.count.split(separator: "/")[0]) ?? 0
+                overallPinAttempts[pin]?.total += Int(stats.count.split(separator: "/")[1]) ?? 0
+            }
+        }
+
+        var overallStatistics: [Int: SeriesStatistics] = [:]
+        for (pin, stats) in overallPinAttempts {
+            let percentage = stats.total > 0 ? (Double(stats.hits) / Double(stats.total) * 100).rounded(toPlaces: 2) : 0.0
+            overallStatistics[pin] = (percentage, "\(stats.hits)/\(stats.total)")
+        }
+
+        return overallStatistics
     }
 }

@@ -15,7 +15,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
     @Published var savingIsLoading: Bool = false
-
+    var basicStatisticsViewModel: BasicStatisticsViewModel?
     private let gameViewModelFactory: GameViewModelFactory
     private let firebaseManager: FirebaseManager
     private var cancellables: Set<AnyCancellable> = []
@@ -36,6 +36,16 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                 self?.saveCurrent(game: savedGame)
             }
             .store(in: &cancellables)
+        
+        $series
+            .sink { [weak self] series in
+                guard let self else { return }
+                if basicStatisticsViewModel == nil  {
+                    basicStatisticsViewModel = .init(series: [series])
+                } else {
+                    basicStatisticsViewModel?.series = [series]
+                }
+            }.store(in: &cancellables)
     }
 
     func setupContent() {

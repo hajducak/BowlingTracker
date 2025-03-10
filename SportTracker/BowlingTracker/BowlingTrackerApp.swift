@@ -3,7 +3,7 @@ import FirebaseCore
 import SwiftData
 
 @main
-struct SportTrackerApp: App {
+struct BowlingTrackerApp: App {
 //    private var modelContainer: ModelContainer
 
     init() {

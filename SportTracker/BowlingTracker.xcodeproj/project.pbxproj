@@ -31,20 +31,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		528E48C62D638623008755A1 /* SportTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		528E48D82D638625008755A1 /* SportTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SportTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		528E48E22D638625008755A1 /* SportTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SportTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		528E48C62D638623008755A1 /* BowlingTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BowlingTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		528E48D82D638625008755A1 /* BowlingTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BowlingTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		528E48E22D638625008755A1 /* BowlingTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BowlingTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		528E48C82D638623008755A1 /* SportTracker */ = {
+		528E48C82D638623008755A1 /* BowlingTracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SportTracker;
+			path = BowlingTracker;
 			sourceTree = "<group>";
 		};
-		528E48DB2D638625008755A1 /* SportTrackerTests */ = {
+		528E48DB2D638625008755A1 /* BowlingTrackerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SportTrackerTests;
+			path = BowlingTrackerTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -81,8 +81,8 @@
 		528E48BD2D638623008755A1 = {
 			isa = PBXGroup;
 			children = (
-				528E48C82D638623008755A1 /* SportTracker */,
-				528E48DB2D638625008755A1 /* SportTrackerTests */,
+				528E48C82D638623008755A1 /* BowlingTracker */,
+				528E48DB2D638625008755A1 /* BowlingTrackerTests */,
 				528E48C72D638623008755A1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,9 +90,9 @@
 		528E48C72D638623008755A1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				528E48C62D638623008755A1 /* SportTracker.app */,
-				528E48D82D638625008755A1 /* SportTrackerTests.xctest */,
-				528E48E22D638625008755A1 /* SportTrackerUITests.xctest */,
+				528E48C62D638623008755A1 /* BowlingTracker.app */,
+				528E48D82D638625008755A1 /* BowlingTrackerTests.xctest */,
+				528E48E22D638625008755A1 /* BowlingTrackerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,9 +100,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		528E48C52D638623008755A1 /* SportTracker */ = {
+		528E48C52D638623008755A1 /* BowlingTracker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 528E48EC2D638625008755A1 /* Build configuration list for PBXNativeTarget "SportTracker" */;
+			buildConfigurationList = 528E48EC2D638625008755A1 /* Build configuration list for PBXNativeTarget "BowlingTracker" */;
 			buildPhases = (
 				528E48C22D638623008755A1 /* Sources */,
 				528E48C32D638623008755A1 /* Frameworks */,
@@ -113,9 +113,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				528E48C82D638623008755A1 /* SportTracker */,
+				528E48C82D638623008755A1 /* BowlingTracker */,
 			);
-			name = SportTracker;
+			name = BowlingTracker;
 			packageProductDependencies = (
 				528E48F62D638777008755A1 /* FirebaseAuth */,
 				528E48F82D638777008755A1 /* FirebaseFirestore */,
@@ -123,12 +123,12 @@
 				528E49062D6392EA008755A1 /* FirebaseFirestoreCombine-Community */,
 			);
 			productName = SportTracker;
-			productReference = 528E48C62D638623008755A1 /* SportTracker.app */;
+			productReference = 528E48C62D638623008755A1 /* BowlingTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		528E48D72D638625008755A1 /* SportTrackerTests */ = {
+		528E48D72D638625008755A1 /* BowlingTrackerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 528E48EF2D638625008755A1 /* Build configuration list for PBXNativeTarget "SportTrackerTests" */;
+			buildConfigurationList = 528E48EF2D638625008755A1 /* Build configuration list for PBXNativeTarget "BowlingTrackerTests" */;
 			buildPhases = (
 				528E48D42D638625008755A1 /* Sources */,
 				528E48D52D638625008755A1 /* Frameworks */,
@@ -140,18 +140,18 @@
 				528E48DA2D638625008755A1 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				528E48DB2D638625008755A1 /* SportTrackerTests */,
+				528E48DB2D638625008755A1 /* BowlingTrackerTests */,
 			);
-			name = SportTrackerTests;
+			name = BowlingTrackerTests;
 			packageProductDependencies = (
 			);
 			productName = SportTrackerTests;
-			productReference = 528E48D82D638625008755A1 /* SportTrackerTests.xctest */;
+			productReference = 528E48D82D638625008755A1 /* BowlingTrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		528E48E12D638625008755A1 /* SportTrackerUITests */ = {
+		528E48E12D638625008755A1 /* BowlingTrackerUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 528E48F22D638625008755A1 /* Build configuration list for PBXNativeTarget "SportTrackerUITests" */;
+			buildConfigurationList = 528E48F22D638625008755A1 /* Build configuration list for PBXNativeTarget "BowlingTrackerUITests" */;
 			buildPhases = (
 				528E48DE2D638625008755A1 /* Sources */,
 				528E48DF2D638625008755A1 /* Frameworks */,
@@ -162,11 +162,11 @@
 			dependencies = (
 				528E48E42D638625008755A1 /* PBXTargetDependency */,
 			);
-			name = SportTrackerUITests;
+			name = BowlingTrackerUITests;
 			packageProductDependencies = (
 			);
 			productName = SportTrackerUITests;
-			productReference = 528E48E22D638625008755A1 /* SportTrackerUITests.xctest */;
+			productReference = 528E48E22D638625008755A1 /* BowlingTrackerUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -192,7 +192,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 528E48C12D638623008755A1 /* Build configuration list for PBXProject "SportTracker" */;
+			buildConfigurationList = 528E48C12D638623008755A1 /* Build configuration list for PBXProject "BowlingTracker" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -209,9 +209,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				528E48C52D638623008755A1 /* SportTracker */,
-				528E48D72D638625008755A1 /* SportTrackerTests */,
-				528E48E12D638625008755A1 /* SportTrackerUITests */,
+				528E48C52D638623008755A1 /* BowlingTracker */,
+				528E48D72D638625008755A1 /* BowlingTrackerTests */,
+				528E48E12D638625008755A1 /* BowlingTrackerUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -267,12 +267,12 @@
 /* Begin PBXTargetDependency section */
 		528E48DA2D638625008755A1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 528E48C52D638623008755A1 /* SportTracker */;
+			target = 528E48C52D638623008755A1 /* BowlingTracker */;
 			targetProxy = 528E48D92D638625008755A1 /* PBXContainerItemProxy */;
 		};
 		528E48E42D638625008755A1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 528E48C52D638623008755A1 /* SportTracker */;
+			target = 528E48C52D638623008755A1 /* BowlingTracker */;
 			targetProxy = 528E48E32D638625008755A1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -404,7 +404,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SportTracker/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"BowlingTracker/Preview Content\"";
 				DEVELOPMENT_TEAM = FMH4876MKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -433,7 +433,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SportTracker/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"BowlingTracker/Preview Content\"";
 				DEVELOPMENT_TEAM = FMH4876MKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -470,7 +470,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SportTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SportTracker";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BowlingTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BowlingTracker";
 			};
 			name = Debug;
 		};
@@ -489,7 +489,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SportTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SportTracker";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BowlingTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BowlingTracker";
 			};
 			name = Release;
 		};
@@ -530,7 +530,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		528E48C12D638623008755A1 /* Build configuration list for PBXProject "SportTracker" */ = {
+		528E48C12D638623008755A1 /* Build configuration list for PBXProject "BowlingTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				528E48EA2D638625008755A1 /* Debug */,
@@ -539,7 +539,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		528E48EC2D638625008755A1 /* Build configuration list for PBXNativeTarget "SportTracker" */ = {
+		528E48EC2D638625008755A1 /* Build configuration list for PBXNativeTarget "BowlingTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				528E48ED2D638625008755A1 /* Debug */,
@@ -548,7 +548,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		528E48EF2D638625008755A1 /* Build configuration list for PBXNativeTarget "SportTrackerTests" */ = {
+		528E48EF2D638625008755A1 /* Build configuration list for PBXNativeTarget "BowlingTrackerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				528E48F02D638625008755A1 /* Debug */,
@@ -557,7 +557,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		528E48F22D638625008755A1 /* Build configuration list for PBXNativeTarget "SportTrackerUITests" */ = {
+		528E48F22D638625008755A1 /* Build configuration list for PBXNativeTarget "BowlingTrackerUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				528E48F32D638625008755A1 /* Debug */,

@@ -1,5 +1,5 @@
 import XCTest
-@testable import SportTracker
+@testable import BowlingTracker
 
 final class GameTests: XCTestCase {
     func test_whenPerfectGame_thenScoreIs300() {

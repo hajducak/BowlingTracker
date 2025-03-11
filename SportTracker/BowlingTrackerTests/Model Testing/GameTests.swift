@@ -2,6 +2,27 @@ import XCTest
 @testable import BowlingTracker
 
 final class GameTests: XCTestCase {
+    func test_whenAddRoll_thenRollIsSet() {
+        let strikeRoll = Roll(knockedDownPins: Array((1...10).map { Pin(id: $0) }))
+        var game = Game(frames: [Frame.init(rolls: [strikeRoll], index: 0)])
+
+        printGameLog(game: game)
+        game.addRoll(knockedDownPins: [Pin.init(id: 1)])
+        
+        XCTAssertNotNil(game.frames.last?.rolls)
+        XCTAssertEqual(game.frames.last?.rolls.isEmpty, false)
+        XCTAssertEqual(game.frames.last?.rolls.first?.knockedDownPins.first?.id , 1)
+    }
+
+    func test_whenUndoRoll_thenRollIsDeleted() {
+        let strikeRoll = Roll(knockedDownPins: Array((1...10).map { Pin(id: $0) }))
+        var game = Game(frames: [Frame.init(rolls: [strikeRoll], index: 0)])
+        
+        game.undoRoll()
+
+        XCTAssertEqual(game.frames.last?.rolls.isEmpty, true)
+    }
+    
     func test_whenPerfectGame_thenScoreIs300() {
          let strikeRoll = Roll(knockedDownPins: Array((1...10).map { Pin(id: $0) }))
          var perfectFrames: [Frame] = []
@@ -12,7 +33,7 @@ final class GameTests: XCTestCase {
          let game = Game(frames: perfectFrames + [finalFrame])
          
          printGameLog(game: game)
-         XCTAssertEqual(game.currentScore, 300, "Perfektná hra by mala mať skóre 300")
+         XCTAssertEqual(game.currentScore, 300, "In perfect game should score 300")
      }
      
     
@@ -33,7 +54,7 @@ final class GameTests: XCTestCase {
         let game = Game(frames: frames)
         
         printGameLog(game: game)
-        XCTAssertEqual(game.currentScore, 200, "Čistá hra by mala mať skóre 200")
+        XCTAssertEqual(game.currentScore, 200, "In clean game should score 200")
     }
     
     func test_whenGameWithOpenFrames_thenScoreIsCorrect() {
@@ -55,7 +76,7 @@ final class GameTests: XCTestCase {
         let game = Game(frames: frames)
         
         printGameLog(game: game)
-        XCTAssertEqual(game.currentScore, 176, "Hra so zmiešanými open frames by mala mať skóre 176")
+        XCTAssertEqual(game.currentScore, 176, "This game should score 176")
     }
     
     func test_whenMixedGame_thenScoreIsCorrect() {
@@ -79,7 +100,7 @@ final class GameTests: XCTestCase {
         let game = Game(frames: frames)
         
         printGameLog(game: game)
-        XCTAssertEqual(game.currentScore, 159, "Mixovaná hra by mala mať skóre 159")
+        XCTAssertEqual(game.currentScore, 159, "This game should have 159")
     }
     
     func test_whenCleanGame_thenMaxPossibleScoreIsCorrect() {
@@ -96,7 +117,7 @@ final class GameTests: XCTestCase {
         }
         
         printGameLog(game: game, maxScore: true)
-        XCTAssertEqual(game.maxPossibleScore, 250, "Max možné skóre by malo byť 250")
+        XCTAssertEqual(game.maxPossibleScore, 250, "Max score should be 250")
     }
     
     func test_whenOpenFrames_thenMaxPossibleScoreIsCorrect() {
@@ -114,7 +135,7 @@ final class GameTests: XCTestCase {
         }
         
         printGameLog(game: game, maxScore: true)
-        XCTAssertEqual(game.maxPossibleScore, 239, "Max možné skóre by malo byť 239")
+        XCTAssertEqual(game.maxPossibleScore, 239, "Max score should be 239")
     }
     
     func test_whenMixedGame_thenMaxPossibleScoreIsCorrect() {
@@ -132,7 +153,7 @@ final class GameTests: XCTestCase {
         }
         
         printGameLog(game: game, maxScore: true)
-        XCTAssertEqual(game.maxPossibleScore, 239, "Max možné skóre by malo byť 239")
+        XCTAssertEqual(game.maxPossibleScore, 239, "Max score should be 239")
     }
     
     private func printGameLog(game: Game, maxScore: Bool = false) {
@@ -182,8 +203,8 @@ final class GameTests: XCTestCase {
         game.addRoll(knockedDownPins: Roll.tenPins)
         game.addRoll(knockedDownPins: Roll.tenPins)
         
-        XCTAssertEqual(game.frames.count, 10, "Počet rámcov v hre nie je správny.")
-        XCTAssertEqual(game.currentScore, 165, "Skóre aktuálnej hry by malo byt 165.")
+        XCTAssertEqual(game.frames.count, 10, "Frame count is not correct")
+        XCTAssertEqual(game.currentScore, 165, "This game score should be 165.")
     }
 
     func test_given7Rolls_whenCurrentGame_thenMaxPossibleScoreIsCorrect() {
@@ -209,8 +230,26 @@ final class GameTests: XCTestCase {
 
         XCTAssertEqual(game.frames.map({ $0.frameType != .unfinished }).filter({ $0 }).count, 7, "Number of finished frames is 7")
         
-        XCTAssertEqual(game.currentScore, 126, "Skóre aktuálnej hry nie je správne.")
-        XCTAssertEqual(game.maxPossibleScore, 246, "Maximálne možné skóre nie je správne.")
+        XCTAssertEqual(game.currentScore, 126, "Score of this game is not correct")
+        XCTAssertEqual(game.maxPossibleScore, 246, "Max score is not correct")
+    }
+    
+    func test_whenCumulativeScoreForFrame_thenScoreIsSetCorrectly() {
+        var game = Game()
+        let roll72 = [Roll(knockedDownPins: Array([Pin(id: 1), Pin(id: 2), Pin(id: 3), Pin(id: 4), Pin(id: 5), Pin(id: 6), Pin(id: 7)])), Roll(knockedDownPins: Array([Pin(id: 8), Pin(id: 9)]))]
+        let openRoll5 = [Roll(knockedDownPins: Array([Pin(id: 1), Pin(id: 2), Pin(id: 3), Pin(id: 4), Pin(id: 5)])), Roll(knockedDownPins: [])]
+        let strikeRoll = [Roll(knockedDownPins: Array((1...10).map { Pin(id: $0) }))]
+        let frames: [Frame] = [
+            Frame(rolls: roll72, index: 1), Frame(rolls: strikeRoll, index: 2),
+            Frame(rolls: openRoll5, index: 3), Frame(rolls: strikeRoll, index: 4),
+            Frame(rolls: strikeRoll, index: 5)
+        ]
+        frames.enumerated().forEach { index, frame in
+            game.frames[index].rolls = frame.rolls
+        }
+        
+        printGameLog(game: game, maxScore: true)
+        XCTAssertEqual(game.cumulativeScoreForFrame(at: 5), 59, "Cumulative score should be 59")
     }
 }
 

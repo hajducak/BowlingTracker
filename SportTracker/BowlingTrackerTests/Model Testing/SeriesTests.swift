@@ -53,6 +53,20 @@ final class SeriesTests: XCTestCase {
         XCTAssertEqual(series.getSeriesScore(), 481)
     }
 
+    func test_givenTwoGames_whenSeriesScoreCalculation_thenAvarageIsCorrect() {
+        var series = Series(name: "Test Series", tag: .other)
+        
+        var game1 = Game()
+        for _ in 0..<12 { game1.addRoll(knockedDownPins: Roll.tenPins) }
+        series.games.append(game1)
+        
+        var game2 = Game()
+        for _ in 0..<10 { game2.addRoll(knockedDownPins: Roll.ninePins); game2.addRoll(knockedDownPins: Roll.onePins) }
+        series.games.append(game2)
+
+        XCTAssertEqual(series.getSeriesAvarage(), 240.5)
+    }
+
     func testSeries_AllStrikes() {
         let series: Series = .mock300Series(name: "Series 300")
         
@@ -130,6 +144,32 @@ final class SeriesTests: XCTestCase {
         XCTAssertEqual(series.seriesStrikeStatistics.percentage, 66.67) // 16 strikes
         XCTAssertEqual(series.seriesSpareStatistics.percentage, 20) // 6 spares
         XCTAssertEqual(series.seriesOpenStatistics.percentage, 20) // 4 opens
+    }
+    
+    func test_whenSaveGame_thenGameIsSet() {
+        let game = Game(frames: [
+            Frame(rolls: [Roll.roll10], index: 1),
+            Frame(rolls: [Roll.roll5, Roll.roll5], index: 2),
+            Frame(rolls: [Roll.roll3, Roll.roll6], index: 3),
+            Frame(rolls: [Roll.roll10], index: 4),
+            Frame(rolls: [Roll.roll7, Roll.roll3], index: 5),
+            Frame(rolls: [Roll.roll2, Roll.roll4], index: 6),
+            Frame(rolls: [Roll.roll10], index: 7),
+            Frame(rolls: [Roll.roll10], index: 8),
+            Frame(rolls: [Roll.roll8, Roll.roll2], index: 9),
+            Frame(rolls: [Roll.roll10, Roll.roll10, Roll.roll10], index: 10)
+        ])
+        
+        var series = Series(name: "dummyName", tag: .tournament, games: [])
+        series.save(game: game)
+        XCTAssertEqual(series.games.last?.id, game.id)
+    }
+
+    func test_whenAddNewGame_thenGameIsSet() {
+        var series = Series(name: "dummyName", tag: .tournament, games: [])
+        series.currentGame = nil
+        series.newGame()
+        XCTAssertNotNil(series.currentGame)
     }
 }
 

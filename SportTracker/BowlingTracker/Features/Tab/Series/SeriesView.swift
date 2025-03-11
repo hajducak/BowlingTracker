@@ -61,6 +61,7 @@ struct SeriesView: View {
                     }
                 case .content(let series):
                     ScrollView {
+                        Spacer().frame(height: Padding.spacingXXXS)
                         ForEach(series, id: \.id) { item in
                             NavigationLink(destination: SeriesDetailView(
                                 viewModel: item

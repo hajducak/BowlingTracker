@@ -14,6 +14,7 @@ struct Series: Codable, Identifiable {
     let tag: SeriesType
     var games: [Game]
     var currentGame: Game?
+    // TODO: add oil pattern name + save one for all series i played
 
     init(date: Date = Date.now, name: String, description: String = "", tag: SeriesType, games: [Game] = [], currentGame: Game? = Game()) {
         self.id = UUID().uuidString

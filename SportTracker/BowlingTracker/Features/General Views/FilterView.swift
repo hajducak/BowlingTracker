@@ -31,17 +31,16 @@ struct FilterView: View {
     
     private func filterButton(_ filter: FilterTypes) -> some View {
         let isSelected = selectedFilter == filter.type
-        let color = filter.type?.color ?? Color.gray
         
         return Text(filter.name)
-            .subheading(color: isSelected ? .white : color, weight: .regular)
+            .subheading(color: isSelected ? .white : DefaultColor.grey2, weight: .regular)
             .padding(.vertical, Padding.spacingXXS)
             .padding(.horizontal, Padding.spacingXXM)
-            .background(isSelected ? color.opacity(1) : color.opacity(0.2))
+            .background(isSelected ? Color.orange: DefaultColor.grey6)
             .clipShape(RoundedRectangle(cornerRadius: Corners.corenrRadiusL))
             .overlay(
                 RoundedRectangle(cornerRadius: Corners.corenrRadiusL)
-                    .stroke(color, lineWidth: 1)
+                    .stroke(isSelected ? Color.orange : DefaultColor.grey2, lineWidth: 1)
             )
             .animation(.easeInOut, value: isSelected)
             .tap {

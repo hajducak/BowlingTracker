@@ -8,13 +8,13 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
 
-    private let firebaseManager: FirebaseManager
+    private let firebaseService: FirebaseService<Series>
     private var series: [Series] = []
     private var filteredSeries: [Series] = []
     private var cancellables: Set<AnyCancellable> = []
 
-    init(firebaseManager: FirebaseManager) {
-        self.firebaseManager = firebaseManager
+    init(firebaseService: FirebaseService<Series>) {
+        self.firebaseService = firebaseService
         setUp()
         setupFiltering()
 
@@ -23,7 +23,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
 
     @objc private func setUp() {
         isLoading = true
-        firebaseManager.fetchAllSeries()
+        firebaseService.fetchAll()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }

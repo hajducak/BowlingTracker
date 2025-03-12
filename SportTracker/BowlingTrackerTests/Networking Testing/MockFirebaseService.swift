@@ -1,24 +1,14 @@
-import FirebaseFirestore
 import Combine
+@testable import BowlingTracker
+import FirebaseFirestore
+import Foundation
 
-struct CollectionNames {
-    static let series: String = "series"
-}
-
-protocol FirebaseServiceProtocol {
-    associatedtype T: Codable
-
-    func save(_ object: T, withID id: String) -> AnyPublisher<Void, AppError>
-    func fetchAll() -> AnyPublisher<[T], AppError>
-    func delete(id: String) -> AnyPublisher<Void, AppError>
-}
-
-class FirebaseService<T: Codable>: FirebaseServiceProtocol {
-    private let db: Firestore
+class MockFirebaseService<T: Codable>: FirebaseServiceProtocol {
+    private let mockFirestore: MockFirestore
     private let collectionName: String
 
-    init(db: Firestore = Firestore.firestore(), collectionName: String) {
-        self.db = db
+    init(mockFirestore: MockFirestore, collectionName: String) {
+        self.mockFirestore = mockFirestore
         self.collectionName = collectionName
     }
 
@@ -26,7 +16,7 @@ class FirebaseService<T: Codable>: FirebaseServiceProtocol {
         do {
             let data = try Firestore.Encoder().encode(object)
             return Future { promise in
-                self.db.collection(self.collectionName)
+                self.mockFirestore.collection(self.collectionName)
                     .document(id)
                     .setData(data) { error in
                         if let error = error {
@@ -43,20 +33,15 @@ class FirebaseService<T: Codable>: FirebaseServiceProtocol {
 
     func fetchAll() -> AnyPublisher<[T], AppError> {
         return Future<[T], AppError> { promise in
-            self.db.collection(self.collectionName).getDocuments { snapshot, error in
+            self.mockFirestore.collection(self.collectionName).getDocuments { documents, error in
                 if let error = error {
                     promise(.failure(.fetchingError(error)))
                     return
                 }
 
-                guard let documents = snapshot?.documents else {
-                    promise(.success([]))
-                    return
-                }
-
-                let items = documents.compactMap { doc -> T? in
-                    try? doc.data(as: T.self)
-                }
+                let items = documents?.compactMap { doc -> T? in
+                    try? Firestore.Decoder().decode(T.self, from: doc.data)
+                } ?? []
 
                 promise(.success(items))
             }
@@ -65,18 +50,20 @@ class FirebaseService<T: Codable>: FirebaseServiceProtocol {
 
     func delete(id: String) -> AnyPublisher<Void, AppError> {
         return Future { promise in
-            self.db.collection(self.collectionName).document(id).delete { error in
-                if let error = error {
-                    promise(.failure(.deletingError(error)))
-                } else {
-                    promise(.success(()))
+            self.mockFirestore.collection(self.collectionName)
+                .document(id)
+                .delete { error in
+                    if let error = error {
+                        promise(.failure(.deletingError(error)))
+                    } else {
+                        promise(.success(()))
+                    }
                 }
-            }
         }.eraseToAnyPublisher()
     }
 }
 
-extension FirebaseService where T == Series {
+extension MockFirebaseService where T == Series {
     func saveGameToSeries(seriesID: String, game: Game) -> AnyPublisher<Void, AppError> {
         let gameData: [String: Any]
         
@@ -87,7 +74,7 @@ extension FirebaseService where T == Series {
         }
 
         return Future<Void, AppError> { promise in
-            let seriesRef = self.db.collection(self.collectionName).document(seriesID)
+            let seriesRef = self.mockFirestore.collection(self.collectionName).document(seriesID)
 
             seriesRef.getDocument { document, error in
                 if let error = error {
@@ -95,7 +82,7 @@ extension FirebaseService where T == Series {
                     return
                 }
                 
-                guard document?.exists == true else {
+                guard document?.data != nil else {
                     promise(.failure(.customError("Series not found.")))
                     return
                 }

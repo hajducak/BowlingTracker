@@ -18,20 +18,20 @@ struct BowlingTrackerApp: App {
     var body: some Scene {
         WindowGroup {
 //             let storageManager = StorageManager(modelContainer: modelContainer)
-            let firebaseManager = FirebaseManager.shared
+            let firebaseSeriesService = FirebaseService<Series>(collectionName: CollectionNames.series)
 
             let gameViewModelFactory = GameViewModelFactoryImpl()
             let seriesViewModelFactory = SeriesDetailViewModelFactoryImpl(
-                firebaseManager: firebaseManager,
+                firebaseService: firebaseSeriesService,
                 gameViewModelFactory: gameViewModelFactory
             )
             let bowlingSeriesViewModel = SeriesViewModel(
                 seriesViewModelFactory: seriesViewModelFactory,
-                firebaseManager: firebaseManager
+                firebaseService: firebaseSeriesService
             )
             
             let statisticsViewModel = StatisticsViewModel(
-                firebaseManager: firebaseManager
+                firebaseService: firebaseSeriesService
             )
 
             ContentView(

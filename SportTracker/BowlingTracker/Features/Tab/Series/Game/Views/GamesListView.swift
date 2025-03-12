@@ -61,7 +61,7 @@ struct GamesListView: View {
 
 #Preview {
     GamesListView(viewModel: .init(
-        firebaseManager: FirebaseManager.shared,
+        firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
         gameViewModelFactory: GameViewModelFactoryImpl(),
         series:  Series(name: "Finished Series", tag: .league, games: [
             Game(frames: [

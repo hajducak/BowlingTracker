@@ -30,21 +30,21 @@ class SeriesViewModel: ObservableObject {
     @Published var selectedFilter: SeriesType?
     
     let seriesViewModelFactory: SeriesDetailViewModelFactory
-    let firebaseManager: FirebaseManager
+    let firebaseService: FirebaseService<Series>
     private var cancellables: Set<AnyCancellable> = []
 
     private var allSeries: [SeriesDetailViewModel] = []
     
-    init(seriesViewModelFactory: SeriesDetailViewModelFactory, firebaseManager: FirebaseManager) {
+    init(seriesViewModelFactory: SeriesDetailViewModelFactory, firebaseService: FirebaseService<Series>) {
         self.seriesViewModelFactory = seriesViewModelFactory
-        self.firebaseManager = firebaseManager
+        self.firebaseService = firebaseService
         setupSeries()
         setupFiltering()
     }
     
     private func setupSeries() {
         state = .loading
-        firebaseManager.fetchAllSeries()
+        firebaseService.fetchAll()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
@@ -117,7 +117,7 @@ class SeriesViewModel: ObservableObject {
     }
 
     func save(series: Series) {
-        firebaseManager.saveSeries(series)
+        firebaseService.save(series, withID: series.id)
             .sink { [weak self] completion in
                 guard let self else { return }
                 if case .failure(let error) = completion {
@@ -132,7 +132,7 @@ class SeriesViewModel: ObservableObject {
     }
     
     func deleteSeries(_ series: Series) {
-        firebaseManager.deleteSeries(id: series.id)
+        firebaseService.delete(id: series.id)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self else { return }
                 switch completion {

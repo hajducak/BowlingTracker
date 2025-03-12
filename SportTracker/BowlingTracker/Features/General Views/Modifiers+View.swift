@@ -19,7 +19,7 @@ struct HideTabBarModifier: ViewModifier {
 }
 
 struct CustomTextFieldStyle: ViewModifier {
-    let label: String
+    var label: String? = nil
     func body(content: Content) -> some View {
         content
             .padding()
@@ -70,12 +70,16 @@ struct RoundedCorner: Shape {
 
 
 struct LabeledStyle: ViewModifier {
-    let label: String
+    var label: String?
     func body(content: Content) -> some View {
-        VStack(alignment: .leading, spacing: Padding.spacingS) {
-            Text(label)
-                .heading()
-            content.padding(.bottom, 15)
+        if let label {
+            VStack(alignment: .leading, spacing: Padding.spacingS) {
+                Text(label)
+                    .heading()
+                content.padding(.bottom, 15)
+            }
+        } else {
+            content
         }
     }
 }
@@ -102,11 +106,11 @@ extension View {
         modifier(HideTabBarModifier(isHidden: isHidden))
     }
 
-    func textFieldStyle(labeled: String) -> some View {
+    func textFieldStyle(labeled: String? = nil) -> some View {
         modifier(CustomTextFieldStyle(label: labeled))
     }
     
-    func labled(label: String) -> some View {
+    func labled(label: String?) -> some View {
         modifier(LabeledStyle(label: label))
     }
     

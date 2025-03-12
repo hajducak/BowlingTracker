@@ -17,9 +17,10 @@ struct SeriesDetailView: View {
                             Text("Current game")
                                 .title()
                                 .padding(.horizontal, Padding.defaultPadding)
+                                .padding(.top, Padding.spacingM)
                             GameView(viewModel: game)
                             PreviousGamesView(viewModel: viewModel)
-                                .padding(.top, Padding.spacingXXM)
+                                .padding(.top, Padding.spacingM)
                         }.padding(.bottom, Padding.defaultPadding)
                     }
                     .navigationBarItems(
@@ -58,14 +59,34 @@ struct SeriesDetailView: View {
     private var content: some View {
         VStack(alignment: .leading, spacing: Padding.spacingXXS) {
             Text(viewModel.series.description)
-                .subheading(weight: .regular)
+                .body()
                 .padding(.horizontal, Padding.defaultPadding)
+            if let oilPatternName = viewModel.series.oilPatternName, !oilPatternName.isEmpty {
+                if let oilPatternURL = viewModel.series.oilPatternURL, !oilPatternURL.isEmpty, let url = URL(string: oilPatternURL) {
+                    Link(destination: url) {
+                        HStack {
+                            Image(systemName: "link.circle")
+                            Text(oilPatternName)
+                                .multilineTextAlignment(.leading)
+                                .body(color: .orange)
+                                .underline()
+                        }
+                    }.padding(.horizontal, Padding.defaultPadding)
+                } else {
+                    Text("Oil pattern: \(oilPatternName)")
+                        .multilineTextAlignment(.leading)
+                        .body()
+                        .padding(.horizontal, Padding.defaultPadding)
+                }
+            }
             if let statistics = viewModel.basicStatisticsViewModel {
                 BasicStatisticsView(viewModel: statistics)
+                    .padding(.top, Padding.spacingM)
             }
             Text("Games played")
                 .title()
-                .padding([.horizontal, .top], Padding.defaultPadding)
+                .padding(.horizontal, Padding.defaultPadding)
+                .padding(.top, Padding.spacingM)
             GamesListView(viewModel: viewModel)
         }.padding(.bottom, Padding.defaultPadding)
     }

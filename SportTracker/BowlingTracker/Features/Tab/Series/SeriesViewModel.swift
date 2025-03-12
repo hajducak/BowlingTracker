@@ -23,6 +23,8 @@ class SeriesViewModel: ObservableObject {
     @Published var toast: Toast? = nil
     @Published var newSeriesName = ""
     @Published var newSeriesDescription = ""
+    @Published var newSeriesOilPatternName = ""
+    @Published var newSeriesOilPatternURL = ""
     @Published var newSeriesSelectedType: SeriesType = .league
     @Published var newSeriesSelectedDate = Date()
     @Published var selectedFilter: SeriesType?
@@ -99,6 +101,8 @@ class SeriesViewModel: ObservableObject {
             date: newSeriesSelectedDate,
             name: newSeriesName,
             description: newSeriesDescription,
+            oilPatternName: newSeriesOilPatternName,
+            oilPatternURL: newSeriesOilPatternURL,
             tag: newSeriesSelectedType
         )
         save(series: newSeries)

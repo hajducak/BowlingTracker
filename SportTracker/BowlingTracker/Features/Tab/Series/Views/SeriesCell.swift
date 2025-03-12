@@ -14,14 +14,14 @@ struct SeriesCell: View {
                 Text(series.description)
                     .subheading(weight: .regular)
             }
-            HStack(alignment: .bottom) {
-                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
-                    Text("Games: \(series.games.count)")
-                    Text("Avarage: \(series.getSeriesAvarage().twoPointFormat())")
-                }.caption()
-                Spacer()
-                Text("at \(series.formattedDate)").caption()
-            }
+            VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                Text("Games: \(series.games.count)")
+                Text("Avarage: \(series.getSeriesAvarage().twoPointFormat())")
+                if let oilPatternName = series.oilPatternName, !oilPatternName.isEmpty {
+                    Text("Oil pattern: \(oilPatternName)").multilineTextAlignment(.trailing)
+                }
+                Text("at \(series.formattedDate)")
+            }.caption()
         }
         .flexWidthModifier(alignment: .leading)
         .padding(Padding.spacingS)
@@ -63,7 +63,6 @@ struct SeriesCell: View {
             }
         )
         .padding(.horizontal, Padding.defaultPadding)
-        // .tap(count: 3) { onDeleteSeries(series) }
     }
 }
 

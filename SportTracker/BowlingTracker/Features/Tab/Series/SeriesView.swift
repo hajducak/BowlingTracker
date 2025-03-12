@@ -12,6 +12,8 @@ struct SeriesView: View {
                     CreateSeriesView(
                         seriesName: $viewModel.newSeriesName,
                         seriesDescription: $viewModel.newSeriesDescription,
+                        seriesOilPatternName: $viewModel.newSeriesOilPatternName,
+                        seriesOilPatternURL: $viewModel.newSeriesOilPatternURL,
                         selectedType: $viewModel.newSeriesSelectedType,
                         selectedDate: $viewModel.newSeriesSelectedDate,
                         onSave: {
@@ -32,7 +34,7 @@ struct SeriesView: View {
                 showCreateSeries = true
             }
         }) {
-            Label("Add", systemImage: "plus.circle.fill")
+            Label("Add", systemImage: "plus.circle")
                 .foregroundColor(.orange)
         }
     }

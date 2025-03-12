@@ -3,6 +3,8 @@ import SwiftUI
 struct CreateSeriesView: View {
     @Binding var seriesName: String
     @Binding var seriesDescription: String
+    @Binding var seriesOilPatternName: String
+    @Binding var seriesOilPatternURL: String
     @Binding var selectedType: SeriesType
     @Binding var selectedDate: Date
     var onSave: (() -> Void)?
@@ -18,6 +20,10 @@ struct CreateSeriesView: View {
                         .textFieldStyle(labeled: "Series name")
                     TextField("Enter series description", text: $seriesDescription)
                         .textFieldStyle(labeled: "Series description")
+                    TextField("Oil pattern name", text: $seriesOilPatternName)
+                        .textFieldStyle(labeled: "Enter series oil pattern")
+                    TextField("Oil pattern URL", text: $seriesOilPatternURL)
+                        .textFieldStyle()
                     Picker("Select type", selection: $selectedType) {
                         Text("League").tag(SeriesType.league)
                         Text("Tournament").tag(SeriesType.tournament)
@@ -93,6 +99,8 @@ struct CreateSeriesView: View {
     CreateSeriesView(
         seriesName: .constant(""),
         seriesDescription: .constant(""),
+        seriesOilPatternName: .constant(""),
+        seriesOilPatternURL: .constant(""),
         selectedType: .constant(.other),
         selectedDate: .constant(Date.now)
     ) { }

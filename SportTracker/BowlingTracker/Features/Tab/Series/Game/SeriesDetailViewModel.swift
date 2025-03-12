@@ -131,13 +131,17 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             } receiveValue: { [weak self] _ in
                 guard let self else { return }
                 toast = Toast(type: .success("Series successfully saved"))
-                NotificationCenter.default.post(name: .seriesDidSaved, object: nil)
+                reloadStatistics()
                 seriesSaved.send(self.series)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                     self.shouldDismiss = true
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func reloadStatistics() {
+        NotificationCenter.default.post(name: .seriesDidSaved, object: nil)
     }
     
     deinit {

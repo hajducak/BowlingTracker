@@ -17,9 +17,11 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         self.firebaseManager = firebaseManager
         setUp()
         setupFiltering()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(setUp), name: .seriesDidSaved, object: nil)
     }
 
-    func setUp() {
+    @objc private func setUp() {
         isLoading = true
         firebaseManager.fetchAllSeries()
             .receive(on: DispatchQueue.main)
@@ -55,7 +57,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         setupStatistics(for: filteredSeries)
     }
     
-    func setupStatistics(for series: [Series]) {
+    private func setupStatistics(for series: [Series]) {
         totalGames = series.reduce(0) { $0 + $1.games.count }
         // MARK: - Basic Statistics:
         if basicStatisticsViewModel == nil  {
@@ -65,5 +67,9 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         }
         // MARK: - more Statistics
         // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .seriesDidSaved, object: nil)
     }
 }

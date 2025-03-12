@@ -8,20 +8,22 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
 
-    private let firebaseManager: FirebaseManager
+    private let firebaseService: FirebaseService<Series>
     private var series: [Series] = []
     private var filteredSeries: [Series] = []
     private var cancellables: Set<AnyCancellable> = []
 
-    init(firebaseManager: FirebaseManager) {
-        self.firebaseManager = firebaseManager
+    init(firebaseService: FirebaseService<Series>) {
+        self.firebaseService = firebaseService
         setUp()
         setupFiltering()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(setUp), name: .seriesDidSaved, object: nil)
     }
 
-    func setUp() {
+    @objc private func setUp() {
         isLoading = true
-        firebaseManager.fetchAllSeries()
+        firebaseService.fetchAll()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
@@ -55,7 +57,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         setupStatistics(for: filteredSeries)
     }
     
-    func setupStatistics(for series: [Series]) {
+    private func setupStatistics(for series: [Series]) {
         totalGames = series.reduce(0) { $0 + $1.games.count }
         // MARK: - Basic Statistics:
         if basicStatisticsViewModel == nil  {
@@ -65,5 +67,10 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         }
         // MARK: - more Statistics
         // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .seriesDidSaved, object: nil)
+        cancellables.removeAll()
     }
 }

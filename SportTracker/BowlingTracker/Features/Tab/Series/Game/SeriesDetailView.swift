@@ -10,10 +10,11 @@ struct SeriesDetailView: View {
                 switch viewModel.state {
                 case .playing(let game):
                     ScrollView {
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
                             Text(viewModel.series.description)
-                                .subheading(weight: .regular)
+                                .body()
                                 .padding(.horizontal, Padding.defaultPadding)
+                            oilPatternLink
                             Text("Current game")
                                 .title()
                                 .padding(.horizontal, Padding.defaultPadding)
@@ -61,6 +62,30 @@ struct SeriesDetailView: View {
             Text(viewModel.series.description)
                 .body()
                 .padding(.horizontal, Padding.defaultPadding)
+            oilPatternLink
+            if let statistics = viewModel.basicStatisticsViewModel {
+                BasicStatisticsView(viewModel: statistics)
+                    .padding(.top, Padding.spacingM)
+            }
+            Text("Games played")
+                .title()
+                .padding(.horizontal, Padding.defaultPadding)
+                .padding(.top, Padding.spacingM)
+            GamesListView(viewModel: viewModel)
+        }.padding(.bottom, Padding.defaultPadding)
+    }
+    
+    private var empty: some View {
+        VStack(spacing: Padding.spacingL) {
+            Spacer()
+            Text("No games found")
+                .title(color: DefaultColor.grey3)
+            Spacer()
+        }.padding(.horizontal, Padding.defaultPadding)
+    }
+    
+    private var oilPatternLink: some View {
+        Group {
             if let oilPatternName = viewModel.series.oilPatternName, !oilPatternName.isEmpty {
                 if let oilPatternURL = viewModel.series.oilPatternURL, !oilPatternURL.isEmpty, let url = URL(string: oilPatternURL) {
                     Link(destination: url) {
@@ -79,25 +104,6 @@ struct SeriesDetailView: View {
                         .padding(.horizontal, Padding.defaultPadding)
                 }
             }
-            if let statistics = viewModel.basicStatisticsViewModel {
-                BasicStatisticsView(viewModel: statistics)
-                    .padding(.top, Padding.spacingM)
-            }
-            Text("Games played")
-                .title()
-                .padding(.horizontal, Padding.defaultPadding)
-                .padding(.top, Padding.spacingM)
-            GamesListView(viewModel: viewModel)
-        }.padding(.bottom, Padding.defaultPadding)
-    }
-    
-    private var empty: some View {
-        VStack {
-            Spacer()
-            Text("No games found")
-                .title()
-                .foregroundColor(.gray)
-            Spacer()
         }
     }
 }
@@ -105,7 +111,7 @@ struct SeriesDetailView: View {
 #Preview("Finished Series") {
     SeriesDetailView(
         viewModel: .init(
-            firebaseManager: FirebaseManager.shared,
+            firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
             gameViewModelFactory: GameViewModelFactoryImpl(),
             series:  Series(name: "Finished Series", tag: .league, games: [
                 Game(frames: [
@@ -151,7 +157,7 @@ struct SeriesDetailView: View {
 
 #Preview("Current Game") {
     SeriesDetailView(viewModel: .init(
-        firebaseManager: FirebaseManager.shared,
+        firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
         gameViewModelFactory: GameViewModelFactoryImpl(),
         series: Series(name: "Not finished series", tag: .league, games: [])
     ))

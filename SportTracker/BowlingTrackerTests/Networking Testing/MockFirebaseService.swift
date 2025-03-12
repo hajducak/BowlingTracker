@@ -1,21 +1,23 @@
-import FirebaseFirestore
 import Combine
+@testable import BowlingTracker
+import FirebaseFirestore
+import Foundation
 
-public class FirebaseManager {
-    static let shared = FirebaseManager()
-    private let db = Firestore.firestore()
+class MockFirebaseService<T: Codable>: FirebaseServiceProtocol {
+    private let mockFirestore: MockFirestore
+    private let collectionName: String
 
-    private let performancesCollection = "performances"
-    private let seriesCollection = "series"
-    
-    public init() {}
-    
-    func saveSeries(_ series: Series) -> AnyPublisher<Void, AppError> {
+    init(mockFirestore: MockFirestore, collectionName: String) {
+        self.mockFirestore = mockFirestore
+        self.collectionName = collectionName
+    }
+
+    func save(_ object: T, withID id: String) -> AnyPublisher<Void, AppError> {
         do {
-            let data = try Firestore.Encoder().encode(series)
-            return Future<Void, AppError> { promise in
-                self.db.collection(self.seriesCollection)
-                    .document(series.id)
+            let data = try Firestore.Encoder().encode(object)
+            return Future { promise in
+                self.mockFirestore.collection(self.collectionName)
+                    .document(id)
                     .setData(data) { error in
                         if let error = error {
                             promise(.failure(.saveError(error)))
@@ -29,41 +31,39 @@ public class FirebaseManager {
         }
     }
 
-    func deleteSeries(id: String) -> AnyPublisher<Void, AppError> {
-        return Future { [weak self] promise in
-            self?.db.collection("series").document(id).delete { error in
-                if let error = error {
-                    promise(.failure(.deletingError(error)))
-                } else {
-                    promise(.success(()))
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-
-    func fetchAllSeries() -> AnyPublisher<[Series], AppError> {
-        return Future<[Series], AppError> { promise in
-            self.db.collection(self.seriesCollection).getDocuments { snapshot, error in
+    func fetchAll() -> AnyPublisher<[T], AppError> {
+        return Future<[T], AppError> { promise in
+            self.mockFirestore.collection(self.collectionName).getDocuments { documents, error in
                 if let error = error {
                     promise(.failure(.fetchingError(error)))
                     return
                 }
-                
-                guard let documents = snapshot?.documents else {
-                    promise(.success([]))
-                    return
-                }
 
-                let seriesList = documents.compactMap { doc -> Series? in
-                    try? doc.data(as: Series.self)
-                }
+                let items = documents?.compactMap { doc -> T? in
+                    try? Firestore.Decoder().decode(T.self, from: doc.data)
+                } ?? []
 
-                promise(.success(seriesList))
+                promise(.success(items))
             }
         }.eraseToAnyPublisher()
     }
 
+    func delete(id: String) -> AnyPublisher<Void, AppError> {
+        return Future { promise in
+            self.mockFirestore.collection(self.collectionName)
+                .document(id)
+                .delete { error in
+                    if let error = error {
+                        promise(.failure(.deletingError(error)))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+        }.eraseToAnyPublisher()
+    }
+}
+
+extension MockFirebaseService where T == Series {
     func saveGameToSeries(seriesID: String, game: Game) -> AnyPublisher<Void, AppError> {
         let gameData: [String: Any]
         
@@ -74,7 +74,7 @@ public class FirebaseManager {
         }
 
         return Future<Void, AppError> { promise in
-            let seriesRef = self.db.collection(self.seriesCollection).document(seriesID)
+            let seriesRef = self.mockFirestore.collection(self.collectionName).document(seriesID)
 
             seriesRef.getDocument { document, error in
                 if let error = error {
@@ -82,7 +82,7 @@ public class FirebaseManager {
                     return
                 }
                 
-                guard document?.exists == true else {
+                guard document?.data != nil else {
                     promise(.failure(.customError("Series not found.")))
                     return
                 }

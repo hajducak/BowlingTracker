@@ -3,17 +3,17 @@ protocol SeriesDetailViewModelFactory {
 }
 
 final class SeriesDetailViewModelFactoryImpl: SeriesDetailViewModelFactory {
-    private let firebaseManager: FirebaseManager
+    private let firebaseService: FirebaseService<Series>
     private let gameViewModelFactory: GameViewModelFactory
 
-    init(firebaseManager: FirebaseManager, gameViewModelFactory: GameViewModelFactory) {
-        self.firebaseManager = firebaseManager
+    init(firebaseService: FirebaseService<Series>, gameViewModelFactory: GameViewModelFactory) {
+        self.firebaseService = firebaseService
         self.gameViewModelFactory = gameViewModelFactory
     }
 
     func viewModel(series: Series) -> SeriesDetailViewModel {
         SeriesDetailViewModel(
-            firebaseManager: firebaseManager,
+            firebaseService: firebaseService,
             gameViewModelFactory: gameViewModelFactory,
             series: series
         )

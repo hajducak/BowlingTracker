@@ -17,13 +17,13 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var savingIsLoading: Bool = false
     var basicStatisticsViewModel: BasicStatisticsViewModel?
     private let gameViewModelFactory: GameViewModelFactory
-    private let firebaseManager: FirebaseManager
+    private let firebaseService: FirebaseService<Series>
     private var cancellables: Set<AnyCancellable> = []
     
     let seriesSaved = PassthroughSubject<Series, Never>()
 
-    init(firebaseManager: FirebaseManager, gameViewModelFactory: GameViewModelFactory, series: Series) {
-        self.firebaseManager = firebaseManager
+    init(firebaseService: FirebaseService<Series>, gameViewModelFactory: GameViewModelFactory, series: Series) {
+        self.firebaseService = firebaseService
         self.gameViewModelFactory = gameViewModelFactory
         self.series = series
         self.games = series.games
@@ -80,7 +80,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     /// Saves the game to Firebase and updates the local series data
     func saveGameIntoSeries(game: Game) {
         savingIsLoading = true
-        firebaseManager.saveGameToSeries(seriesID: series.id, game: game)
+        firebaseService.saveGameToSeries(seriesID: series.id, game: game)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
@@ -100,7 +100,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     /// Fetches the updated series from Firebase
     private func fetchUpdatedSeries() {
-        firebaseManager.fetchAllSeries()
+        firebaseService.fetchAll()
             .receive(on: DispatchQueue.main)
             .sink { _ in } receiveValue: { [weak self] allSeries in
                 guard let self, let updatedSeries = allSeries.first(where: { $0.id == self.series.id }) else { return }
@@ -121,7 +121,7 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     func save() {
         series.currentGame = nil
-        firebaseManager.saveSeries(series)
+        firebaseService.save(series, withID: series.id)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
@@ -131,11 +131,20 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             } receiveValue: { [weak self] _ in
                 guard let self else { return }
                 toast = Toast(type: .success("Series successfully saved"))
+                reloadStatistics()
                 seriesSaved.send(self.series)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                     self.shouldDismiss = true
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func reloadStatistics() {
+        NotificationCenter.default.post(name: .seriesDidSaved, object: nil)
+    }
+    
+    deinit {
+        cancellables.removeAll()
     }
 }

@@ -58,4 +58,8 @@ class BasicStatisticsViewModel: ObservableObject {
         totalOpensCount = "\(totalOpenFrames)/\(opensPossibility)"
         totalSplitsCount = "\(totalSplits)/\(splitsPossibility)"
     }
+
+    deinit {
+        cancellables.removeAll()
+    }
 }

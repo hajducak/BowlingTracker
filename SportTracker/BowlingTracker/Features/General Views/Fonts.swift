@@ -10,6 +10,11 @@ extension View {
     func heading(color: Color = .primary) -> some View {
         self.modifier(HeadingModifier(color: color))
     }
+    
+    /// 16px, .regular, .primary
+    func body(color: Color = .primary) -> some View {
+        self.modifier(BodyModifier(color: color))
+    }
 
     /// 14px, .bold, .primary
     func subheading(color: Color = .primary, weight: Font.Weight? = .bold) -> some View {
@@ -51,6 +56,17 @@ struct HeadingModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(.system(size: 16, weight: .bold))
+            .foregroundColor(color)
+    }
+}
+
+/// size: 16, .bold
+struct BodyModifier: ViewModifier {
+    var color: Color = .primary
+
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 16, weight: .regular))
             .foregroundColor(color)
     }
 }

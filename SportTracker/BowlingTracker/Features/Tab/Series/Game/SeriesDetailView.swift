@@ -76,13 +76,12 @@ struct SeriesDetailView: View {
     }
     
     private var empty: some View {
-        VStack {
+        VStack(spacing: Padding.spacingL) {
             Spacer()
             Text("No games found")
-                .title()
-                .foregroundColor(.gray)
+                .title(color: DefaultColor.grey3)
             Spacer()
-        }
+        }.padding(.horizontal, Padding.defaultPadding)
     }
     
     private var oilPatternLink: some View {

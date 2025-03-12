@@ -53,14 +53,14 @@ struct SeriesView: View {
                     .padding(.bottom, Padding.spacingS)
                 switch viewModel.state {
                 case .empty:
-                    VStack {
+                    VStack(spacing: Padding.spacingL) {
                         Spacer()
                         Text("No series found")
-                            .title()
-                            .foregroundColor(.gray)
-                            .padding()
+                            .title(color: DefaultColor.grey3)
+                        Text("Create a new bowling series by clicking the '+' icon in the top-right corner. Once you do, you can add the name, description, oil pattern, and other details for your new series. It’s that easy to get started!")
+                            .subheading(color: DefaultColor.grey3, weight: .regular).multilineTextAlignment(.center)
                         Spacer()
-                    }
+                    }.padding(.horizontal, Padding.defaultPadding)
                 case .content(let series):
                     ScrollView {
                         Spacer().frame(height: Padding.spacingXXXS)

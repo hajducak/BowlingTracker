@@ -71,5 +71,6 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .seriesDidSaved, object: nil)
+        cancellables.removeAll()
     }
 }

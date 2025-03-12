@@ -146,4 +146,8 @@ class SeriesViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
+
+    deinit {
+        cancellables.removeAll()
+    }
 }

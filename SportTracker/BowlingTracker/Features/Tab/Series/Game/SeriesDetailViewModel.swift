@@ -139,4 +139,8 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             }
             .store(in: &cancellables)
     }
+    
+    deinit {
+        cancellables.removeAll()
+    }
 }

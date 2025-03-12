@@ -10,10 +10,11 @@ struct SeriesDetailView: View {
                 switch viewModel.state {
                 case .playing(let game):
                     ScrollView {
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
                             Text(viewModel.series.description)
-                                .subheading(weight: .regular)
+                                .body()
                                 .padding(.horizontal, Padding.defaultPadding)
+                            oilPatternLink
                             Text("Current game")
                                 .title()
                                 .padding(.horizontal, Padding.defaultPadding)
@@ -61,24 +62,7 @@ struct SeriesDetailView: View {
             Text(viewModel.series.description)
                 .body()
                 .padding(.horizontal, Padding.defaultPadding)
-            if let oilPatternName = viewModel.series.oilPatternName, !oilPatternName.isEmpty {
-                if let oilPatternURL = viewModel.series.oilPatternURL, !oilPatternURL.isEmpty, let url = URL(string: oilPatternURL) {
-                    Link(destination: url) {
-                        HStack {
-                            Image(systemName: "link.circle")
-                            Text(oilPatternName)
-                                .multilineTextAlignment(.leading)
-                                .body(color: .orange)
-                                .underline()
-                        }
-                    }.padding(.horizontal, Padding.defaultPadding)
-                } else {
-                    Text("Oil pattern: \(oilPatternName)")
-                        .multilineTextAlignment(.leading)
-                        .body()
-                        .padding(.horizontal, Padding.defaultPadding)
-                }
-            }
+            oilPatternLink
             if let statistics = viewModel.basicStatisticsViewModel {
                 BasicStatisticsView(viewModel: statistics)
                     .padding(.top, Padding.spacingM)
@@ -100,12 +84,35 @@ struct SeriesDetailView: View {
             Spacer()
         }
     }
+    
+    private var oilPatternLink: some View {
+        Group {
+            if let oilPatternName = viewModel.series.oilPatternName, !oilPatternName.isEmpty {
+                if let oilPatternURL = viewModel.series.oilPatternURL, !oilPatternURL.isEmpty, let url = URL(string: oilPatternURL) {
+                    Link(destination: url) {
+                        HStack {
+                            Image(systemName: "link.circle")
+                            Text(oilPatternName)
+                                .multilineTextAlignment(.leading)
+                                .body(color: .orange)
+                                .underline()
+                        }
+                    }.padding(.horizontal, Padding.defaultPadding)
+                } else {
+                    Text("Oil pattern: \(oilPatternName)")
+                        .multilineTextAlignment(.leading)
+                        .body()
+                        .padding(.horizontal, Padding.defaultPadding)
+                }
+            }
+        }
+    }
 }
 
 #Preview("Finished Series") {
     SeriesDetailView(
         viewModel: .init(
-            firebaseManager: FirebaseManager.shared,
+            firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
             gameViewModelFactory: GameViewModelFactoryImpl(),
             series:  Series(name: "Finished Series", tag: .league, games: [
                 Game(frames: [
@@ -151,7 +158,7 @@ struct SeriesDetailView: View {
 
 #Preview("Current Game") {
     SeriesDetailView(viewModel: .init(
-        firebaseManager: FirebaseManager.shared,
+        firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
         gameViewModelFactory: GameViewModelFactoryImpl(),
         series: Series(name: "Not finished series", tag: .league, games: [])
     ))

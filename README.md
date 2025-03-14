@@ -3,6 +3,7 @@
 Bowling Tracker is a mobile application for tracking bowling games and statistics.
 
 <div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot6.imageset/screenshot6.png" width="150">
     <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="150">
     <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot4.imageset/screenshot4.png" width="150">
     <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="150">
@@ -11,11 +12,13 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 </div>
 
 ## 🚀 Features
-- Create and manage bowling series
-- Record individual game scores pin by pin
-- Calculate statistics such as average score, strike percentage, and spare percentage
-- Save data to Firebase
-- Resume an ongoing game
+- ✅ User authentication with remambered credentionals
+- ✅ Create and manage bowling series
+- ✅ Record individual game scores pin by pin
+- ✅ Calculate statistics such as average score, strike percentage, and spare percentage
+- ✅ Save data to Firebase
+- ✅ Resume an ongoing game
+
 - **Pin selection mode** – manually select standing or left over pins before rolling
 - **Pinfall visualization** – view pinfall results for each individual frame  
 - **Series and Statistics filtering** - filter your data based on tags

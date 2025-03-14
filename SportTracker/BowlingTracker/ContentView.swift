@@ -4,6 +4,7 @@ struct ContentView: View {
     @StateObject private var bowlingSeriesViewModel: SeriesViewModel
     @StateObject private var statisticsViewModel: StatisticsViewModel
     @StateObject private var tabSelectionViewModel = TabSelectionViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
 
     init(bowlingSeriesViewModel: SeriesViewModel, statisticsViewModel: StatisticsViewModel) {
         _bowlingSeriesViewModel = StateObject(wrappedValue: bowlingSeriesViewModel)
@@ -15,6 +16,7 @@ struct ContentView: View {
             NavigationView {
                 SeriesView(viewModel: bowlingSeriesViewModel)
                     .navigationBarTitle("My Series")
+                    .navigationBarItems(leading: signOutButton)
             }
             .tabItem {
                 Image(systemName: "figure.bowling")
@@ -24,6 +26,7 @@ struct ContentView: View {
             NavigationView {
                 StatisticsView(viewModel: statisticsViewModel)
                     .navigationBarTitle("My Statistics")
+                    .navigationBarItems(leading: signOutButton)
             }
             .tabItem {
                 Image(systemName: "person.crop.circle")
@@ -42,6 +45,17 @@ struct ContentView: View {
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
         .environmentObject(tabSelectionViewModel)
+    }
+
+    var signOutButton: some View {
+        Button(action: {
+            authViewModel.signOut()
+        }) {
+            Image(systemName: "arrowshape.turn.up.backward.circle")
+                .foregroundColor(.orange)
+            Text("Sign out")
+                .heading(color: .orange)
+        }
     }
 }
 

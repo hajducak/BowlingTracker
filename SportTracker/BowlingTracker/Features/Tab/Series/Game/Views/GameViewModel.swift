@@ -128,4 +128,8 @@ class GameViewModel: ObservableObject {
     func saveGame() {
         gameSaved.send(game)
     }
+    
+    deinit {
+        cancellables.removeAll()
+    }
 }

@@ -4,40 +4,42 @@ import SwiftData
 
 @main
 struct BowlingTrackerApp: App {
-//    private var modelContainer: ModelContainer
+    @StateObject private var authViewModel: AuthViewModel
 
     init() {
         FirebaseApp.configure()
-//        do {
-//            modelContainer = try ModelContainer(for: SportPerformance.self)
-//        } catch {
-//            fatalError("Failed to initialize ModelContainer: \(error.localizedDescription)")
-//        }
+        let authService = AuthService()
+        _authViewModel = StateObject(wrappedValue: AuthViewModel(authService: authService))
     }
 
     var body: some Scene {
         WindowGroup {
-//             let storageManager = StorageManager(modelContainer: modelContainer)
-            let firebaseSeriesService = FirebaseService<Series>(collectionName: CollectionNames.series)
+            if authViewModel.isAuthenticated {
+                let firebaseSeriesService = FirebaseService<Series>(collectionName: CollectionNames.series)
+                
+                let gameViewModelFactory = GameViewModelFactoryImpl()
+                let seriesViewModelFactory = SeriesDetailViewModelFactoryImpl(
+                    firebaseService: firebaseSeriesService,
+                    gameViewModelFactory: gameViewModelFactory
+                )
+                let bowlingSeriesViewModel = SeriesViewModel(
+                    seriesViewModelFactory: seriesViewModelFactory,
+                    firebaseService: firebaseSeriesService
+                )
+                let statisticsViewModel = StatisticsViewModel(
+                    firebaseService: firebaseSeriesService
+                )
 
-            let gameViewModelFactory = GameViewModelFactoryImpl()
-            let seriesViewModelFactory = SeriesDetailViewModelFactoryImpl(
-                firebaseService: firebaseSeriesService,
-                gameViewModelFactory: gameViewModelFactory
-            )
-            let bowlingSeriesViewModel = SeriesViewModel(
-                seriesViewModelFactory: seriesViewModelFactory,
-                firebaseService: firebaseSeriesService
-            )
-            
-            let statisticsViewModel = StatisticsViewModel(
-                firebaseService: firebaseSeriesService
-            )
-
-            ContentView(
-                bowlingSeriesViewModel: bowlingSeriesViewModel,
-                statisticsViewModel: statisticsViewModel
-            ).preferredColorScheme(.light)
+                ContentView(
+                    bowlingSeriesViewModel: bowlingSeriesViewModel,
+                    statisticsViewModel: statisticsViewModel
+                )
+                .preferredColorScheme(.light)
+                .environmentObject(authViewModel)
+            } else {
+                AuthView(viewModel: authViewModel)
+                    .preferredColorScheme(.light)
+            }
         }
     }
 }

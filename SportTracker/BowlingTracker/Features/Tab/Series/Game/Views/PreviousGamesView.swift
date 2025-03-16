@@ -24,7 +24,11 @@ struct PreviousGamesView: View {
             if !isCollapsed {
                 ForEach(viewModel.series.games.indices, id: \.self) { index in
                     VStack(alignment: .leading) {
-                        gameTitle(at: index)
+                        GameHeading(
+                            gameNumber: index + 1,
+                            currentScore: viewModel.series.games[index].currentScore,
+                            lane: viewModel.games[index].lane
+                        )
                             .padding(.horizontal, Padding.defaultPadding)
                         ScrollView(.horizontal) {
                             SheetView(game: $viewModel.series.games[index], showMax: false)
@@ -38,15 +42,6 @@ struct PreviousGamesView: View {
                 previousGamesDescription
                     .padding(.horizontal, Padding.defaultPadding)
             }
-        }
-    }
-    
-    func gameTitle(at index: Int) -> some View {
-        HStack(alignment: .center, spacing: Padding.spacingXXXS) {
-            Text("Game #\(index + 1): ")
-                .subheading(weight: .regular)
-            Text("\(viewModel.series.games[index].currentScore)")
-                .heading()
         }
     }
     

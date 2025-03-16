@@ -10,7 +10,11 @@ struct GamesListView: View {
             ForEach(viewModel.games.indices, id: \.self) { index in
                 VStack(alignment: .leading) {
                     HStack {
-                        gameTitle(index: index)
+                        GameHeading(
+                            gameNumber: index + 1,
+                            currentScore: viewModel.games[index].currentScore,
+                            lane: viewModel.games[index].lane
+                        )
                         Spacer()
                         Image(systemName: "chevron.up.circle.fill")
                             .foregroundColor(Color.orange)
@@ -39,15 +43,6 @@ struct GamesListView: View {
             }
         }
         .padding(.top, Padding.defaultPadding)
-    }
-    
-    private func gameTitle(index: Int) -> some View {
-        HStack(alignment: .center, spacing: Padding.spacingXXXS) {
-            Text("Game #\(index + 1): ")
-                .subheading(weight: .regular)
-            Text("\(viewModel.games[index].currentScore)")
-                .subheading()
-        }
     }
     
     private func toggleExpansion(for index: Int) {

@@ -9,7 +9,7 @@ struct GameView: View {
                 SheetView(game: $viewModel.game)
                     .padding(.horizontal, Padding.defaultPadding)
                     .padding(.bottom, Padding.spacingS)
-            }
+            }.padding(.top, Padding.spacingXS)
             HStack(alignment: .center, spacing: Padding.spacingS) {
                 Toggle("", isOn: $viewModel.selectingFallenPins)
                     .tint(Color.orange)
@@ -75,6 +75,9 @@ struct GameView: View {
             }
                 .padding(.horizontal, Padding.defaultPadding)
                 .disabled(!viewModel.saveGameIsEnabled)
+            TextField("Enter lane numbers", text: $viewModel.gameLane)
+                .textFieldStyle(labeled: "On lane")
+                .padding(.horizontal, Padding.defaultPadding)
         }
     }
 }

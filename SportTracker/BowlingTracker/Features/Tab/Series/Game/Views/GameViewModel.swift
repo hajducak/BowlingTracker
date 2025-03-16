@@ -6,6 +6,7 @@ class GameViewModel: ObservableObject {
     @Published var selectingFallenPins: Bool = false
     @Published var currentFrameIndex: Int = 0
     @Published var game: Game
+    @Published var gameLane: String = ""
     @Published var saveGameIsEnabled: Bool = false
     @Published var spareIsEnabled: Bool = false
     @Published var strikeIsEnabled: Bool = true
@@ -17,8 +18,8 @@ class GameViewModel: ObservableObject {
     init(game: Game) {
         self.game = game
 
-        $game
-            .map { $0.frames.allSatisfy { $0.frameType != .unfinished } }
+        $game.combineLatest($gameLane)
+            .map { $0.frames.allSatisfy { $0.frameType != .unfinished } && !$1.isEmpty }
             .assign(to: \.saveGameIsEnabled, on: self)
             .store(in: &cancellables)
         
@@ -126,6 +127,7 @@ class GameViewModel: ObservableObject {
     }
     
     func saveGame() {
+        game.lane = gameLane
         gameSaved.send(game)
     }
     

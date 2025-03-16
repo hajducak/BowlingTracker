@@ -59,6 +59,11 @@ struct SeriesDetailView: View {
     
     private var content: some View {
         VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+            viewModel.series.house.map {
+                Text($0)
+                    .heading()
+                    .padding(.horizontal, Padding.defaultPadding)
+            }
             Text(viewModel.series.description)
                 .body()
                 .padding(.horizontal, Padding.defaultPadding)

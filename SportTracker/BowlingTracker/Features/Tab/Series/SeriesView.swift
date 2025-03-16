@@ -14,6 +14,7 @@ struct SeriesView: View {
                         seriesDescription: $viewModel.newSeriesDescription,
                         seriesOilPatternName: $viewModel.newSeriesOilPatternName,
                         seriesOilPatternURL: $viewModel.newSeriesOilPatternURL,
+                        seriesHouse: $viewModel.newSeriesHouseName,
                         selectedType: $viewModel.newSeriesSelectedType,
                         selectedDate: $viewModel.newSeriesSelectedDate,
                         onSave: {

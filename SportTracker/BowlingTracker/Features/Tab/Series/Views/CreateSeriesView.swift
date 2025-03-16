@@ -5,6 +5,7 @@ struct CreateSeriesView: View {
     @Binding var seriesDescription: String
     @Binding var seriesOilPatternName: String
     @Binding var seriesOilPatternURL: String
+    @Binding var seriesHouse: String
     @Binding var selectedType: SeriesType
     @Binding var selectedDate: Date
     var onSave: (() -> Void)?
@@ -20,10 +21,12 @@ struct CreateSeriesView: View {
                         .textFieldStyle(labeled: "Series name")
                     TextField("Enter series description", text: $seriesDescription)
                         .textFieldStyle(labeled: "Series description")
-                    TextField("Oil pattern name", text: $seriesOilPatternName)
+                    TextField("Enter oil pattern name", text: $seriesOilPatternName)
                         .textFieldStyle(labeled: "Enter series oil pattern")
-                    TextField("Oil pattern URL", text: $seriesOilPatternURL)
+                    TextField("Enter oil pattern URL", text: $seriesOilPatternURL)
                         .textFieldStyle()
+                    TextField("Enter house name", text: $seriesHouse)
+                        .textFieldStyle(labeled: "House")
                     Picker("Select type", selection: $selectedType) {
                         Text("League").tag(SeriesType.league)
                         Text("Tournament").tag(SeriesType.tournament)
@@ -101,6 +104,7 @@ struct CreateSeriesView: View {
         seriesDescription: .constant(""),
         seriesOilPatternName: .constant(""),
         seriesOilPatternURL: .constant(""),
+        seriesHouse: .constant(""),
         selectedType: .constant(.other),
         selectedDate: .constant(Date.now)
     ) { }

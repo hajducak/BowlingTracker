@@ -11,11 +11,11 @@ enum AppError: Error, LocalizedError, Equatable {
     var errorMessage: String {
         switch self {
         case .fetchingError(let error):
-            return "Error occurred while fetching performances: \(error.localizedDescription)"
+            return "Error occurred while fetching data: \(error.localizedDescription)"
         case .saveError(let error):
             return "Error occurred while saving to Database: \(error.localizedDescription)"
         case .deletingError(let error):
-            return "Error occurred while deleting performance: \(error.localizedDescription)"
+            return "Error occurred while deleting data: \(error.localizedDescription)"
         case .invalidInput:
             return "Please fill in all fields correctly."
         case .unknownError:

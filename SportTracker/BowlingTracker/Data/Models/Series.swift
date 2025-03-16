@@ -16,6 +16,7 @@ struct Series: Codable, Identifiable {
     var currentGame: Game?
     var oilPatternName: String?
     var oilPatternURL: String?
+    var house: String?
 
     init(
         date: Date = Date.now,
@@ -23,6 +24,7 @@ struct Series: Codable, Identifiable {
         description: String = "",
         oilPatternName: String? = nil,
         oilPatternURL: String? = nil,
+        house: String? = nil,
         tag: SeriesType,
         games: [Game] = [],
         currentGame: Game? = Game()
@@ -36,6 +38,7 @@ struct Series: Codable, Identifiable {
         self.currentGame = currentGame
         self.oilPatternName = oilPatternName
         self.oilPatternURL = oilPatternURL
+        self.house = house
     }
     
     func getSeriesScore() -> Int {

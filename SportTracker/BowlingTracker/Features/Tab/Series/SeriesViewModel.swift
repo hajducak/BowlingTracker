@@ -25,6 +25,7 @@ class SeriesViewModel: ObservableObject {
     @Published var newSeriesDescription = ""
     @Published var newSeriesOilPatternName = ""
     @Published var newSeriesOilPatternURL = ""
+    @Published var newSeriesHouseName = ""
     @Published var newSeriesSelectedType: SeriesType = .league
     @Published var newSeriesSelectedDate = Date()
     @Published var selectedFilter: SeriesType?
@@ -103,6 +104,7 @@ class SeriesViewModel: ObservableObject {
             description: newSeriesDescription,
             oilPatternName: newSeriesOilPatternName,
             oilPatternURL: newSeriesOilPatternURL,
+            house: newSeriesHouseName,
             tag: newSeriesSelectedType
         )
         save(series: newSeries)

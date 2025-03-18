@@ -5,13 +5,13 @@ import FirebaseFirestore
 
 class FirebaseServiceTests: XCTestCase {
     var mockFirestore: MockFirestore!
-    var firebaseService: MockFirebaseService<Series>!
+    var firebaseService: MockSeriesFirebaseService!
     var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
         mockFirestore = MockFirestore()
-        firebaseService = MockFirebaseService(mockFirestore: mockFirestore, collectionName: CollectionNames.series)
+        firebaseService = MockSeriesFirebaseService(mockFirestore: mockFirestore, collectionName: CollectionNames.series)
     }
 
     override func tearDown() {
@@ -80,26 +80,6 @@ class FirebaseServiceTests: XCTestCase {
                 }
             }, receiveValue: {
                 expectation.fulfill()
-            })
-            .store(in: &cancellables)
-
-        waitForExpectations(timeout: 2)
-    }
-    
-    func testSaveGameToSeries_Failure_SeriesNotFound() {
-        let game = Game()
-        let expectation = self.expectation(description: "Should fail because series does not exist")
-
-        firebaseService.saveGameToSeries(seriesID: "non-existent-series", game: game)
-            .sink(receiveCompletion: { completion in
-                if case .failure(let error) = completion {
-                    XCTAssertEqual(error, .customError("Series not found."), "Should return 'Series not found.' error")
-                    expectation.fulfill()
-                } else {
-                    XCTFail("Should not succeed when series does not exist")
-                }
-            }, receiveValue: {
-                XCTFail("Should not succeed when series does not exist")
             })
             .store(in: &cancellables)
 

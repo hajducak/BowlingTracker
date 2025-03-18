@@ -44,13 +44,10 @@ struct AuthView: View {
                             viewModel.signIn()
                         }
                     }
-                    Button(action: {
+                    SimpleButton(title: isRegistering ? "Already have an account? Sign In" : "Don't have an account? Sign Up", isEnabled: true) {
                         withAnimation {
                             isRegistering.toggle()
                         }
-                    }) {
-                        Text(isRegistering ? "Already have an account? Sign In" : "Don't have an account? Sign Up")
-                            .heading(color: .orange)
                     }
                 }
                 Spacer()

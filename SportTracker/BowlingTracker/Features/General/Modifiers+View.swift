@@ -18,6 +18,18 @@ struct HideTabBarModifier: ViewModifier {
     }
 }
 
+struct InfinityModifier: ViewModifier {
+    var isInfinity: Bool
+    func body(content: Content) -> some View {
+        if isInfinity {
+            content
+                .frame(maxWidth: .infinity)
+        } else {
+            content
+        }
+    }
+}
+
 struct CustomTextFieldStyle: ViewModifier {
     var label: String? = nil
     func body(content: Content) -> some View {
@@ -127,6 +139,10 @@ extension View {
     /// - lineWith: 2
     func defaultBorder(lineWith: CGFloat = 2) -> some View {
         modifier(DefaultBorderModifier(lineWith: lineWith))
+    }
+    
+    func infinity(_ isInfinity: Bool) -> some View {
+        modifier(InfinityModifier(isInfinity: isInfinity))
     }
 }
 

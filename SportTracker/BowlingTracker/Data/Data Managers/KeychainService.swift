@@ -8,7 +8,7 @@ enum KeychainError: Error {
     case unexpectedData
 }
 
-final class KeychainService {
+class KeychainService {
     static let shared = KeychainService()
     
     private init() {}

@@ -63,6 +63,26 @@ class MockDocumentReference {
             completion(nil, nil)
         }
     }
+
+    func updateData(_ data: [String: Any], completion: @escaping (Error?) -> Void) {
+        guard var currentData = firestore.collections[collectionName]?[documentID] as? [String: Any] else {
+            firestore.collections[collectionName]?[documentID] = data
+            completion(nil)
+            return
+        }
+
+        if let games = data["games"] as? [[String: Any]], 
+           let currentGames = currentData["games"] as? [[String: Any]] {
+            currentData["games"] = currentGames + games
+        } else {
+            for (key, value) in data {
+                currentData[key] = value
+            }
+        }
+        
+        firestore.collections[collectionName]?[documentID] = currentData
+        completion(nil)
+    }
 }
 
 class MockDocumentSnapshot {

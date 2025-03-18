@@ -27,54 +27,46 @@ struct GameView: View {
                 .padding(.horizontal, Padding.defaultPadding)
                 .padding(.bottom, Padding.defaultPadding)
             HStack(spacing: Padding.spacingXXS) {
-                Button(action: viewModel.undoRoll) {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text("Back")
-                    }
-                        .heading(color: .white)
-                        .padding()
-                        .background(Color.orange)
-                        .cornerRadius(Corners.corenrRadiusM)
-                }
-                Button(action: viewModel.addRoll) {
-                    Text("Add Roll")
-                        .heading(color: .white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.orange)
-                        .opacity(viewModel.addRollIsEnabled ? 1 : 0.3)
-                        .cornerRadius(Corners.corenrRadiusM)
-                }.disabled(!viewModel.addRollIsEnabled)
-                Button(action: viewModel.addStrike) {
-                    Text("X")
-                        .heading(color: .white)
-                        .padding()
-                        .background(Color.orange)
-                        .opacity(viewModel.strikeIsEnabled ? 1 : 0.3)
-                        .cornerRadius(Corners.corenrRadiusM)
-                }.disabled(!viewModel.strikeIsEnabled)
-                Button(action: viewModel.addSpare) {
-                    Text("/")
-                        .heading(color: .white)
-                        .padding()
-                        .background(Color.orange)
-                        .opacity(viewModel.spareIsEnabled ? 1 : 0.3)
-                        .cornerRadius(Corners.corenrRadiusM)
-                }.disabled(!viewModel.spareIsEnabled)
+                PrimaryButton(
+                    leadingImage: Image(systemName: "chevron.backward"),
+                    title: "Back",
+                    isLoading: false,
+                    isEnabled: true,
+                    isInfinity: false,
+                    horizontalPadding: Padding.spacingM,
+                    action: viewModel.undoRoll
+                )
+                PrimaryButton(
+                    title: "Add Roll",
+                    isLoading: false,
+                    isEnabled: viewModel.addRollIsEnabled,
+                    action: viewModel.addRoll
+                )
+                PrimaryButton(
+                    title: "X",
+                    isLoading: false,
+                    isEnabled: viewModel.strikeIsEnabled,
+                    isInfinity: false,
+                    horizontalPadding: Padding.spacingM,
+                    action: viewModel.addStrike
+                )
+                PrimaryButton(
+                    title: "/",
+                    isLoading: false,
+                    isEnabled: viewModel.spareIsEnabled,
+                    isInfinity: false,
+                    horizontalPadding: Padding.spacingM,
+                    action: viewModel.addSpare
+                )
             }
                 .padding(.horizontal, Padding.defaultPadding)
-            Button(action: viewModel.saveGame) {
-                Text("Save Game")
-                    .heading(color: .white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.orange)
-                    .opacity(viewModel.saveGameIsEnabled ? 1 : 0.3)
-                    .cornerRadius(Corners.corenrRadiusM)
-            }
+            PrimaryButton(
+                title: "Save Game",
+                isLoading: false,
+                isEnabled: viewModel.saveGameIsEnabled,
+                action: viewModel.saveGame
+            )
                 .padding(.horizontal, Padding.defaultPadding)
-                .disabled(!viewModel.saveGameIsEnabled)
             TextField("Enter lane numbers", text: $viewModel.gameLane)
                 .textFieldStyle(labeled: "On lane")
                 .padding(.horizontal, Padding.defaultPadding)

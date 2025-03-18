@@ -65,33 +65,10 @@ struct CreateSeriesView: View {
 
     private var buttons: some View {
         HStack {
-            Button {
-                onClose()
-            } label: {
-                Text("Close")
-                    .heading(color: .orange)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.white)
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
-                    .stroke(Color.orange, lineWidth: 1)
-            )
-            .frame(maxWidth: .infinity)
+            SecondaryButton(title: "Close", isLoading: false, isEnabled: true, action: onClose)
             Spacer()
             onSave.map { _ in
-                Button {
-                    onSave?()
-                } label: {
-                    Text("Save")
-                        .heading(color: .white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.orange)
-                        .cornerRadius(Corners.corenrRadiusM)
-                }
-                .frame(maxWidth: .infinity)
+                PrimaryButton(title: "Save", isLoading: false, isEnabled: true, action: { onSave?() })
             }
         }
         .padding(.horizontal, Padding.defaultPadding)

@@ -40,10 +40,10 @@ struct PinCircle: View {
         Circle()
             .frame(width: 10, height: 10)
             .foregroundColor(
-                firstRollPins == nil && secondRollPins == nil ? DefaultColor.grey3 :
-                firstRollPins?.contains(where: { $0.id == id }) == true ? DefaultColor.grey6 :
-                secondRollPins?.contains(where: { $0.id == id }) == true ? .green :
-                .red
+                firstRollPins == nil && secondRollPins == nil ? Color(.bgPrimary) :
+                firstRollPins?.contains(where: { $0.id == id }) == true ? Color(.bgSecondary) :
+                secondRollPins?.contains(where: { $0.id == id }) == true ? Color(.complementary) :
+                Color(.darkPrimary)
             )
     }
 }

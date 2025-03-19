@@ -34,8 +34,8 @@ struct BowlingTrackerApp: App {
                     bowlingSeriesViewModel: bowlingSeriesViewModel,
                     statisticsViewModel: statisticsViewModel
                 )
-                .preferredColorScheme(.light)
                 .environmentObject(authViewModel)
+                .preferredColorScheme(.light)
             } else {
                 AuthView(viewModel: authViewModel)
                     .preferredColorScheme(.light)

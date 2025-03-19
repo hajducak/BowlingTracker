@@ -2,14 +2,29 @@
 
 Bowling Tracker is a mobile application for tracking bowling games and statistics.
 
-<div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot6.imageset/screenshot6.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot4.imageset/screenshot4.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot3.imageset/screenshot3.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot5.imageset/screenshot5.png" width="150">
-</div>
+<details>
+  <summary>🌟 Light Mode Screenshots</summary>
+  <div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot1.imageset/screenshot1.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot2.imageset/screenshot2.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot3.imageset/screenshot3.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot4.imageset/screenshot4.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot5.imageset/screenshot5.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot6.imageset/screenshot6.png" width="150">
+  </div>
+</details>
+
+<details>
+  <summary>🌙 Dark Mode Screenshots</summary>
+  <div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot1.imageset/screenshot1.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot2.imageset/screenshot2.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot3.imageset/screenshot3.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot4.imageset/screenshot4.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot5.imageset/screenshot5.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot6.imageset/screenshot6.png" width="150">
+  </div>
+</details>
 
 ## 🚀 Features
 - ✅ User authentication with remambered credentionals

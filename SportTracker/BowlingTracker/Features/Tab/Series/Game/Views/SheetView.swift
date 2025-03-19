@@ -12,19 +12,22 @@ struct SheetView: View {
                         frame: game.frames[index],
                         scoreSoFar: game.frames[index].frameType == .unfinished ? nil : game.cumulativeScoreForFrame(at: index),
                         maxPossibleScore: game.frames[index].frameType == .unfinished && showMax ? game.maxPossibleScore : nil
-                    ).padding(.leading, -2)
+                    )
+                    .border(Color(.bgSecondary), width: 1)
+                    .padding(.leading, -2)
                     if game.frames[index].index != 10 {
-                        // FIXME: Make specific behavior for 10th frame ???
                         MiniPinView(
                             firstRollPins: game.frames[index].rolls.first?.knockedDownPins,
                             secondRollPins: game.frames[index].rolls.last?.knockedDownPins
                         )
-                        .padding(7)
-                        .background(.white)
-                        .defaultBorder()
-                        .padding(.leading, -2)
-                        .padding(.top, -2)
+                        .padding(6)
+                        .background(Color(.bgTerciary))
+                        .border(Color(.bgSecondary), width: 1)
+                        .padding(.leading, -3)
+                        .padding(.top, -1)
                     } else {
+                        // FIXME: Make specific behavior for 10th frame ???
+                        // TODO: 1 - 3 images
                         Spacer()
                     }
                 }

@@ -36,11 +36,11 @@ struct ContentView: View {
         .onAppear {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = .black
-            appearance.stackedLayoutAppearance.normal.iconColor = .white
-            appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white]
-            appearance.stackedLayoutAppearance.selected.iconColor = .orange
-            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.orange]
+            appearance.backgroundColor = UIColor(.bgSecondary)
+            appearance.stackedLayoutAppearance.normal.iconColor = UIColor(.textPrimary)
+            appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.textPrimary)]
+            appearance.stackedLayoutAppearance.selected.iconColor = UIColor(Color(.primary))
+            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(Color(.primary))]
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
@@ -52,9 +52,9 @@ struct ContentView: View {
             authViewModel.signOut()
         }) {
             Image(systemName: "arrowshape.turn.up.backward.circle")
-                .foregroundColor(.orange)
+                .foregroundColor(Color(.primary))
             Text("Sign out")
-                .heading(color: .orange)
+                .heading(color: Color(.primary))
         }
     }
 }

@@ -31,6 +31,8 @@ struct Corners {
     static var corenrRadiusS: CGFloat = 8
     /// 12px
     static var corenrRadiusM: CGFloat = 12
+    /// 16px
+    static var corenrRadiusXL: CGFloat = 16
     /// 20px
     static var corenrRadiusL: CGFloat = 20
 }
@@ -42,6 +44,4 @@ struct DefaultColor {
     static var grey4 = UIColor.systemGray4.color
     static var grey5 = UIColor.systemGray5.color
     static var grey6 = UIColor.systemGray6.color
-    
-    static var border = UIColor.systemGray6.color
 }

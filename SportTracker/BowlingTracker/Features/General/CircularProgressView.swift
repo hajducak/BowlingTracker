@@ -12,15 +12,15 @@ struct CircularProgressView: View {
         VStack {
             ZStack {
                 Circle()
-                    .stroke(DefaultColor.border, lineWidth: size.width * 0.12)
+                    .stroke(Color(.border), lineWidth: size.width * 0.12)
                 Circle()
                     .trim(from: 0, to: animatedPercentage / 100)
                     .stroke(
                         LinearGradient(
                             gradient: Gradient(colors: [
-                                Color.orange.opacity(0.6),
-                                Color.orange.opacity(0.8),
-                                Color.orange
+                                Color(.darkPrimary),
+                                Color(.primary),
+                                Color(.lightPrimary)
                             ]),
                             startPoint: .leading,
                             endPoint: .trailing

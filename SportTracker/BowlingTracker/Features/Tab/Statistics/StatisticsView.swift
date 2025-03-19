@@ -19,15 +19,10 @@ struct StatisticsView: View {
             if let basicStatisticsViewModel = viewModel.basicStatisticsViewModel {
                 BasicStatisticsView(viewModel: basicStatisticsViewModel)
             }
-            if viewModel.isLoading {
-                Spacer()
-                ProgressView("Loading series...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
             Spacer()
         }
+        .background(Color(.bgPrimary))
+        .loadingOverlay(when: $viewModel.isLoading, title: "Loading series...")
         .frame(maxWidth: .infinity)
         .toast($viewModel.toast, timeout: 3)
     }

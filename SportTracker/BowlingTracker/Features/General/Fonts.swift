@@ -2,45 +2,45 @@ import SwiftUI
 
 extension View {
     /// 24px, .bold, .primary
-    func title(color: Color = .primary) -> some View {
+    func title(color: Color = .textPrimary) -> some View {
         self.modifier(TitleModifier(color: color))
     }
     
     /// 16px, .bold, .primary
-    func heading(color: Color = .primary) -> some View {
+    func heading(color: Color = .textPrimary) -> some View {
         self.modifier(HeadingModifier(color: color))
     }
     
     /// 16px, .regular, .primary
-    func body(color: Color = .primary) -> some View {
+    func body(color: Color = .textPrimary) -> some View {
         self.modifier(BodyModifier(color: color))
     }
 
     /// 14px, .bold, .primary
-    func subheading(color: Color = .primary, weight: Font.Weight? = .bold) -> some View {
+    func subheading(color: Color = .textPrimary, weight: Font.Weight? = .bold) -> some View {
         self.modifier(SubheadingModifier(color: color, weight: weight))
     }
     
     /// 12px, .regular, .systemGrey2
-    func caption(color: Color = DefaultColor.grey2, weight: Font.Weight? = .regular) -> some View {
+    func caption(color: Color = .textSecondary, weight: Font.Weight? = .regular) -> some View {
         self.modifier(CaptionModifier(color: color, weight: weight))
     }
 
     /// 10px, .bold, .white
-    func smallNegative(color: Color = .white) -> some View {
+    func smallNegative(color: Color = .textPrimaryInverse) -> some View {
         self.modifier(SmallNegativeModifier(color: color))
     }
     
     /// default size: 12, .regular, .primary
     /// You can set all parameters based on needs
-    func custom(size: CGFloat, color: Color = .primary, weight: Font.Weight? = .regular) -> some View {
+    func custom(size: CGFloat, color: Color = .textPrimary, weight: Font.Weight? = .regular) -> some View {
         self.modifier(CustomTextModifier(size: size, color: color, weight: weight))
     }
 }
 
 /// size: 24, .bold
 struct TitleModifier: ViewModifier {
-    var color: Color = .primary
+    var color: Color = .textPrimary
 
     func body(content: Content) -> some View {
         content
@@ -51,7 +51,7 @@ struct TitleModifier: ViewModifier {
 
 /// size: 16, .bold
 struct HeadingModifier: ViewModifier {
-    var color: Color = .primary
+    var color: Color = .textPrimary
 
     func body(content: Content) -> some View {
         content
@@ -62,7 +62,7 @@ struct HeadingModifier: ViewModifier {
 
 /// size: 16, .bold
 struct BodyModifier: ViewModifier {
-    var color: Color = .primary
+    var color: Color = .textPrimary
 
     func body(content: Content) -> some View {
         content
@@ -73,7 +73,7 @@ struct BodyModifier: ViewModifier {
 
 /// size: 14, default .bold
 struct SubheadingModifier: ViewModifier {
-    var color: Color = .primary
+    var color: Color = .textPrimary
     var weight: Font.Weight? = .bold
 
     func body(content: Content) -> some View {
@@ -85,7 +85,7 @@ struct SubheadingModifier: ViewModifier {
 
 /// size: 12, .regular, .systemGray4
 struct CaptionModifier: ViewModifier {
-    var color: Color = DefaultColor.grey2
+    var color: Color = .textSecondary
     var weight: Font.Weight? = .regular
 
     func body(content: Content) -> some View {
@@ -97,7 +97,7 @@ struct CaptionModifier: ViewModifier {
 
 /// size: 10, .bold, .white
 struct SmallNegativeModifier: ViewModifier {
-    var color: Color = .white
+    var color: Color = .textPrimaryInverse
 
     func body(content: Content) -> some View {
         content
@@ -110,7 +110,7 @@ struct SmallNegativeModifier: ViewModifier {
 /// you can set all parameters based on needs
 struct CustomTextModifier: ViewModifier {
     var size: CGFloat = 12
-    var color: Color = .primary
+    var color: Color = .textPrimary
     var weight: Font.Weight? = .regular
 
     func body(content: Content) -> some View {

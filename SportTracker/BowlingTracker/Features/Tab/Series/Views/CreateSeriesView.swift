@@ -38,7 +38,7 @@ struct CreateSeriesView: View {
                     .labled(label: "Type of series")
                     DatePicker("", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(GraphicalDatePickerStyle())
-                        .tint(.orange)
+                        .tint(Color(.primary))
                         .background(DefaultColor.grey6.cornerRadius(Corners.corenrRadiusS))
                         .labled(label: "Select date")
                     DatePicker("", selection: $selectedDate, displayedComponents: [.hourAndMinute])

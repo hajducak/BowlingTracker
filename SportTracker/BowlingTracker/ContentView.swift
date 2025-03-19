@@ -39,8 +39,8 @@ struct ContentView: View {
             appearance.backgroundColor = UIColor(.bgSecondary)
             appearance.stackedLayoutAppearance.normal.iconColor = UIColor(.textPrimary)
             appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.textPrimary)]
-            appearance.stackedLayoutAppearance.selected.iconColor = UIColor(.primary)
-            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(.primary)]
+            appearance.stackedLayoutAppearance.selected.iconColor = UIColor(Color(.primary))
+            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(Color(.primary))]
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }

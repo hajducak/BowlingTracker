@@ -2,14 +2,40 @@
 
 Bowling Tracker is a mobile application for tracking bowling games and statistics.
 
-<div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot6.imageset/screenshot6.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot4.imageset/screenshot4.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot3.imageset/screenshot3.png" width="150">
-    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/screenshot5.imageset/screenshot5.png" width="150">
+<button onclick="toggleScreenshots('lightmode')">Toggle Light Mode Screenshots</button>
+<div id="lightmode" style="display: none;">
+    <div style="display: flex; justify-content: center; gap: 10px;">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot1.imageset/screenshot1.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot2.imageset/screenshot2.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot3.imageset/screenshot3.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot4.imageset/screenshot4.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot5.imageset/screenshot5.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/light mode/screenshot6.imageset/screenshot6.png" width="150">
+    </div>
 </div>
+
+<button onclick="toggleScreenshots('darkmode')">Toggle Dark Mode Screenshots</button>
+<div id="darkmode" style="display: none;">
+    <div style="display: flex; justify-content: center; gap: 10px;">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/dark mode/screenshot1.imageset/screenshot1.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/dark mode/screenshot2.imageset/screenshot2.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/dark mode/screenshot3.imageset/screenshot3.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/dark mode/screenshot4.imageset/screenshot4.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/dark mode/screenshot5.imageset/screenshot5.png" width="150">
+        <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/dark mode/screenshot6.imageset/screenshot6.png" width="150">
+    </div>
+</div>
+
+<script>
+function toggleScreenshots(id) {
+    var section = document.getElementById(id);
+    if (section.style.display === "none") {
+        section.style.display = "block";
+    } else {
+        section.style.display = "none";
+    }
+}
+</script>
 
 ## 🚀 Features
 - ✅ User authentication with remambered credentionals

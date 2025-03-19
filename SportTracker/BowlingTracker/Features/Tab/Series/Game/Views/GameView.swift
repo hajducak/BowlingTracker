@@ -132,7 +132,7 @@ struct PinView: View {
                 .foregroundColor(.white)
             .clipShape(Circle())
             .overlay(Circle().stroke(Color(.border), lineWidth: isSelected ? 0 : 1))
-            .opacity(isDisabled ? 0.5 : 1.0)
+            .opacity(isDisabled ? 0.2 : 1.0)
             .tap {
                 if !isDisabled {
                     onTap()

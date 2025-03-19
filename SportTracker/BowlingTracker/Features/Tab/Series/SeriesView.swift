@@ -36,7 +36,7 @@ struct SeriesView: View {
             }
         }) {
             Label("Add", systemImage: "plus.circle")
-                .foregroundColor(.orange)
+                .foregroundColor(Color(.primary))
         }
     }
     

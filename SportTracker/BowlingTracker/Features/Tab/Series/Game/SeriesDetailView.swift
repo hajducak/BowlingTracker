@@ -49,7 +49,7 @@ struct SeriesDetailView: View {
                         HStack {
                             Image(systemName: "chevron.backward")
                             Text("Back")
-                        }.heading(color: .orange)
+                        }.heading(color: Color(.primary))
                     })
             ).background(Color(.bgPrimary))
         }

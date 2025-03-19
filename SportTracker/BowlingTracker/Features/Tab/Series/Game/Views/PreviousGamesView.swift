@@ -11,7 +11,7 @@ struct PreviousGamesView: View {
                     .title()
                 Spacer()
                 Image(systemName: "chevron.up.circle.fill")
-                    .foregroundColor(Color.orange)
+                    .foregroundColor(Color(.primary))
                     .rotationEffect(.degrees(isCollapsed ? 0 : 180))
                     .animation(.easeInOut(duration: 0.3), value: isCollapsed)
             }

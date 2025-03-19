@@ -57,5 +57,6 @@ struct BasicStatisticsView: View {
                 height: lienarGraphLine
             ).padding(.horizontal, Padding.defaultPadding)
         }
+        .background(Color(.bgPrimary))
     }
 }

@@ -15,11 +15,11 @@ struct FrameView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("\(frame.index)")
-                .caption(color: .primary, weight: .bold)
+                .caption(weight: .bold)
                 .frame(width: max(65, CGFloat(frame.index != 10 ? frame.rolls.count : 3) * 32.5))
                 .padding(.vertical, Padding.spacingXXS)
-                .background(DefaultColor.grey6)
-            HStack(spacing: 3) {
+                .background(Color(.bgSecondary))
+            HStack(spacing: 4) {
                 if frame.rolls.count == 0 { emptyBox }
                 if frame.frameType == .strike {
                     Text("").frame(width: 25, height: 25)
@@ -30,7 +30,7 @@ struct FrameView: View {
                 if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) {
                     emptyBox
                 }
-            }.padding(3)
+            }.padding(4)
             if let score = maxPossibleScore, frame.index == 10 {
                 Text("\(score)")
                     .subheading()
@@ -41,15 +41,13 @@ struct FrameView: View {
                     .padding(.bottom, 3)
             }
         }
-        .background(.white)
-        .defaultBorder()
+        .background(Color(.bgTerciary))
     }
     
     private var emptyBox: some View {
         Text("")
             .frame(width: 25, height: 25)
-            .background(Color.white)
-            .defaultBorder()
+            .background(Color(.bgSecondary))
     }
 
     private func formatRoll(_ roll: Roll,_ index: Int) -> some View {

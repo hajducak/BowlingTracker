@@ -18,15 +18,15 @@ struct CreateSeriesView: View {
                     Text("Create new series")
                         .title()
                     TextField("Enter series name", text: $seriesName)
-                        .textFieldStyle(labeled: "Series name")
+                        .defaultTextFieldStyle(labeled: "Series name")
                     TextField("Enter series description", text: $seriesDescription)
-                        .textFieldStyle(labeled: "Series description")
+                        .defaultTextFieldStyle(labeled: "Series description")
                     TextField("Enter oil pattern name", text: $seriesOilPatternName)
-                        .textFieldStyle(labeled: "Enter series oil pattern")
+                        .defaultTextFieldStyle(labeled: "Enter series oil pattern")
                     TextField("Enter oil pattern URL", text: $seriesOilPatternURL)
-                        .textFieldStyle()
+                        .defaultTextFieldStyle()
                     TextField("Enter house name", text: $seriesHouse)
-                        .textFieldStyle(labeled: "House")
+                        .defaultTextFieldStyle(labeled: "House")
                     Picker("Select type", selection: $selectedType) {
                         Text("League").tag(SeriesType.league)
                         Text("Tournament").tag(SeriesType.tournament)
@@ -57,18 +57,30 @@ struct CreateSeriesView: View {
                 .padding(.bottom, Padding.defaultPadding)
                 .background {
                     RoundedRectangle(cornerRadius: Corners.corenrRadiusL)
-                        .fill(Color.white)
-                        .stroke(DefaultColor.border, lineWidth: 1)
+                        .fill(Color(.bgSecondary))
                 }
-        }.edgesIgnoringSafeArea(.bottom)
+        }
+        .edgesIgnoringSafeArea(.bottom)
+        .background(Color(.bgPrimary))
     }
 
     private var buttons: some View {
         HStack {
-            SecondaryButton(title: "Close", isLoading: false, isEnabled: true, action: onClose)
+            SecondaryButton(
+                title: "Close",
+                isLoading: false,
+                isEnabled: true,
+                backgroundColor: Color(.bgSecondary),
+                action: onClose
+            )
             Spacer()
             onSave.map { _ in
-                PrimaryButton(title: "Save", isLoading: false, isEnabled: true, action: { onSave?() })
+                PrimaryButton(
+                    title: "Save",
+                    isLoading: false,
+                    isEnabled: true,
+                    action: { onSave?() }
+                )
             }
         }
         .padding(.horizontal, Padding.defaultPadding)

@@ -14,21 +14,21 @@ struct AuthView: View {
                     .frame(width: 200, height: 200)
                 
                 Text("Bowling Tracker")
-                    .title(color: .primary)
+                    .title()
                 
                 VStack(spacing: Padding.spacingM) {
                     TextField("Email", text: $viewModel.email)
-                        .textFieldStyle()
+                        .defaultTextFieldStyle(borderWidth: 1)
                         .textContentType(.emailAddress)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                     
                     SecureField("Password", text: $viewModel.password)
-                        .textFieldStyle()
+                        .defaultTextFieldStyle(borderWidth: 1)
                         .textContentType(isRegistering ? .newPassword : .password)
                     
                     Toggle("Remember me", isOn: $viewModel.shouldRememberCredentials)
-                        .tint(Color.orange)
+                        .tint(Color(.primary))
                         .heading()
                 }
                 
@@ -54,8 +54,16 @@ struct AuthView: View {
             }
             .padding(Padding.defaultPadding)
             .navigationBarHidden(true)
-            .background(Color(.lightOrange))
+            .background(Color(.bgAuth))
         }
         .toast($viewModel.toast, timeout: 3)
     }
-} 
+}
+
+#Preview {
+    AuthView(
+        viewModel: .init(
+            authService: AuthService()
+        )
+    )
+}

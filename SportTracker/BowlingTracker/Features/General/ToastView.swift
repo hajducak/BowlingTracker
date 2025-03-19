@@ -6,20 +6,18 @@ struct ToastView: View {
     var body: some View {
         Text(toast.toastMessage)
             .padding()
-            .background(DefaultColor.grey1)
-            .foregroundColor(.white)
+            .background(Color(.bgPrimary).opacity(0.8))
+            .foregroundColor(Color(.textPrimary))
             .cornerRadius(Corners.corenrRadiusS)
-            .padding(.bottom, 70)
+            .padding(.bottom, 50)
     }
 }
-
 
 extension View {
     func toast(_ toast: Binding<Toast?>, timeout: TimeInterval) -> some View {
         modifier(ToastModifier(toast: toast, timeout: timeout))
     }
 }
-
 
 struct ToastModifier: ViewModifier {
     let timeout: TimeInterval

@@ -32,14 +32,17 @@ struct InfinityModifier: ViewModifier {
 
 struct CustomTextFieldStyle: ViewModifier {
     var label: String? = nil
+    var borderWidth: CGFloat = 0
+
     func body(content: Content) -> some View {
         content
             .padding()
+            .foregroundColor(Color(.textPrimary))
             .frame(height: 50)
-            .background(Color.white.cornerRadius(Corners.corenrRadiusS))
+            .background(Color(.bgSecondary).cornerRadius(Corners.corenrRadiusS))
             .overlay(
                 RoundedRectangle(cornerRadius: Corners.corenrRadiusS)
-                    .stroke(DefaultColor.border, lineWidth: 1)
+                    .stroke(Color(.border), lineWidth: borderWidth)
             )
             .labled(label: label)
     }
@@ -47,6 +50,7 @@ struct CustomTextFieldStyle: ViewModifier {
 
 struct LoadingOverlayModifier: ViewModifier {
     @Binding var isLoading: Bool
+    var title: String
     
     func body(content: Content) -> some View {
         content
@@ -54,12 +58,12 @@ struct LoadingOverlayModifier: ViewModifier {
                 if isLoading {
                     VStack {
                         Spacer()
-                        ProgressView("Saving game...")
+                        ProgressView(title)
                             .progressViewStyle(CircularProgressViewStyle())
                             .padding()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         Spacer()
-                    }.background(Color.gray.opacity(0.3))
+                    }.background(Color(.bgTerciary))
                 }
             }
     }
@@ -99,7 +103,7 @@ struct LabeledStyle: ViewModifier {
 struct DefaultBorderModifier: ViewModifier {
     var lineWith: CGFloat = 2
     func body(content: Content) -> some View {
-        content.border(DefaultColor.border, width: lineWith)
+        content.border(Color(.border), width: lineWith)
     }
 }
 
@@ -118,16 +122,16 @@ extension View {
         modifier(HideTabBarModifier(isHidden: isHidden))
     }
 
-    func textFieldStyle(labeled: String? = nil) -> some View {
-        modifier(CustomTextFieldStyle(label: labeled))
+    func defaultTextFieldStyle(labeled: String? = nil, borderWidth: CGFloat = 0) -> some View {
+        modifier(CustomTextFieldStyle(label: labeled, borderWidth: borderWidth))
     }
     
     func labled(label: String?) -> some View {
         modifier(LabeledStyle(label: label))
     }
     
-    func loadingOverlay(when isLoading: Binding<Bool>) -> some View {
-        modifier(LoadingOverlayModifier(isLoading: isLoading))
+    func loadingOverlay(when isLoading: Binding<Bool>, title: String) -> some View {
+        modifier(LoadingOverlayModifier(isLoading: isLoading, title: title))
     }
 
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
@@ -135,7 +139,7 @@ extension View {
     }
     
     /// default border color with default line width
-    /// - color: UIColor.systemgray6
+    /// - color: .border
     /// - lineWith: 2
     func defaultBorder(lineWith: CGFloat = 2) -> some View {
         modifier(DefaultBorderModifier(lineWith: lineWith))

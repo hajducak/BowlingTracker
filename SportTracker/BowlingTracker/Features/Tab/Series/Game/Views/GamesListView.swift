@@ -17,7 +17,7 @@ struct GamesListView: View {
                         )
                         Spacer()
                         Image(systemName: "chevron.up.circle.fill")
-                            .foregroundColor(Color.orange)
+                            .foregroundColor(Color(.primary))
                             .rotationEffect(.degrees(expandedIndices.contains(index) ? 180 : 0))
                             .animation(.easeInOut(duration: 0.3), value: expandedIndices.contains(index))
                     }
@@ -96,5 +96,5 @@ struct GamesListView: View {
                 Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
             ])
         ], currentGame: nil)
-    ))
+    )).background(Color(.bgPrimary))
 }

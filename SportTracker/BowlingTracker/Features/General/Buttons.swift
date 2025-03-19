@@ -26,9 +26,9 @@ struct PrimaryButton: View {
             .infinity(isInfinity)
             .heading(color: .white)
             .frame(height: 48)
-            .cornerRadius(Corners.corenrRadiusM)
-            .background(isEnabled ? Color.orange : Color.orange.opacity(0.3))
-            .cornerRadius(12)
+            .background(isEnabled ? Color(.primary) : Color(.primary).opacity(0.5)
+            )
+            .cornerRadius(Corners.corenrRadiusXL)
         }
         .disabled(!isEnabled || isLoading)
         .frame(height: 48)
@@ -43,6 +43,7 @@ struct SecondaryButton: View {
     let isEnabled: Bool
     var isInfinity: Bool = true
     var horizontalPadding: CGFloat = Padding.spacingS
+    var backgroundColor: Color = Color(.bgPrimary)
     let action: () -> Void
     
     var body: some View {
@@ -51,21 +52,21 @@ struct SecondaryButton: View {
                 leadingImage
                 if isLoading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color(.complementary)))
                 } else {
                     Text(title)
                 }
                 trailingImage
             }
-            .heading(color: isEnabled ? Color.orange : Color.orange.opacity(0.3))
+            .heading(color: isEnabled ? Color(.complementary) : Color(.complementary).opacity(0.5))
             .padding(.horizontal, horizontalPadding)
             .infinity(isInfinity)
             .frame(height: 48)
-            .background(Color.white)
-            .cornerRadius(Corners.corenrRadiusM)
+            .background(backgroundColor)
+            .cornerRadius(Corners.corenrRadiusXL)
             .overlay(
-                RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
-                    .stroke(isEnabled ? Color.orange : Color.orange.opacity(0.3), lineWidth: 1)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusXL)
+                    .stroke(isEnabled ? Color(.complementary) : Color(.complementary).opacity(0.5), lineWidth: 2)
             )
         }
         .disabled(!isEnabled || isLoading)
@@ -88,7 +89,7 @@ struct SimpleButton: View {
                 Text(title)
                 trailingImage
             }
-            .custom(size: 16, color: isEnabled ? Color.orange : Color.orange.opacity(0.3), weight: .medium)
+            .custom(size: 16, color: isEnabled ? Color(.darkPrimary) : Color(.darkPrimary).opacity(0.5), weight: .medium)
             .infinity(isInfinity)
             .frame(height: 48)
         }
@@ -113,5 +114,7 @@ struct SimpleButton: View {
         SimpleButton(leadingImage: Image(systemName: "square.and.arrow.up.circle"), title: "Simple image button", isEnabled: true) {}
         SimpleButton(trailingImage: Image(systemName: "trash.slash.circle"), title: "Simple image button", isEnabled: true) {}
         SimpleButton(title: "Simple disabled", isEnabled: false) {}
-    }.padding(Padding.defaultPadding)
+    }
+    .padding(Padding.defaultPadding)
+    .background(Color(.bgPrimary))
 }

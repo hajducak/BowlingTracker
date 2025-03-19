@@ -31,9 +31,7 @@ final class AuthViewModel: ObservableObject {
             email = credentials.email
             password = credentials.password
             shouldRememberCredentials = true
-        } catch {
-            // No saved credentials or error loading them - this is normal for first time users
-        }
+        } catch { }
     }
     
     func signIn() {

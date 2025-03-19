@@ -24,13 +24,13 @@ struct SeriesCell: View {
             }.caption()
         }
         .flexWidthModifier(alignment: .leading)
-        .padding(Padding.spacingS)
-        .background(Color.white)
-        .cornerRadius(Corners.corenrRadiusM)
+        .padding(Padding.spacingXM)
+        .background(Color(.bgSecondary))
+        .cornerRadius(Corners.corenrRadiusXL)
         .overlay(
             ZStack(alignment: .topLeading) {
-                RoundedRectangle(cornerRadius: Corners.corenrRadiusM)
-                    .stroke(DefaultColor.border, lineWidth: 1)
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusXL)
+                    .fill(.clear)
                 HStack {
                     Text(series.tag.rawValue)
                         .smallNegative()
@@ -48,7 +48,7 @@ struct SeriesCell: View {
                             .smallNegative()
                             .padding(.horizontal, Padding.spacingXS)
                             .padding(.vertical, Padding.spacingXXS)
-                            .background(.red)
+                            .background(Color(.complementary))
                             .cornerRadius(Corners.corenrRadiusS, corners: [.bottomLeft, .bottomRight])
                             .cornerRadius(Corners.corenrRadiusXXS, corners: [.topLeft, .topRight])
                             .onAppear {
@@ -81,11 +81,11 @@ extension SeriesType {
         case .tournament:
             return .red
         case .league:
-            return .orange
+            return .darkPrimary
         case .training:
             return .yellow
         case .other:
-            return DefaultColor.grey4
+            return .bgTerciary
         }
     }
 }

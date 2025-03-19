@@ -30,11 +30,11 @@ struct SeriesDetailView: View {
                                 viewModel.saveSeries()
                             }, label: {
                                 Text("Save")
-                                    .heading(color: .orange)
+                                    .heading(color: Color(.primary))
                             })
                     )
                     .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
-                    .loadingOverlay(when: $viewModel.savingIsLoading)
+                    .loadingOverlay(when: $viewModel.savingIsLoading, title: "Saving game...")
                 case .empty: empty
                 case .content: content
                 }
@@ -51,9 +51,9 @@ struct SeriesDetailView: View {
                             Text("Back")
                         }.heading(color: .orange)
                     })
-            )
+            ).background(Color(.bgPrimary))
         }
-        .accentColor(.orange)
+        .accentColor(Color(.primary))
         .navigationBarBackButtonHidden()
     }
     
@@ -84,7 +84,7 @@ struct SeriesDetailView: View {
         VStack(spacing: Padding.spacingL) {
             Spacer()
             Text("No games found")
-                .title(color: DefaultColor.grey3)
+                .title(color: Color(.textSecondary))
             Spacer()
         }.padding(.horizontal, Padding.defaultPadding)
     }
@@ -98,7 +98,7 @@ struct SeriesDetailView: View {
                             Image(systemName: "link.circle")
                             Text(oilPatternName)
                                 .multilineTextAlignment(.leading)
-                                .body(color: .orange)
+                                .body(color: Color(.primary))
                                 .underline()
                         }
                     }.padding(.horizontal, Padding.defaultPadding)

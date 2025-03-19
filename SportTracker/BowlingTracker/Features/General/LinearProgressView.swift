@@ -29,21 +29,21 @@ struct LinearProgressView: View {
                 titleDescription
                 Spacer()
                 Text(maxValue.twoPointFormat())
-                    .custom(size: height, color: DefaultColor.grey1)
+                    .custom(size: height, color: Color(.textSecondary))
             }
             if !graphIsDisabled {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: height / 2)
                         .frame(width: width, height: height)
-                        .foregroundColor(DefaultColor.grey6)
+                        .foregroundColor(Color(.border))
                     RoundedRectangle(cornerRadius: height / 2)
                         .frame(width: progress * width, height: height * 0.75)
                         .foregroundStyle(
                             LinearGradient(
                                 gradient: Gradient(colors: [
-                                    Color.orange.opacity(0.6),
-                                    Color.orange.opacity(0.8),
-                                    Color.orange
+                                    Color(.darkPrimary),
+                                    Color(.primary),
+                                    Color(.lightPrimary)
                                 ]),
                                 startPoint: .trailing,
                                 endPoint: .leading

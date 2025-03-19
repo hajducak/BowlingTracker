@@ -26,7 +26,7 @@ struct SeriesView: View {
                         }
                     )
                 }
-        }
+        }.background(Color(.bgPrimary))
     }
 
     private var addButton: some View {
@@ -57,9 +57,9 @@ struct SeriesView: View {
                     VStack(spacing: Padding.spacingL) {
                         Spacer()
                         Text("No series found")
-                            .title(color: DefaultColor.grey3)
+                            .title(color: Color(.textSecondary))
                         Text("Create a new bowling series by clicking the '+' icon in the top-right corner. Once you do, you can add the name, description, oil pattern, and other details for your new series. It’s that easy to get started!")
-                            .subheading(color: DefaultColor.grey3, weight: .regular).multilineTextAlignment(.center)
+                            .subheading(color: Color(.textSecondary), weight: .regular).multilineTextAlignment(.center)
                         Spacer()
                     }.padding(.horizontal, Padding.defaultPadding)
                 case .content(let series):

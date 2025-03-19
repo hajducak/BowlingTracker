@@ -12,7 +12,7 @@ struct GameView: View {
             }.padding(.top, Padding.spacingXS)
             HStack(alignment: .center, spacing: Padding.spacingS) {
                 Toggle("", isOn: $viewModel.selectingFallenPins)
-                    .tint(Color.orange)
+                    .tint(Color(.primary))
                     .frame(width: 50)
                     .padding(.trailing, Padding.spacingXXM)
                 Text("Select \(viewModel.selectingFallenPins ? "Fallen Pins" : "Left Over Pins")")
@@ -26,7 +26,7 @@ struct GameView: View {
             )
                 .padding(.horizontal, Padding.defaultPadding)
                 .padding(.bottom, Padding.defaultPadding)
-            HStack(spacing: Padding.spacingXXS) {
+            HStack(spacing: Padding.spacingS) {
                 PrimaryButton(
                     leadingImage: Image(systemName: "chevron.backward"),
                     title: "Back",
@@ -68,7 +68,7 @@ struct GameView: View {
             )
                 .padding(.horizontal, Padding.defaultPadding)
             TextField("Enter lane numbers", text: $viewModel.gameLane)
-                .textFieldStyle(labeled: "On lane")
+                .defaultTextFieldStyle(labeled: "On lane")
                 .padding(.horizontal, Padding.defaultPadding)
         }
     }
@@ -128,10 +128,10 @@ struct PinView: View {
     var body: some View {
         Text("\(pin)").bold()
             .frame(width: 40, height: 40)
-            .background(isSelected ? Color.orange : isDisabled ? DefaultColor.grey6 : DefaultColor.grey4)
-            .foregroundColor(isSelected ? .white : .black)
+            .background(isSelected ? Color(.primary) : isDisabled ? Color(.bgTerciary) : Color(.bgSecondary))
+                .foregroundColor(.white)
             .clipShape(Circle())
-            .overlay(Circle().stroke(Color.black, lineWidth: 1))
+            .overlay(Circle().stroke(Color(.border), lineWidth: isSelected ? 0 : 1))
             .opacity(isDisabled ? 0.5 : 1.0)
             .tap {
                 if !isDisabled {

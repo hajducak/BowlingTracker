@@ -7,31 +7,136 @@ struct SheetView: View {
     var body: some View {
         HStack(alignment: .bottom, spacing: 0) {
             ForEach(game.frames.indices, id: \.self) { index in
-                VStack(spacing: 0) {
-                    FrameView(
-                        frame: game.frames[index],
-                        scoreSoFar: game.frames[index].frameType == .unfinished ? nil : game.cumulativeScoreForFrame(at: index),
-                        maxPossibleScore: game.frames[index].frameType == .unfinished && showMax ? game.maxPossibleScore : nil
+                FrameDisplayView(frame: game.frames[index], index: index, game: game, showMax: showMax)
+            }
+        }.padding(.bottom, Padding.spacingS)
+    }
+
+    private struct FrameDisplayView: View {
+        let frame: Frame
+        let index: Int
+        let game: Game
+        let showMax: Bool
+        
+        private var firstRoll: Roll? {
+            frame.rolls.count >= 1 ? frame.rolls[0] : nil
+        }
+        
+        private var secondRoll: Roll? {
+            frame.rolls.count >= 2 ? frame.rolls[1] : nil
+        }
+        
+        private var thirdRoll: Roll? {
+            frame.rolls.count >= 3 ? frame.rolls[2] : nil
+        }
+        
+        private var isOpen: Bool {
+            (firstRoll?.knockedDownPins.count ?? 0) + (secondRoll?.knockedDownPins.count ?? 0) < 10
+        }
+        
+        private var isSpare: Bool {
+            (firstRoll?.knockedDownPins.count ?? 0) < 10 && 
+            (firstRoll?.knockedDownPins.count ?? 0) + (secondRoll?.knockedDownPins.count ?? 0) == 10
+        }
+        
+        private var isStrike: Bool {
+            (firstRoll?.knockedDownPins.count ?? 0) + (secondRoll?.knockedDownPins.count ?? 0) == 20
+        }
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                FrameView(
+                    frame: frame,
+                    scoreSoFar: frame.frameType == .unfinished ? nil : game.cumulativeScoreForFrame(at: index),
+                    maxPossibleScore: frame.frameType == .unfinished && showMax ? game.maxPossibleScore : nil
+                )
+                .border(Color(.bgSecondary), width: 1)
+                .padding(.leading, -2)
+                
+                if index != 9 {
+                    PinDisplayView(
+                        firstRollPins: frame.rolls.first?.knockedDownPins,
+                        secondRollPins: frame.rolls.last?.knockedDownPins
                     )
-                    .border(Color(.bgSecondary), width: 1)
-                    .padding(.leading, -2)
-                    if game.frames[index].index != 10 {
-                        MiniPinView(
-                            firstRollPins: game.frames[index].rolls.first?.knockedDownPins,
-                            secondRollPins: game.frames[index].rolls.last?.knockedDownPins
-                        )
-                        .padding(6)
-                        .background(Color(.bgTerciary))
-                        .border(Color(.bgSecondary), width: 1)
-                        .padding(.leading, -3)
-                        .padding(.top, -1)
+                } else {
+                    TenthFramePinDisplayView(frame: frame)
+                }
+            }
+        }
+    }
+
+    private struct PinDisplayView: View {
+        var firstRollPins: [Pin]?
+        var secondRollPins: [Pin]?
+        
+        var body: some View {
+            MiniPinView(
+                firstRollPins: firstRollPins,
+                secondRollPins: secondRollPins
+            )
+            .padding(6)
+            .background(Color(.bgTerciary))
+            .border(Color(.bgSecondary), width: 1)
+            .padding(.leading, -2)
+            .padding(.top, -1)
+        }
+    }
+
+    private struct TenthFramePinDisplayView: View {
+        let frame: Frame
+        
+        private var firstRoll: Roll? {
+            frame.rolls.count >= 1 ? frame.rolls[0] : nil
+        }
+        
+        private var secondRoll: Roll? {
+            frame.rolls.count >= 2 ? frame.rolls[1] : nil
+        }
+        
+        private var thirdRoll: Roll? {
+            frame.rolls.count >= 3 ? frame.rolls[2] : nil
+        }
+        
+        private var isOpen: Bool {
+            (firstRoll?.knockedDownPins.count ?? 0) + (secondRoll?.knockedDownPins.count ?? 0) < 10
+        }
+        
+        private var isSpare: Bool {
+            (firstRoll?.knockedDownPins.count ?? 0) < 10 && 
+            (firstRoll?.knockedDownPins.count ?? 0) + (secondRoll?.knockedDownPins.count ?? 0) == 10
+        }
+        
+        private var isStrike: Bool {
+            (firstRoll?.knockedDownPins.count ?? 0) + (secondRoll?.knockedDownPins.count ?? 0) == 20
+        }
+        
+        var body: some View {
+            HStack(spacing: 0) {
+                if isOpen {
+                    pinView(firstRoll: firstRoll, secondRoll: secondRoll)
+                    Spacer()
+                } else if isSpare {
+                    pinView(firstRoll: firstRoll, secondRoll: secondRoll)
+                    if thirdRoll?.knockedDownPins.count != 10 {
+                        pinView(firstRoll: thirdRoll, secondRoll: nil)
                     } else {
-                        // FIXME: Make specific behavior for 10th frame ???
-                        // TODO: 1 - 3 images
                         Spacer()
                     }
+                } else if isStrike {
+                    Spacer()
+                    pinView(firstRoll: thirdRoll, secondRoll: nil)
+                } else {
+                    Spacer()
+                    pinView(firstRoll: secondRoll, secondRoll: thirdRoll)
                 }
-            }.padding(.bottom, Padding.spacingS)
+            }
+        }
+        
+        private func pinView(firstRoll: Roll?, secondRoll: Roll?) -> some View {
+            PinDisplayView(
+                firstRollPins: firstRoll?.knockedDownPins,
+                secondRollPins: secondRoll?.knockedDownPins
+            )
         }
     }
 }

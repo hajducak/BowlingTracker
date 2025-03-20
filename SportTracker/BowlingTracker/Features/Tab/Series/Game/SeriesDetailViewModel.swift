@@ -158,13 +158,13 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
         isLoadingOverlay = true
         firebaseService.updateSeriesParameters(
             seriesID: series.id,
-            date: newSeriesSelectedDate,
-            name: newSeriesName,
-            description: newSeriesDescription,
-            tag: newSeriesSelectedType,
-            oilPatternName: newSeriesOilPatternName,
-            oilPatternURL: newSeriesOilPatternURL,
-            house: newSeriesHouseName
+            date: valueIfModified(newSeriesSelectedDate, series.date),
+            name: valueIfModified(newSeriesName, series.name),
+            description: valueIfModified(newSeriesDescription, series.description),
+            tag: valueIfModified(newSeriesSelectedType, series.tag),
+            oilPatternName: valueIfModified(newSeriesOilPatternName, series.oilPatternName ?? ""),
+            oilPatternURL: valueIfModified(newSeriesOilPatternURL, series.oilPatternURL ?? ""),
+            house: valueIfModified(newSeriesHouseName, series.house ?? "")
         )
         .receive(on: DispatchQueue.main)
         .sink { [weak self] completion in
@@ -180,6 +180,10 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             reloadSeries()
         }
         .store(in: &cancellables)
+    }
+    
+    private func valueIfModified<T: Equatable>(_ newValue: T, _ oldValue: T) -> T? {
+        return newValue == oldValue ? nil : newValue
     }
     
     private func reloadStatistics() {

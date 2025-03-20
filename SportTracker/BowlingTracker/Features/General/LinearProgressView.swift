@@ -42,8 +42,7 @@ struct LinearProgressView: View {
                             LinearGradient(
                                 gradient: Gradient(colors: [
                                     Color(.darkPrimary),
-                                    Color(.primary),
-                                    Color(.lightPrimary)
+                                    Color(.primary)
                                 ]),
                                 startPoint: .trailing,
                                 endPoint: .leading

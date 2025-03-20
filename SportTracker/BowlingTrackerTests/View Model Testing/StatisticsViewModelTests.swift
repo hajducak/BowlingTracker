@@ -39,7 +39,7 @@ class StatisticsViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Series should be fetched")
         let mockSeries = [
             Series(name: "Test Series 1", tag: .league),
-            Series(name: "Test Series 2", tag: .training)
+            Series(name: "Test Series 2", tag: .practise)
         ]
         
         // When
@@ -89,7 +89,7 @@ class StatisticsViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Series should be filtered")
         let mockSeries = [
             Series(name: "League Series", tag: .league),
-            Series(name: "Practice Series", tag: .training)
+            Series(name: "Practice Series", tag: .practise)
         ]
         mockFirebaseService.mockDocuments = mockSeries.map { series in
             MockDocumentSnapshot(id: series.id, data: try! Firestore.Encoder().encode(series))

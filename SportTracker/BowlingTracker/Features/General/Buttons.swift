@@ -24,10 +24,9 @@ struct PrimaryButton: View {
             }
             .padding(.horizontal, horizontalPadding)
             .infinity(isInfinity)
-            .heading(color: .white)
+            .heading(color: isEnabled ? .white : .white.opacity(DefaultOpacity.disabled))
             .frame(height: 48)
-            .background(isEnabled ? Color(.primary) : Color(.primary).opacity(0.5)
-            )
+            .background(isEnabled ? Color(.primary) : Color(.primaryDisabled))
             .cornerRadius(Corners.corenrRadiusXL)
         }
         .disabled(!isEnabled || isLoading)
@@ -52,13 +51,13 @@ struct SecondaryButton: View {
                 leadingImage
                 if isLoading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Color(.complementary)))
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color(.primary)))
                 } else {
                     Text(title)
                 }
                 trailingImage
             }
-            .heading(color: isEnabled ? Color(.complementary) : Color(.complementary).opacity(0.5))
+            .heading(color: isEnabled ? Color(.primary) : Color(.primaryDisabled))
             .padding(.horizontal, horizontalPadding)
             .infinity(isInfinity)
             .frame(height: 48)
@@ -66,7 +65,7 @@ struct SecondaryButton: View {
             .cornerRadius(Corners.corenrRadiusXL)
             .overlay(
                 RoundedRectangle(cornerRadius: Corners.corenrRadiusXL)
-                    .stroke(isEnabled ? Color(.complementary) : Color(.complementary).opacity(0.5), lineWidth: 2)
+                    .stroke(isEnabled ? Color(.primary) : Color(.primaryDisabled), lineWidth: 2)
             )
         }
         .disabled(!isEnabled || isLoading)
@@ -89,7 +88,7 @@ struct SimpleButton: View {
                 Text(title)
                 trailingImage
             }
-            .custom(size: 16, color: isEnabled ? Color(.darkPrimary) : Color(.darkPrimary).opacity(0.5), weight: .medium)
+            .custom(size: 16, color: isEnabled ? Color(.darkPrimary) : Color(.darkPrimary).opacity(DefaultOpacity.disabled), weight: .medium)
             .infinity(isInfinity)
             .frame(height: 48)
         }

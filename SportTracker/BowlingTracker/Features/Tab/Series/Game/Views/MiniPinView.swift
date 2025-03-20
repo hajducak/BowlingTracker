@@ -43,7 +43,7 @@ struct PinCircle: View {
                 firstRollPins == nil && secondRollPins == nil ? Color(.bgPrimary) :
                 firstRollPins?.contains(where: { $0.id == id }) == true ? Color(.bgSecondary) :
                 secondRollPins?.contains(where: { $0.id == id }) == true ? Color(.complementary) :
-                Color(.darkPrimary)
+                Color(.primary)
             )
     }
 }

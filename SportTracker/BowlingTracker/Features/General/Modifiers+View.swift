@@ -48,6 +48,20 @@ struct CustomTextFieldStyle: ViewModifier {
     }
 }
 
+struct LoginTextFieldStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding()
+            .foregroundColor(Color(.textPrimary))
+            .frame(height: 50)
+            .background(Color(.bgAuth).cornerRadius(Corners.corenrRadiusS))
+            .overlay(
+                RoundedRectangle(cornerRadius: Corners.corenrRadiusS)
+                    .stroke(Color(.borderAuth), lineWidth: 1)
+            )
+    }
+}
+
 struct LoadingOverlayModifier: ViewModifier {
     @Binding var isLoading: Bool
     var title: String
@@ -124,6 +138,10 @@ extension View {
 
     func defaultTextFieldStyle(labeled: String? = nil, borderWidth: CGFloat = 0) -> some View {
         modifier(CustomTextFieldStyle(label: labeled, borderWidth: borderWidth))
+    }
+    
+    func loginTextFieldStyle() -> some View {
+        modifier(LoginTextFieldStyle())
     }
     
     func labled(label: String?) -> some View {

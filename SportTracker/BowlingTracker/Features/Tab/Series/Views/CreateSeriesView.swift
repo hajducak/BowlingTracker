@@ -30,7 +30,7 @@ struct CreateSeriesView: View {
                     Picker("Select type", selection: $selectedType) {
                         Text("League").tag(SeriesType.league)
                         Text("Tournament").tag(SeriesType.tournament)
-                        Text("Training").tag(SeriesType.training)
+                        Text("Practise").tag(SeriesType.practise)
                         Text("Other").tag(SeriesType.other)
                     }
                     .pickerStyle(SegmentedPickerStyle())

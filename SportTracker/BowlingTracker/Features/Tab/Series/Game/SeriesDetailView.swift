@@ -68,15 +68,20 @@ struct SeriesDetailView: View {
                 .body()
                 .padding(.horizontal, Padding.defaultPadding)
             oilPatternLink
-            if let statistics = viewModel.basicStatisticsViewModel {
-                BasicStatisticsView(viewModel: statistics)
-                    .padding(.top, Padding.spacingM)
+            Spacer().frame(height: Padding.spacingXXS)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                    if let statistics = viewModel.basicStatisticsViewModel {
+                        BasicStatisticsView(viewModel: statistics)
+                            .padding(.top, Padding.spacingXXS)
+                    }
+                    Text("Games played")
+                        .title()
+                        .padding(.horizontal, Padding.defaultPadding)
+                        .padding(.vertical, Padding.spacingM)
+                    GamesListView(viewModel: viewModel)
+                }
             }
-            Text("Games played")
-                .title()
-                .padding(.horizontal, Padding.defaultPadding)
-                .padding(.top, Padding.spacingM)
-            GamesListView(viewModel: viewModel)
         }.padding(.bottom, Padding.defaultPadding)
     }
     

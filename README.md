@@ -53,6 +53,8 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 3. Open the project in Xcode.
 4. Ensure all dependencies are installed (e.g., Firebase via Swift Package Manager).
 5. Run the app on a simulator or a physical device.
+6. Sing up into app. I am not collecting any personal info. 
+7. Sing up users will only have access to reading data not rewriting any data in app.
 
 ## 🪪 Contribution
 

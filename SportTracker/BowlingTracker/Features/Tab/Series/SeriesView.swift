@@ -35,8 +35,12 @@ struct SeriesView: View {
                 showCreateSeries = true
             }
         }) {
-            Label("Add", systemImage: "plus.circle")
-                .foregroundColor(Color(.primary))
+            HStack {
+                Text("Add")
+                    .heading(color: Color(.primary))
+                Image(systemName: "plus.circle")
+                    .foregroundColor(Color(.primary))
+            }
         }
     }
     

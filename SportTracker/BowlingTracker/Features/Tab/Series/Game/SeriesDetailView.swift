@@ -29,8 +29,12 @@ struct SeriesDetailView: View {
                             Button(action: {
                                 viewModel.saveSeries()
                             }, label: {
-                                Text("Save")
-                                    .heading(color: Color(.primary))
+                                HStack {
+                                    Text("Save")
+                                        .heading(color: Color(.primary))
+                                    Image(systemName: "folder.circle")
+                                        .foregroundColor(Color(.primary))
+                                }
                             })
                     )
                     .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
@@ -47,9 +51,11 @@ struct SeriesDetailView: View {
                         dismiss()
                     }, label: {
                         HStack {
-                            Image(systemName: "chevron.backward")
+                            Image(systemName: "arrow.backward.circle")
+                                .foregroundColor(Color(.primary))
                             Text("Back")
-                        }.heading(color: Color(.primary))
+                                .heading(color: Color(.primary))
+                        }
                     })
             ).background(Color(.bgPrimary))
         }
@@ -82,7 +88,21 @@ struct SeriesDetailView: View {
                     GamesListView(viewModel: viewModel)
                 }
             }
-        }.padding(.bottom, Padding.defaultPadding)
+        }
+        .padding(.bottom, Padding.defaultPadding)
+        .navigationBarItems(
+            trailing:
+                Button(action: {
+                    // TODO: edit series: HOW to edit current series?
+                }, label: {
+                    HStack {
+                        Text("Edit")
+                            .heading(color: Color(.primary))
+                        Image(systemName: "pencil.circle")
+                            .foregroundColor(Color(.primary))
+                    }
+                })
+        )
     }
     
     private var empty: some View {

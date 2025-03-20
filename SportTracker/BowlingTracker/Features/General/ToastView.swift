@@ -6,7 +6,7 @@ struct ToastView: View {
     var body: some View {
         Text(toast.toastMessage)
             .padding()
-            .background(Color(.bgPrimary).opacity(DefaultOpacity.disabled))
+            .background(Color(.bgTerciary).opacity(DefaultOpacity.disabled))
             .foregroundColor(Color(.textPrimary))
             .cornerRadius(Corners.corenrRadiusS)
             .padding(.bottom, 50)

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CreateSeriesView: View {
+    let title: String
     @Binding var seriesName: String
     @Binding var seriesDescription: String
     @Binding var seriesOilPatternName: String
@@ -15,8 +16,7 @@ struct CreateSeriesView: View {
         ZStack(alignment: .bottom) {
             ScrollView {
                 VStack(alignment: .leading, spacing: Padding.spacingXXM) {
-                    Text("Create new series")
-                        .title()
+                    Text(title).title()
                     TextField("Enter series name", text: $seriesName)
                         .defaultTextFieldStyle(labeled: "Series name")
                     TextField("Enter series description", text: $seriesDescription)
@@ -89,6 +89,7 @@ struct CreateSeriesView: View {
 
 #Preview {
     CreateSeriesView(
+        title: "Create new series",
         seriesName: .constant(""),
         seriesDescription: .constant(""),
         seriesOilPatternName: .constant(""),

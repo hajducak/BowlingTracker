@@ -29,6 +29,7 @@ class SeriesViewModel: ObservableObject {
     @Published var newSeriesSelectedType: SeriesType = .league
     @Published var newSeriesSelectedDate = Date()
     @Published var selectedFilter: SeriesType?
+    var seriesDidEdit: Bool = false
     
     let seriesViewModelFactory: SeriesDetailViewModelFactory
     let firebaseService: FirebaseService<Series>
@@ -41,6 +42,20 @@ class SeriesViewModel: ObservableObject {
         self.firebaseService = firebaseService
         setupSeries()
         setupFiltering()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reload), name: .seriesDidEdit, object: nil)
+    }
+
+    /// save flag from seriesDidEdit
+    @objc private func reload() {
+        seriesDidEdit = true
+    }
+    
+    /// Will fire up when appears and did get notification .seriesDidEdit from SeriesDetialVieModel
+    func reloadSeries() {
+        guard seriesDidEdit else { return }
+        seriesDidEdit = false
+        setupSeries()
     }
     
     private func setupSeries() {
@@ -150,6 +165,7 @@ class SeriesViewModel: ObservableObject {
     }
 
     deinit {
+        NotificationCenter.default.removeObserver(self, name: .seriesDidEdit, object: nil)
         cancellables.removeAll()
     }
 }

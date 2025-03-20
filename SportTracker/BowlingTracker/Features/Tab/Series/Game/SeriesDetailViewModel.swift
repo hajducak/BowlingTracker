@@ -14,11 +14,20 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var series: Series
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
-    @Published var savingIsLoading: Bool = false
+    @Published var isLoadingOverlay: Bool = false
     var basicStatisticsViewModel: BasicStatisticsViewModel?
     private let gameViewModelFactory: GameViewModelFactory
     private let firebaseService: FirebaseService<Series>
     private var cancellables: Set<AnyCancellable> = []
+    
+    // MARK: for editing the series
+    @Published var newSeriesName: String
+    @Published var newSeriesDescription: String
+    @Published var newSeriesOilPatternName: String
+    @Published var newSeriesOilPatternURL: String
+    @Published var newSeriesHouseName: String
+    @Published var newSeriesSelectedType: SeriesType
+    @Published var newSeriesSelectedDate: Date
     
     let seriesSaved = PassthroughSubject<Series, Never>()
 
@@ -27,6 +36,13 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
         self.gameViewModelFactory = gameViewModelFactory
         self.series = series
         self.games = series.games
+        self.newSeriesName = series.name
+        self.newSeriesDescription = series.description
+        self.newSeriesOilPatternName = series.oilPatternName ?? ""
+        self.newSeriesOilPatternURL = series.oilPatternURL  ?? ""
+        self.newSeriesHouseName = series.house ?? ""
+        self.newSeriesSelectedType = series.tag
+        self.newSeriesSelectedDate = series.date
         setupContent()
 
         $gameViewModel
@@ -79,21 +95,19 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
 
     /// Saves the game to Firebase and updates the local series data
     func saveGameIntoSeries(game: Game) {
-        savingIsLoading = true
+        isLoadingOverlay = true
         firebaseService.saveGameToSeries(seriesID: series.id, game: game)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
                 if case .failure(let error) = completion {
-                    self.toast = Toast(type: .error(error))
+                    toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
                 guard let self else { return }
-                DispatchQueue.main.async {
-                    self.toast = Toast(type: .success("Successfully saved in Database"))
-                }
-                self.newGame()
-                self.fetchUpdatedSeries()
+                toast = Toast(type: .success("Successfully saved in Database"))
+                newGame()
+                fetchUpdatedSeries()
             }
             .store(in: &cancellables)
     }
@@ -104,8 +118,8 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             .receive(on: DispatchQueue.main)
             .sink { _ in } receiveValue: { [weak self] allSeries in
                 guard let self, let updatedSeries = allSeries.first(where: { $0.id == self.series.id }) else { return }
-                self.series = updatedSeries
-                self.savingIsLoading = false
+                series = updatedSeries
+                isLoadingOverlay = false
             }
             .store(in: &cancellables)
     }
@@ -139,9 +153,41 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             }
             .store(in: &cancellables)
     }
+
+    func updateSeries() {
+        isLoadingOverlay = true
+        firebaseService.updateSeriesParameters(
+            seriesID: series.id,
+            date: newSeriesSelectedDate,
+            name: newSeriesName,
+            description: newSeriesDescription,
+            tag: newSeriesSelectedType,
+            oilPatternName: newSeriesOilPatternName,
+            oilPatternURL: newSeriesOilPatternURL,
+            house: newSeriesHouseName
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] completion in
+            guard let self else { return }
+            if case .failure(let error) = completion {
+                toast = Toast(type: .error(error))
+                isLoadingOverlay = false
+            }
+        } receiveValue: { [weak self] _ in
+            guard let self else { return }
+            toast = Toast(type: .success("Series successfully edited"))
+            fetchUpdatedSeries()
+            reloadSeries()
+        }
+        .store(in: &cancellables)
+    }
     
     private func reloadStatistics() {
-        NotificationCenter.default.post(name: .seriesDidSaved, object: nil)
+        NotificationCenter.default.post(name: .seriesDidSave, object: nil)
+    }
+    
+    private func reloadSeries() {
+        NotificationCenter.default.post(name: .seriesDidEdit, object: nil)
     }
     
     deinit {

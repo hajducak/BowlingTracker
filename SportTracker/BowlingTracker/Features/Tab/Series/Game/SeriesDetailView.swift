@@ -3,6 +3,7 @@ import SwiftUI
 struct SeriesDetailView: View {
     @ObservedObject var viewModel: SeriesDetailViewModel
     @Environment(\.dismiss) var dismiss
+    @State var showEditSeries: Bool = false
     
     var body: some View {
         NavigationView {
@@ -38,7 +39,7 @@ struct SeriesDetailView: View {
                             })
                     )
                     .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
-                    .loadingOverlay(when: $viewModel.savingIsLoading, title: "Saving game...")
+                    .loadingOverlay(when: $viewModel.isLoadingOverlay, title: "Saving game...")
                 case .empty: empty
                 case .content: content
                 }
@@ -93,7 +94,9 @@ struct SeriesDetailView: View {
         .navigationBarItems(
             trailing:
                 Button(action: {
-                    // TODO: edit series: HOW to edit current series?
+                    withAnimation {
+                        showEditSeries.toggle()
+                    }
                 }, label: {
                     HStack {
                         Text("Edit")
@@ -103,6 +106,25 @@ struct SeriesDetailView: View {
                     }
                 })
         )
+        .fullScreenCover(isPresented: $showEditSeries) {
+            CreateSeriesView(
+                title: "Edit series",
+                seriesName: $viewModel.newSeriesName,
+                seriesDescription: $viewModel.newSeriesDescription,
+                seriesOilPatternName: $viewModel.newSeriesOilPatternName,
+                seriesOilPatternURL: $viewModel.newSeriesOilPatternURL,
+                seriesHouse: $viewModel.newSeriesHouseName,
+                selectedType: $viewModel.newSeriesSelectedType,
+                selectedDate: $viewModel.newSeriesSelectedDate,
+                onSave: {
+                    viewModel.updateSeries()
+                    showEditSeries.toggle()
+                },
+                onClose: {
+                    showEditSeries.toggle()
+                }
+            )
+        }.loadingOverlay(when: $viewModel.isLoadingOverlay, title: "Editing series...")
     }
     
     private var empty: some View {

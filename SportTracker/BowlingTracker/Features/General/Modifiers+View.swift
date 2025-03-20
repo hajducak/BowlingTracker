@@ -77,7 +77,7 @@ struct LoadingOverlayModifier: ViewModifier {
                             .padding()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         Spacer()
-                    }.background(Color(.bgTerciary))
+                    }.background(Color(.bgPrimary))
                 }
             }
     }

@@ -112,7 +112,7 @@ class StatisticsViewModelTests: XCTestCase {
     
     // MARK: - Notification Tests
     
-    func testSeriesDidSavedNotification() {
+    func testSeriesDidSaveNotification() {
         // Given
         let expectation = XCTestExpectation(description: "Should reload data on notification")
         
@@ -125,7 +125,7 @@ class StatisticsViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
         
-        NotificationCenter.default.post(name: .seriesDidSaved, object: nil)
+        NotificationCenter.default.post(name: .seriesDidSave, object: nil)
         
         // Then
         wait(for: [expectation], timeout: 1.0)

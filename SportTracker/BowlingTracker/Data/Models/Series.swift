@@ -1,7 +1,7 @@
 import Foundation
 
 enum SeriesType: String, Codable {
-    case tournament, training, league, other
+    case tournament, practise, league, other
 }
 
 typealias SeriesStatistics = (percentage: Double, count: String)

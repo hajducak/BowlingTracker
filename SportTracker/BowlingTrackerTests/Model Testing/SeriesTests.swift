@@ -13,7 +13,7 @@ final class SeriesTests: XCTestCase {
     }
 
     func test_givenRoll_whenCurrentScore_thenScoreCalculationIsCorrect() {
-        var series = Series(name: "Training", tag: .training)
+        var series = Series(name: "Practise", tag: .practise)
     
         series.currentGame?.addRoll(knockedDownPins: Roll.tenPins)
         series.currentGame?.addRoll(knockedDownPins: Roll.sevenPins)

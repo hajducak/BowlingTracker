@@ -36,7 +36,7 @@ struct SeriesCell: View {
                         .smallNegative()
                         .padding(.horizontal, Padding.spacingXS)
                         .padding(.vertical, Padding.spacingXXS)
-                        .background(series.tag.color)
+                        .background(series.tag.bgColor)
                         .cornerRadius(Corners.corenrRadiusS, corners: [.bottomLeft, .bottomRight])
                         .cornerRadius(Corners.corenrRadiusXXS, corners: [.topLeft, .topRight])
                     if series.currentGame != nil {
@@ -48,7 +48,7 @@ struct SeriesCell: View {
                             .smallNegative()
                             .padding(.horizontal, Padding.spacingXS)
                             .padding(.vertical, Padding.spacingXXS)
-                            .background(Color(.complementary))
+                            .background(Color(.primary))
                             .cornerRadius(Corners.corenrRadiusS, corners: [.bottomLeft, .bottomRight])
                             .cornerRadius(Corners.corenrRadiusXXS, corners: [.topLeft, .topRight])
                             .onAppear {
@@ -70,22 +70,24 @@ struct SeriesCell: View {
     VStack {
         SeriesCell(series: Series(name: "Tournament", tag: .tournament)) { _ in }
         SeriesCell(series: Series(name: "League", tag: .league)) { _ in }
-        SeriesCell(series: Series(name: "Training", tag: .training)) { _ in }
+        SeriesCell(series: Series(name: "Practise", tag: .practise)) { _ in }
         SeriesCell(series: Series(name: "Camp", tag: .other)) { _ in }
     }
 }
 
 extension SeriesType {
-    var color: Color {
+    var bgColor: Color {
+        return .complementary
+        // TODO: ask Laura what is better, blue or different colors
         switch self {
         case .tournament:
-            return .red
+            return .tournament
         case .league:
-            return .darkPrimary
-        case .training:
-            return .yellow
+            return .league
+        case .practise:
+            return .practise
         case .other:
-            return .bgTerciary
+            return .other
         }
     }
 }

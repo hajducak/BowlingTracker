@@ -18,7 +18,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         setUp()
         setupFiltering()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(setUp), name: .seriesDidSaved, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setUp), name: .seriesDidSave, object: nil)
     }
 
     @objc private func setUp() {
@@ -70,7 +70,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .seriesDidSaved, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .seriesDidSave, object: nil)
         cancellables.removeAll()
     }
 }

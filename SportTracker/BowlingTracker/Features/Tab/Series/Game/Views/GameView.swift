@@ -128,11 +128,11 @@ struct PinView: View {
     var body: some View {
         Text("\(pin)").bold()
             .frame(width: 40, height: 40)
-            .background(isSelected ? Color(.primary) : isDisabled ? Color(.bgTerciary) : Color(.bgSecondary))
-                .foregroundColor(.white)
+            .background(isSelected ? Color(.primary) : isDisabled ? Color(.bgSecondary) : Color(.bgTerciary))
+            .foregroundColor(isDisabled ? .textSecondary : .textPrimary)
             .clipShape(Circle())
             .overlay(Circle().stroke(Color(.border), lineWidth: isSelected ? 0 : 1))
-            .opacity(isDisabled ? 0.2 : 1.0)
+            .opacity(isDisabled ? DefaultOpacity.disabled : 1.0)
             .tap {
                 if !isDisabled {
                     onTap()

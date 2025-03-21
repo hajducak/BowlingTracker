@@ -67,7 +67,7 @@ class FirebaseServiceTests: XCTestCase {
 
 
     func testDeleteSeries_Success() {
-        let series = Series(name: "dummyName", tag: .training)
+        let series = Series(name: "dummyName", tag: .practise)
 
         mockFirestore.collection(CollectionNames.series).document(series.id).setData(try! Firestore.Encoder().encode(series), completion: nil)
 

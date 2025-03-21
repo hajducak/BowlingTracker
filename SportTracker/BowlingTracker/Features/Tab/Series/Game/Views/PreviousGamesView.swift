@@ -10,13 +10,16 @@ struct PreviousGamesView: View {
                 Text("Previous games")
                     .title()
                 Spacer()
-                Image(systemName: "chevron.up.circle.fill")
-                    .foregroundColor(Color(.primary))
-                    .rotationEffect(.degrees(isCollapsed ? 0 : 180))
-                    .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                if !viewModel.series.games.isEmpty {
+                    Image(systemName: "chevron.up.circle.fill")
+                        .foregroundColor(Color(.primary))
+                        .rotationEffect(.degrees(isCollapsed ? 0 : 180))
+                        .animation(.easeInOut(duration: 0.3), value: isCollapsed)
+                }
             }
             .padding(.horizontal, Padding.defaultPadding)
             .tap {
+                guard !viewModel.series.games.isEmpty else { return }
                 withAnimation(.easeInOut(duration: 0.3)) {
                     isCollapsed.toggle()
                 }

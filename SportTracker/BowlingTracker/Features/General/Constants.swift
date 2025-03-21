@@ -45,3 +45,7 @@ struct DefaultColor {
     static var grey5 = UIColor.systemGray5.color
     static var grey6 = UIColor.systemGray6.color
 }
+
+struct DefaultOpacity {
+    static var disabled: CGFloat = 0.8
+}

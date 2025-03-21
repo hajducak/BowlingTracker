@@ -3,6 +3,7 @@ import SwiftUI
 struct AuthView: View {
     @StateObject var viewModel: AuthViewModel
     @State private var isRegistering = false
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationView {
@@ -18,13 +19,13 @@ struct AuthView: View {
                 
                 VStack(spacing: Padding.spacingM) {
                     TextField("Email", text: $viewModel.email)
-                        .defaultTextFieldStyle(borderWidth: 1)
+                        .loginTextFieldStyle()
                         .textContentType(.emailAddress)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                     
                     SecureField("Password", text: $viewModel.password)
-                        .defaultTextFieldStyle(borderWidth: 1)
+                        .loginTextFieldStyle()
                         .textContentType(isRegistering ? .newPassword : .password)
                     
                     Toggle("Remember me", isOn: $viewModel.shouldRememberCredentials)

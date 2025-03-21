@@ -13,7 +13,7 @@ struct FilterView: View {
         FilterTypes(type: nil, name: "All"),
         FilterTypes(type: .tournament, name: "Tournaments"),
         FilterTypes(type: .league, name: "Leagues"),
-        FilterTypes(type: .training, name: "Trainings"),
+        FilterTypes(type: .practise, name: "Practises"),
         FilterTypes(type: .other, name: "Others")
     ]
     
@@ -33,7 +33,7 @@ struct FilterView: View {
         let isSelected = selectedFilter == filter.type
         
         return Text(filter.name)
-            .subheading(color: .white, weight: .regular)
+            .subheading(color: .textPrimary, weight: .regular)
             .padding(.vertical, Padding.spacingXXS)
             .padding(.horizontal, Padding.spacingXXM)
             .background(isSelected ? Color(.primary): Color(.bgTerciary))

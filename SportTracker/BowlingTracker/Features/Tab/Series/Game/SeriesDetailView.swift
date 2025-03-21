@@ -3,6 +3,7 @@ import SwiftUI
 struct SeriesDetailView: View {
     @ObservedObject var viewModel: SeriesDetailViewModel
     @Environment(\.dismiss) var dismiss
+    @State var showEditSeries: Bool = false
     
     var body: some View {
         NavigationView {
@@ -29,12 +30,16 @@ struct SeriesDetailView: View {
                             Button(action: {
                                 viewModel.saveSeries()
                             }, label: {
-                                Text("Save")
-                                    .heading(color: Color(.primary))
+                                HStack {
+                                    Text("Save")
+                                        .heading(color: Color(.primary))
+                                    Image(systemName: "folder.circle")
+                                        .foregroundColor(Color(.primary))
+                                }
                             })
                     )
                     .onReceive(viewModel.$shouldDismiss) { if $0 { dismiss() }}
-                    .loadingOverlay(when: $viewModel.savingIsLoading, title: "Saving game...")
+                    .loadingOverlay(when: $viewModel.isLoadingOverlay, title: "Saving game...")
                 case .empty: empty
                 case .content: content
                 }
@@ -47,9 +52,11 @@ struct SeriesDetailView: View {
                         dismiss()
                     }, label: {
                         HStack {
-                            Image(systemName: "chevron.backward")
+                            Image(systemName: "arrow.backward.circle")
+                                .foregroundColor(Color(.primary))
                             Text("Back")
-                        }.heading(color: Color(.primary))
+                                .heading(color: Color(.primary))
+                        }
                     })
             ).background(Color(.bgPrimary))
         }
@@ -68,16 +75,56 @@ struct SeriesDetailView: View {
                 .body()
                 .padding(.horizontal, Padding.defaultPadding)
             oilPatternLink
-            if let statistics = viewModel.basicStatisticsViewModel {
-                BasicStatisticsView(viewModel: statistics)
-                    .padding(.top, Padding.spacingM)
+            Spacer().frame(height: Padding.spacingXXS)
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                    if let statistics = viewModel.basicStatisticsViewModel {
+                        BasicStatisticsView(viewModel: statistics)
+                            .padding(.top, Padding.spacingXXS)
+                    }
+                    Text("Games played")
+                        .title()
+                        .padding(.horizontal, Padding.defaultPadding)
+                        .padding(.vertical, Padding.spacingM)
+                    GamesListView(viewModel: viewModel)
+                }
             }
-            Text("Games played")
-                .title()
-                .padding(.horizontal, Padding.defaultPadding)
-                .padding(.top, Padding.spacingM)
-            GamesListView(viewModel: viewModel)
-        }.padding(.bottom, Padding.defaultPadding)
+        }
+        .padding(.bottom, Padding.defaultPadding)
+        .navigationBarItems(
+            trailing:
+                Button(action: {
+                    withAnimation {
+                        showEditSeries.toggle()
+                    }
+                }, label: {
+                    HStack {
+                        Text("Edit")
+                            .heading(color: Color(.primary))
+                        Image(systemName: "pencil.circle")
+                            .foregroundColor(Color(.primary))
+                    }
+                })
+        )
+        .fullScreenCover(isPresented: $showEditSeries) {
+            CreateSeriesView(
+                title: "Edit series",
+                seriesName: $viewModel.newSeriesName,
+                seriesDescription: $viewModel.newSeriesDescription,
+                seriesOilPatternName: $viewModel.newSeriesOilPatternName,
+                seriesOilPatternURL: $viewModel.newSeriesOilPatternURL,
+                seriesHouse: $viewModel.newSeriesHouseName,
+                selectedType: $viewModel.newSeriesSelectedType,
+                selectedDate: $viewModel.newSeriesSelectedDate,
+                onSave: {
+                    viewModel.updateSeries()
+                    showEditSeries.toggle()
+                },
+                onClose: {
+                    showEditSeries.toggle()
+                }
+            )
+        }.loadingOverlay(when: $viewModel.isLoadingOverlay, title: "Editing series...")
     }
     
     private var empty: some View {

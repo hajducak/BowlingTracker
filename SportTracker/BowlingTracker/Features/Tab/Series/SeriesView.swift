@@ -10,6 +10,7 @@ struct SeriesView: View {
                 .navigationBarItems(trailing: addButton)
                 .fullScreenCover(isPresented: $showCreateSeries) {
                     CreateSeriesView(
+                        title: "Create new series",
                         seriesName: $viewModel.newSeriesName,
                         seriesDescription: $viewModel.newSeriesDescription,
                         seriesOilPatternName: $viewModel.newSeriesOilPatternName,
@@ -26,6 +27,7 @@ struct SeriesView: View {
                         }
                     )
                 }
+                .onAppear { viewModel.reloadSeries() }
         }.background(Color(.bgPrimary))
     }
 
@@ -35,8 +37,12 @@ struct SeriesView: View {
                 showCreateSeries = true
             }
         }) {
-            Label("Add", systemImage: "plus.circle")
-                .foregroundColor(Color(.primary))
+            HStack {
+                Text("Add")
+                    .heading(color: Color(.primary))
+                Image(systemName: "plus.circle")
+                    .foregroundColor(Color(.primary))
+            }
         }
     }
     

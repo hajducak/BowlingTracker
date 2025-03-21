@@ -112,4 +112,66 @@ extension FirebaseService where T == Series {
             }
         }.eraseToAnyPublisher()
     }
+
+    func updateSeriesParameters(
+        seriesID: String,
+        date: Date? = nil,
+        name: String? = nil,
+        description: String? = nil,
+        tag: SeriesType? = nil,
+        oilPatternName: String? = nil,
+        oilPatternURL: String? = nil,
+        house: String? = nil
+    ) -> AnyPublisher<Void, AppError> {
+        return Future<Void, AppError> { promise in
+            let seriesRef = self.db.collection(self.collectionName).document(seriesID)
+            seriesRef.getDocument { document, error in
+                if let error = error {
+                    promise(.failure(.fetchingError(error)))
+                    return
+                }
+                
+                guard let document = document, document.exists else {
+                    promise(.failure(.customError("Series not found.")))
+                    return
+                }
+                
+                var updateData: [String: Any] = [:]
+                if let date = date {
+                    updateData["date"] = date
+                }
+                if let name = name {
+                    updateData["name"] = name
+                }
+                if let description = description {
+                    updateData["description"] = description
+                }
+                if let tag = tag {
+                    updateData["tag"] = tag.rawValue
+                }
+                if let oilPatternName = oilPatternName {
+                    updateData["oilPatternName"] = oilPatternName
+                }
+                if let oilPatternURL = oilPatternURL {
+                    updateData["oilPatternURL"] = oilPatternURL
+                }
+                if let house = house {
+                    updateData["house"] = house
+                }
+
+                guard !updateData.isEmpty else {
+                    promise(.success(()))
+                    return
+                }
+
+                seriesRef.updateData(updateData) { error in
+                    if let error = error {
+                        promise(.failure(.saveError(error)))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
 }

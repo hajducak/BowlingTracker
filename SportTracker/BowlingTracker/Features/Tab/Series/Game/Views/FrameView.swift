@@ -19,16 +19,27 @@ struct FrameView: View {
                 .frame(width: frameWidth)
                 .padding(.vertical, Padding.spacingXXS)
                 .background(Color(.bgSecondary))
+            // TODO: remove ocmentars and remove conditions for those empty boxes to be able read this code more clearly
             HStack(spacing: Self.boxSpacing) {
-                if frame.rolls.count == 0 { emptyBox }
+                if frame.rolls.count == 0 {
+                    // if not throwed yet, pre draw empty box
+                    emptyBox(bgColor: Color(.bgSecondary))
+                }
                 if frame.frameType == .strike {
-                    Text("").frame(width: Self.boxSize.width, height: Self.boxSize.height)
+                    // if strike add before strike invisible box do padded X in trailing mode
+                    emptyBox(bgColor: .clear)
                 }
                 ForEach(frame.rolls.indices, id: \.self) { index in
+                    // normal formated frame
                     formatRoll(frame.rolls[index], index)
                 }
                 if frame.frameType == .unfinished || (frame.index == 10 && frame.rolls.count < 3) && frame.frameType != .last {
-                    emptyBox
+                    // if last frame is unfinished add bonus empty box for bonus throw
+                    emptyBox(bgColor: Color(.bgSecondary))
+                }
+                if frame.frameType == .last && frame.rolls.count == 3 && !frame.rolls.contains(where: { $0.knockedDownPins.count == 10 }) {
+                    // If last frame with 3 rolls without strike need space cose 2 pictures
+                    emptyBox(bgColor: .clear)
                 }
             }.padding(Self.boxPadding)
             if let score = maxPossibleScore, frame.index == 10 {
@@ -55,13 +66,16 @@ struct FrameView: View {
         let outsidePadding = 2 * Self.boxPadding
         let innerPadding = Self.boxSpacing * max(0, CGFloat(boxCount - 1))
         
-        return max(outsidePadding + Self.boxSize.width * 2 + Self.boxSpacing, outsidePadding + boxWidth + innerPadding)
+        let has3RollsWithoutStrike = frame.frameType == .last && frame.rolls.count == 3 && !frame.rolls.contains(where: { $0.knockedDownPins.count == 10 })
+        let emptyWidth: CGFloat = has3RollsWithoutStrike ? (Self.boxSize.width + Self.boxSpacing * 2) : 0
+        
+        return max(outsidePadding + Self.boxSize.width * 2 + Self.boxSpacing, outsidePadding + boxWidth + innerPadding + emptyWidth)
     }
     
-    private var emptyBox: some View {
+    private func emptyBox(bgColor: Color) -> some View {
         Text("")
             .frame(width: Self.boxSize.width, height: Self.boxSize.height)
-            .background(Color(.bgSecondary))
+            .background(bgColor)
     }
 
     private func formatRoll(_ roll: Roll,_ index: Int) -> some View {

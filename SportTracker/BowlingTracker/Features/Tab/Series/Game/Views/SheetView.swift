@@ -92,9 +92,7 @@ struct SheetView: View {
         }
 
         private var emptyBox: some View {
-            Text("")
-                .frame(width: FrameView.boxSize.width, height: FrameView.boxSize.height)
-                .background(Color(.bgTerciary))
+            Text("").frame(width: FrameView.boxSize.width, height: FrameView.boxSize.height)
         }
         
         private var width: CGFloat {

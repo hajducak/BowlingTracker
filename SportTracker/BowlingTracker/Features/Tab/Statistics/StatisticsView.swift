@@ -16,10 +16,14 @@ struct StatisticsView: View {
                     .custom(size: lienarGraphLine * 1.8, weight: .bold)
                 Spacer()
             }.padding(.horizontal, Padding.defaultPadding)
-            if let basicStatisticsViewModel = viewModel.basicStatisticsViewModel {
-                BasicStatisticsView(viewModel: basicStatisticsViewModel)
+            ScrollView {
+                if let basicStatisticsViewModel = viewModel.basicStatisticsViewModel {
+                    BasicStatisticsView(viewModel: basicStatisticsViewModel)
+                }
+                if let averagesViewModel = viewModel.avaragesViewModel {
+                    SeriesAverageView(viewModel: averagesViewModel)
+                }
             }
-            Spacer()
         }
         .background(Color(.bgPrimary))
         .loadingOverlay(when: $viewModel.isLoading, title: "Loading series...")

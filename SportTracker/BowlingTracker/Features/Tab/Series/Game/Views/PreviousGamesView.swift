@@ -30,7 +30,7 @@ struct PreviousGamesView: View {
                         GameHeading(
                             gameNumber: index + 1,
                             currentScore: viewModel.series.games[index].currentScore,
-                            lane: viewModel.games[index].lane
+                            lane: viewModel.series.games[index].lane
                         )
                             .padding(.horizontal, Padding.defaultPadding)
                         ScrollView(.horizontal) {

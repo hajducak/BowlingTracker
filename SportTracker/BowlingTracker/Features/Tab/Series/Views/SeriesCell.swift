@@ -15,12 +15,20 @@ struct SeriesCell: View {
                     .subheading(weight: .regular)
             }
             VStack(alignment: .leading, spacing: Padding.spacingXXS) {
-                Text("Games: \(series.games.count)")
-                Text("Avarage: \(series.getSeriesAvarage().twoPointFormat())")
-                if let oilPatternName = series.oilPatternName, !oilPatternName.isEmpty {
-                    Text("Oil pattern: \(oilPatternName)").multilineTextAlignment(.trailing)
+                HStack {
+                    if let houseName = series.house {
+                        Text(houseName)
+                            .multilineTextAlignment(.trailing)
+                            .lineLimit(1)
+                        Spacer()
+                    }
+                    Text("\(series.formattedDate)")
                 }
-                Text("at \(series.formattedDate)")
+                HStack(spacing: Padding.spacingXS) {
+                    Text("Games: \(series.games.count)")
+                    Spacer()
+                    Text("Avarage: \(series.getSeriesAvarage().twoPointFormat())")
+                }
             }.caption()
         }
         .flexWidthModifier(alignment: .leading)

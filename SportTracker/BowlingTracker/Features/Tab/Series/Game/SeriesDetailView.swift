@@ -141,7 +141,7 @@ struct SeriesDetailView: View {
             if let oilPatternName = viewModel.series.oilPatternName, !oilPatternName.isEmpty {
                 if let oilPatternURL = viewModel.series.oilPatternURL, !oilPatternURL.isEmpty, let url = URL(string: oilPatternURL) {
                     Link(destination: url) {
-                        HStack {
+                        HStack(alignment: .top) {
                             Image(systemName: "link.circle")
                             Text(oilPatternName)
                                 .multilineTextAlignment(.leading)

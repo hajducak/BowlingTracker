@@ -4,6 +4,7 @@ import Combine
 class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var totalGames: Int = 0
     var basicStatisticsViewModel: BasicStatisticsViewModel?
+    var avaragesViewModel: SeriesAverageViewModel?
     @Published var selectedFilter: SeriesType?
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
@@ -64,6 +65,12 @@ class StatisticsViewModel: ObservableObject, Identifiable {
             basicStatisticsViewModel = .init(series: series)
         } else {
             basicStatisticsViewModel?.series = series
+        }
+        
+        if avaragesViewModel == nil {
+            avaragesViewModel = .init(series: series)
+        } else {
+            avaragesViewModel?.series = series
         }
         // MARK: - more Statistics
         // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)

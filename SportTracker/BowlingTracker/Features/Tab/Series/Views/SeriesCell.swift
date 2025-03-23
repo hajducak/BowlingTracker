@@ -27,7 +27,7 @@ struct SeriesCell: View {
                 HStack(spacing: Padding.spacingXS) {
                     Text("Games: \(series.games.count)")
                     Spacer()
-                    Text("Avarage: \(series.getSeriesAvarage().twoPointFormat())")
+                    Text("Average: \(series.getSeriesAverage().twoPointFormat())")
                 }
             }.caption()
         }

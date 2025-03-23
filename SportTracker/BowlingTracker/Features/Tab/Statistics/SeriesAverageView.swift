@@ -45,6 +45,20 @@ struct SeriesAverageView: View {
                             .cornerRadius(Corners.corenrRadiusS)
                     }
                 }
+                RuleMark(y: .value("Average", viewModel.totalAverage))
+                    .foregroundStyle(Color(.complementary))
+                    .annotation(
+                        position: .top,
+                        alignment: .topTrailing
+                    ) {
+                        Text("Average \(viewModel.totalAverage.twoPointFormat())")
+                            .custom(size: 8, color: .textPrimaryInverse, weight: .bold)
+                            .padding(.horizontal, Padding.spacingXXS)
+                            .padding(.vertical, Padding.spacingXXS)
+                            .background(Color(.complementary))
+                            .cornerRadius(Corners.corenrRadiusS, corners: [.topLeft, .topRight])
+                            .offset(x: -10, y: 4)
+                    }
             }
             .chartYScale(domain: viewModel.minAverage...viewModel.maxAverage)
             .chartXScale(domain: 1...viewModel.averages.count)

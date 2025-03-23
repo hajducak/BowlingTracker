@@ -8,11 +8,12 @@ struct GamesListView: View {
     var body: some View {
         ForEach(viewModel.games.indices, id: \.self) { index in
             VStack(alignment: .leading) {
-                HStack {
+                HStack(alignment: .top) {
                     GameHeading(
                         gameNumber: index + 1,
                         currentScore: viewModel.games[index].currentScore,
-                        lane: viewModel.games[index].lane
+                        lane: viewModel.games[index].lane,
+                        ball: viewModel.games[index].ball
                     )
                     Spacer()
                     Image(systemName: "chevron.up.circle.fill")

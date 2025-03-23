@@ -50,9 +50,9 @@ struct BasicStatisticsView: View {
                 height: lienarGraphLine
             ).padding(.horizontal, Padding.defaultPadding)
             LinearProgressView(
-                value: viewModel.totalAvarage,
+                value: viewModel.totalAverage,
                 maxValue: Double(300),
-                title: "Total avarage:",
+                title: "Total average:",
                 width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
                 height: lienarGraphLine
             ).padding(.horizontal, Padding.defaultPadding)

@@ -7,6 +7,7 @@ class GameViewModel: ObservableObject {
     @Published var currentFrameIndex: Int = 0
     @Published var game: Game
     @Published var gameLane: String = ""
+    @Published var gameBallName: String = ""
     @Published var saveGameIsEnabled: Bool = false
     @Published var spareIsEnabled: Bool = false
     @Published var strikeIsEnabled: Bool = true
@@ -128,6 +129,7 @@ class GameViewModel: ObservableObject {
     
     func saveGame() {
         game.lane = gameLane
+        game.ball = gameBallName
         gameSaved.send(game)
     }
     

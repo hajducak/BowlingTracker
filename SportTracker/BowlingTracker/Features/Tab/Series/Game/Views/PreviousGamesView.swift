@@ -30,7 +30,8 @@ struct PreviousGamesView: View {
                         GameHeading(
                             gameNumber: index + 1,
                             currentScore: viewModel.series.games[index].currentScore,
-                            lane: viewModel.series.games[index].lane
+                            lane: viewModel.series.games[index].lane,
+                            ball: viewModel.series.games[index].ball
                         )
                             .padding(.horizontal, Padding.defaultPadding)
                         ScrollView(.horizontal) {
@@ -54,9 +55,9 @@ struct PreviousGamesView: View {
                 .subheading()
             Text(" games with ")
                 .subheading(weight: .regular)
-            Text(viewModel.series.getSeriesAvarage().twoPointFormat())
+            Text(viewModel.series.getSeriesAverage().twoPointFormat())
                 .subheading()
-            Text(" avarage so far")
+            Text(" average so far")
                 .subheading(weight: .regular)
         }
     }

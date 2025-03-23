@@ -20,7 +20,7 @@ struct StatisticsView: View {
                 if let basicStatisticsViewModel = viewModel.basicStatisticsViewModel {
                     BasicStatisticsView(viewModel: basicStatisticsViewModel)
                 }
-                if let averagesViewModel = viewModel.avaragesViewModel {
+                if let averagesViewModel = viewModel.averagesViewModel {
                     SeriesAverageView(viewModel: averagesViewModel)
                 }
             }

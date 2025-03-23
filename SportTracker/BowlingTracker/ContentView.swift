@@ -19,7 +19,7 @@ struct ContentView: View {
                     .navigationBarItems(leading: signOutButton)
             }
             .tabItem {
-                Image(systemName: "figure.bowling")
+                Image(systemName: "figure.bowling.circle.fill")
                 Text("My Series")
             }.tag(0)
             

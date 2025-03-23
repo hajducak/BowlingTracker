@@ -70,6 +70,10 @@ struct GameView: View {
             TextField("Enter lane numbers", text: $viewModel.gameLane)
                 .defaultTextFieldStyle(labeled: "On lane")
                 .padding(.horizontal, Padding.defaultPadding)
+                .padding(.top, Padding.spacingS)
+            TextField("Enter ball name", text: $viewModel.gameBallName)
+                .defaultTextFieldStyle(labeled: "With ball")
+                .padding(.horizontal, Padding.defaultPadding)
         }
     }
 }

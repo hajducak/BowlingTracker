@@ -4,7 +4,7 @@ import Combine
 class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var totalGames: Int = 0
     var basicStatisticsViewModel: BasicStatisticsViewModel?
-    var avaragesViewModel: SeriesAverageViewModel?
+    var averagesViewModel: SeriesAverageViewModel?
     @Published var selectedFilter: SeriesType?
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
@@ -67,13 +67,20 @@ class StatisticsViewModel: ObservableObject, Identifiable {
             basicStatisticsViewModel?.series = series
         }
         
-        if avaragesViewModel == nil {
-            avaragesViewModel = .init(series: series)
+        if averagesViewModel == nil {
+            averagesViewModel = .init(series: series)
         } else {
-            avaragesViewModel?.series = series
+            averagesViewModel?.series = series
         }
         // MARK: - more Statistics
         // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
+        
+        // First Ball Average - How many pins knocked down on the first ball.
+        // Strike after strike percentage
+        // Strike after open percentage
+        // Clean game percentage
+        
+        // Ball usage percentage - adding balls in profile???
     }
     
     deinit {

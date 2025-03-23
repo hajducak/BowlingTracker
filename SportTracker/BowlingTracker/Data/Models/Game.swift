@@ -3,6 +3,7 @@ struct Game: Codable, Identifiable {
     var id: String = UUID().uuidString
     var frames: [Frame]
     var lane: String? = nil
+    var ball: String? = nil
     
     init(frames: [Frame] = []) {
         self.frames = frames.isEmpty ? (1...10).map { Frame(rolls: [], index: $0) } : frames

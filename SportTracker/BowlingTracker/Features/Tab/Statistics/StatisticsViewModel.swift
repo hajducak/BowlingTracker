@@ -74,6 +74,13 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         }
         // MARK: - more Statistics
         // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
+        
+        // First Ball Average - How many pins knocked down on the first ball.
+        // Strike after strike percentage
+        // Strike after open percentage
+        // Clean game percentage
+        
+        // Ball usage percentage - adding balls in profile???
     }
     
     deinit {

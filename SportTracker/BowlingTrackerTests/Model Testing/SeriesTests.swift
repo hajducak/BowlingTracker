@@ -53,7 +53,7 @@ final class SeriesTests: XCTestCase {
         XCTAssertEqual(series.getSeriesScore(), 481)
     }
 
-    func test_givenTwoGames_whenSeriesScoreCalculation_thenAvarageIsCorrect() {
+    func test_givenTwoGames_whenSeriesScoreCalculation_thenAverageIsCorrect() {
         var series = Series(name: "Test Series", tag: .other)
         
         var game1 = Game()
@@ -64,7 +64,7 @@ final class SeriesTests: XCTestCase {
         for _ in 0..<10 { game2.addRoll(knockedDownPins: Roll.ninePins); game2.addRoll(knockedDownPins: Roll.onePins) }
         series.games.append(game2)
 
-        XCTAssertEqual(series.getSeriesAvarage(), 240.5)
+        XCTAssertEqual(series.getSeriesAverage(), 240.5)
     }
 
     func testSeries_AllStrikes() {

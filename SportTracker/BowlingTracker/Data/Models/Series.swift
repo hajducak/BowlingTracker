@@ -45,7 +45,7 @@ struct Series: Codable, Identifiable {
         return games.reduce(0) { $0 + $1.currentScore }
     }
 
-    func getSeriesAvarage() -> Double {
+    func getSeriesAverage() -> Double {
         guard getSeriesScore() != 0, games.count != 0 else { return 0 }
         return Double(getSeriesScore()) / Double(games.count)
     }

@@ -10,7 +10,7 @@ class BasicStatisticsViewModel: ObservableObject {
     
     @Published var totalGames: Int = 0
     @Published var totalScore: Int = 0
-    @Published var totalAvarage: Double = 0.0
+    @Published var totalAverage: Double = 0.0
     @Published var totalStrikesPercentage: Double = 0.0
     @Published var totalSparesPercentage: Double = 0.0
     @Published var totalOpensPercentage: Double = 0.0
@@ -42,7 +42,7 @@ class BasicStatisticsViewModel: ObservableObject {
         let splitsPossibility = 10 * totalGames
         let totalSplits = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.splitCount } }
 
-        totalAvarage = totalGames > 0 ? Double(totalScore) / Double(totalGames) : 0.0
+        totalAverage = totalGames > 0 ? Double(totalScore) / Double(totalGames) : 0.0
 
         let percent = { (count: Int, total: Int) -> Double in
             total > 0 ? (Double(count) / Double(total)) * 100 : 0.0

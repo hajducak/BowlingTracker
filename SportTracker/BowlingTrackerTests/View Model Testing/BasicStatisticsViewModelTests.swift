@@ -23,7 +23,7 @@ class BasicStatisticsViewModelTests: XCTestCase {
     func testInitialState() {
         XCTAssertEqual(sut.totalGames, 0)
         XCTAssertEqual(sut.totalScore, 0)
-        XCTAssertEqual(sut.totalAvarage, 0.0)
+        XCTAssertEqual(sut.totalAverage, 0.0)
         XCTAssertEqual(sut.totalStrikesPercentage, 0.0)
         XCTAssertEqual(sut.totalSparesPercentage, 0.0)
         XCTAssertEqual(sut.totalOpensPercentage, 0.0)
@@ -55,7 +55,7 @@ class BasicStatisticsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.totalGames, 1)
         XCTAssertEqual(sut.totalScore, 300)
-        XCTAssertEqual(sut.totalAvarage, 300.0)
+        XCTAssertEqual(sut.totalAverage, 300.0)
         XCTAssertEqual(sut.totalStrikesPercentage, 100.0)
         XCTAssertEqual(sut.totalSparesPercentage, 0.0)
         XCTAssertEqual(sut.totalOpensPercentage, 0.0)
@@ -147,7 +147,7 @@ class BasicStatisticsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.totalGames, 0)
         XCTAssertEqual(sut.totalScore, 0)
-        XCTAssertEqual(sut.totalAvarage, 0.0)
+        XCTAssertEqual(sut.totalAverage, 0.0)
         XCTAssertEqual(sut.totalStrikesPercentage, 0.0)
         XCTAssertEqual(sut.totalSparesPercentage, 0.0)
         XCTAssertEqual(sut.totalOpensPercentage, 0.0)

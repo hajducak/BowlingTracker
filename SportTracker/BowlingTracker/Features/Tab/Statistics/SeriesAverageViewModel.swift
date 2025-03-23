@@ -11,6 +11,7 @@ class SeriesAverageViewModel: ObservableObject {
     @Published var maxAverage: Double = 0.0
     @Published var minAverage: Double = 0.0
     @Published var averageRange: Double = 0.0
+    @Published var totalAverage: Double = 0.0
 
     private var cancellables: Set<AnyCancellable> = []
     
@@ -23,6 +24,10 @@ class SeriesAverageViewModel: ObservableObject {
         maxAverage = averages.max() ?? 0
         minAverage = averages.min() ?? 0
         averageRange = maxAverage - minAverage
+
+        let totalScore = series.reduce(0) { $0 + $1.getSeriesScore() }
+        let totalGames = series.reduce(0) { $0 + $1.games.count }
+        totalAverage = totalGames > 0 ? Double(totalScore) / Double(totalGames) : 0.0
     }
 
     deinit {

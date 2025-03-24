@@ -19,7 +19,7 @@ class SeriesAverageViewModel: ObservableObject {
     }
     
     func setup(for series: [Series]) {
-        averages = series.map { $0.getSeriesAverage() }
+        averages = series.filter({ !$0.games.isEmpty }).map { $0.getSeriesAverage() }
         maxAverage = averages.max() ?? 0
         minAverage = averages.min() ?? 0
 

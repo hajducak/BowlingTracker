@@ -16,7 +16,7 @@ struct PrimaryButton: View {
                 leadingImage
                 if isLoading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .progressViewStyle(CircularProgressViewStyle(tint: .forcedWhite))
                 } else {
                     Text(title)
                 }
@@ -24,7 +24,7 @@ struct PrimaryButton: View {
             }
             .padding(.horizontal, horizontalPadding)
             .infinity(isInfinity)
-            .heading(color: isEnabled ? .white : .white.opacity(DefaultOpacity.disabled))
+            .heading(color: isEnabled ? .forcedWhite : .forcedWhite.opacity(DefaultOpacity.disabled))
             .frame(height: 48)
             .background(isEnabled ? Color(.primary) : Color(.primaryDisabled))
             .cornerRadius(Corners.corenrRadiusXL)

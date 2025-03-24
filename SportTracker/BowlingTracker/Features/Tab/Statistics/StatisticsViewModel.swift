@@ -4,6 +4,7 @@ import Combine
 class StatisticsViewModel: ObservableObject, Identifiable {
     @Published var totalGames: Int = 0
     var basicStatisticsViewModel: BasicStatisticsViewModel?
+    var advancedStaticticsViewModel: AdvancedStatisticsViewModel?
     var averagesViewModel: SeriesAverageViewModel?
     @Published var selectedFilter: SeriesType?
     @Published var isLoading: Bool = false
@@ -60,27 +61,26 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     
     private func setupStatistics(for series: [Series]) {
         totalGames = series.reduce(0) { $0 + $1.games.count }
-        // MARK: - Basic Statistics:
         if basicStatisticsViewModel == nil  {
             basicStatisticsViewModel = .init(series: series)
         } else {
             basicStatisticsViewModel?.series = series
         }
-        
         if averagesViewModel == nil {
             averagesViewModel = .init(series: series)
         } else {
             averagesViewModel?.series = series
         }
-        // MARK: - more Statistics
+        if advancedStaticticsViewModel == nil {
+            advancedStaticticsViewModel = .init(series: series)
+        } else {
+            advancedStaticticsViewModel?.series = series
+        }
+        // MARK: - More Statistics:
         // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
-        
-        // First Ball Average - How many pins knocked down on the first ball.
-        // Strike after strike percentage
-        // Strike after open percentage
-        // Clean game percentage
-        
-        // Ball usage percentage - adding balls in profile???
+        // TODO: Ball usage percentage - ball name in game
+        // TODO: Bowling house center statistics
+        // TODO: lane number statictics
     }
     
     deinit {

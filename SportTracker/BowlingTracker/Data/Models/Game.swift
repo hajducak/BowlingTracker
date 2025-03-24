@@ -22,6 +22,18 @@ struct Game: Codable, Identifiable {
         frames[lastFrameIndex].rolls.removeLast()
     }
     
+    var isCleanGame: Bool {
+        let regularFrames = frames.dropLast()
+        let hasOpenRegularFrames = regularFrames.contains { frame in
+            frame.frameType == .open
+        }
+        if let lastFrame = frames.last {
+            let isLastFrameClean = lastFrame.rolls.count == 3 && lastFrame.frameType == .last
+            return !hasOpenRegularFrames && isLastFrameClean
+        }
+        return false
+    }
+    
     var strikeCount: Int {
         frames.filter { $0.frameType == .strike }.count + lastFrameCount().strikes
     }

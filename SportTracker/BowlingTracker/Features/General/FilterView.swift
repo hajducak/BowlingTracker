@@ -33,7 +33,7 @@ struct FilterView: View {
         let isSelected = selectedFilter == filter.type
         
         return Text(filter.name)
-            .subheading(color: .textPrimary, weight: .regular)
+            .subheading(color: isSelected ? .textPrimaryInverse : .textPrimary, weight: .regular)
             .padding(.vertical, Padding.spacingXXS)
             .padding(.horizontal, Padding.spacingXXM)
             .background(isSelected ? Color(.primary): Color(.bgTerciary))

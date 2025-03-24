@@ -5,7 +5,10 @@ struct CircularProgressView: View {
     var title: String
     var description: String?
     var size: CGSize
-
+    var percentageModifier: CGFloat = 0.24
+    var titleModifier: CGFloat = 0.16
+    var descriptionModifier: CGFloat = 0.1
+    
     @State private var animatedPercentage: Double = 0
 
     var body: some View {
@@ -30,13 +33,16 @@ struct CircularProgressView: View {
                     .animation(.easeOut(duration: 1.5), value: animatedPercentage)
                 VStack {
                     Text("\(Int(percentage))%")
-                        .custom(size: size.width * 0.24, weight: .bold)
+                        .custom(size: size.width * percentageModifier, weight: .bold)
+                        .lineLimit(1)
                     Text(title)
-                        .custom(size: size.width * 0.16, weight: .medium)
+                        .custom(size: size.width * titleModifier, weight: .medium)
+                        .multilineTextAlignment(.center)
                     description.map {
-                        Text($0).custom(size: size.width * 0.1, weight: .regular)
+                        Text($0).custom(size: size.width * descriptionModifier, weight: .regular)
+                            .lineLimit(1)
                     }
-                }
+                }.padding(.horizontal, Padding.spacingXS)
             }
             .frame(width: size.width, height: size.height)
             .onAppear { animatedPercentage = percentage }

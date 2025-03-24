@@ -79,7 +79,7 @@ struct SeriesDetailView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: Padding.spacingXXS) {
                     if let statistics = viewModel.basicStatisticsViewModel {
-                        BasicStatisticsView(viewModel: statistics)
+                        BasicStatisticsView(viewModel: statistics, title: "Statistics")
                             .padding(.top, Padding.spacingXXS)
                     }
                     Text("Games played")

@@ -2,15 +2,17 @@ import SwiftUI
 
 struct BasicStatisticsView: View {
     @ObservedObject var viewModel: BasicStatisticsViewModel
-    
+    var title: String?
     private let lienarGraphLine: CGFloat = 9
     
     var body: some View {
         VStack(alignment: .leading, spacing: Padding.spacingXXS) {
             let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
-            Text("Statistics")
-                .title()
-                .padding(.horizontal, Padding.defaultPadding)
+            title.map {
+                Text($0)
+                    .title()
+                    .padding(.horizontal, Padding.defaultPadding)
+            }
             HStack(alignment: .center, spacing: 0) {
                 CircularProgressView(
                     percentage: viewModel.totalStrikesPercentage,
@@ -54,7 +56,7 @@ struct BasicStatisticsView: View {
                 maxValue: Double(300),
                 title: "Total average:",
                 width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
-                height: lienarGraphLine
+                height: lienarGraphLine 
             ).padding(.horizontal, Padding.defaultPadding)
         }
         .background(Color(.bgPrimary))

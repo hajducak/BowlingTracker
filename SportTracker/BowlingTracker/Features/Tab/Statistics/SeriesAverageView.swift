@@ -3,7 +3,7 @@ import Charts
 
 struct SeriesAverageView: View {
     @ObservedObject var viewModel: SeriesAverageViewModel
-    
+    var title: String
     let linearGradient = LinearGradient(
         gradient: Gradient(
             colors: [Color(.primary).opacity(0.4), Color(.primary).opacity(0)]),
@@ -13,7 +13,7 @@ struct SeriesAverageView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: Padding.spacingS) {
-            Text("Series Averages")
+            Text(title)
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)
             

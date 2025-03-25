@@ -87,6 +87,10 @@ struct SeriesDetailView: View {
                         .padding(.horizontal, Padding.defaultPadding)
                         .padding(.vertical, Padding.spacingM)
                     GamesListView(viewModel: viewModel)
+                    if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
+                        PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
+                            .padding(.top, Padding.spacingXXS)
+                    }
                 }
             }
         }

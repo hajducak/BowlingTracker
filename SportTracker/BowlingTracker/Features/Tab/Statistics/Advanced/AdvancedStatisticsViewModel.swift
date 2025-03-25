@@ -15,8 +15,6 @@ class AdvancedStatisticsViewModel: ObservableObject {
     @Published var splitConversionCount: String = ""
     @Published var splitConversionPercentage: Double = 0.0
     
-    private var cancellables: Set<AnyCancellable> = []
-    
     init(series: [Series]) {
         self.series = series
     }

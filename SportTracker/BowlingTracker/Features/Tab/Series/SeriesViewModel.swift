@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import FirebaseAuth
 
 enum SeriesContentState: Equatable {
     static func == (lhs: SeriesContentState, rhs: SeriesContentState) -> Bool {
@@ -32,16 +33,22 @@ class SeriesViewModel: ObservableObject {
     var seriesDidEdit: Bool = false
     
     let seriesViewModelFactory: SeriesDetailViewModelFactory
-    let firebaseService: FirebaseService<Series>
+    let userService: UserService
+    
+    var userData: User? = nil
+    
     private var cancellables: Set<AnyCancellable> = []
 
     private var allSeries: [SeriesDetailViewModel] = []
     
-    init(seriesViewModelFactory: SeriesDetailViewModelFactory, firebaseService: FirebaseService<Series>) {
+    init(
+        seriesViewModelFactory: SeriesDetailViewModelFactory,
+        userService: UserService
+    ) {
         self.seriesViewModelFactory = seriesViewModelFactory
-        self.firebaseService = firebaseService
+        self.userService = userService
         setupSeries()
-        setupFiltering()
+        setupFilteringPublisher()
         
         NotificationCenter.default.addObserver(self, selector: #selector(reload), name: .seriesDidEdit, object: nil)
     }
@@ -58,30 +65,40 @@ class SeriesViewModel: ObservableObject {
         setupSeries()
     }
     
-    private func setupSeries() {
-        state = .loading
-        firebaseService.fetchAll()
+    func refresh() {
+        setupSeries(isLoading: false)
+    }
+ 
+    private func setupSeries(isLoading: Bool = true) {
+        if isLoading { state = .loading }
+        userService.fetchUserData()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
                 if case .failure(let error) = completion {
                     toast = Toast(type: .error(error))
                 }
-            } receiveValue: { [weak self] series in
-                guard let self else { return }
-                let seriesViewModels = series.sorted(by: { $0.date > $1.date }).compactMap { series in
-                    let viewModel = self.seriesViewModelFactory.viewModel(series: series)
-                    self.observeSeriesSaved(viewModel)
-                    return viewModel
+            } receiveValue: { [weak self] user in
+                guard let self = self, let userData = user else {
+                    self?.state = .empty
+                    return
                 }
-                self.allSeries = seriesViewModels
-                self.selectedFilter = nil
-                self.state = seriesViewModels.isEmpty ? .empty : .content(seriesViewModels)
-            }
-            .store(in: &cancellables)
+                self.userData = userData
+                let seriesViewModels = userData.series
+                    .sorted(by: { $0.date > $1.date })
+                    .compactMap { series in
+                        let viewModel = self.seriesViewModelFactory.viewModel(series: series)
+                        self.observeSeriesSaved(viewModel)
+                        return viewModel
+                    }
+                
+                allSeries = seriesViewModels
+                selectedFilter = nil
+                state = seriesViewModels.isEmpty ? .empty : .content(seriesViewModels)
+            }.store(in: &cancellables)
     }
 
-    private func setupFiltering() {
+    private func setupFilteringPublisher() {
         $selectedFilter
             .filter { [weak self] _ in
                 guard let self = self else { return true }
@@ -113,6 +130,8 @@ class SeriesViewModel: ObservableObject {
     }
 
     func addSeries() {
+        guard let user = userData else { return }
+        
         let newSeries = Series(
             date: newSeriesSelectedDate,
             name: newSeriesName,
@@ -122,45 +141,71 @@ class SeriesViewModel: ObservableObject {
             house: newSeriesHouseName,
             tag: newSeriesSelectedType
         )
-        save(series: newSeries)
-        resetToDefault()
+        
+        var updatedUser = user
+        updatedUser.series.append(newSeries)
+        
+        userService.saveUser(updatedUser)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.toast = Toast(type: .error(error))
+                }
+            } receiveValue: { [weak self] _ in
+                self?.resetToDefault()
+                self?.setupSeries()
+            }
+            .store(in: &cancellables)
     }
 
     private func resetToDefault() {
         newSeriesName = ""
         newSeriesDescription = ""
+        newSeriesOilPatternName = ""
+        newSeriesOilPatternURL = ""
+        newSeriesHouseName = ""
         newSeriesSelectedType = .league
         newSeriesSelectedDate = Date()
     }
 
     func save(series: Series) {
-        firebaseService.save(series, withID: series.id)
+        guard let user = userData else { return }
+        
+        var updatedUser = user
+        if let index = updatedUser.series.firstIndex(where: { $0.id == series.id }) {
+            updatedUser.series[index] = series
+        } else {
+            updatedUser.series.append(series)
+        }
+        
+        userService.saveUser(updatedUser)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
-                guard let self else { return }
                 if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
+                    self?.toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
-                guard let self else { return }
-                toast = Toast(type: .success("Serie saved"))
-                setupSeries()
+                self?.toast = Toast(type: .success("Series saved"))
+                self?.setupSeries()
             }
             .store(in: &cancellables)
     }
     
     func deleteSeries(_ series: Series) {
-        firebaseService.delete(id: series.id)
-            .sink(receiveCompletion: { [weak self] completion in
-                guard let self else { return }
-                switch completion {
-                case .failure(let error):
-                    toast = Toast(type: .error(error))
-                case .finished:
-                    break
+        guard let user = userData else { return }
+        
+        var updatedUser = user
+        updatedUser.series.removeAll { $0.id == series.id }
+        
+        userService.saveUser(updatedUser)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.toast = Toast(type: .error(error))
                 }
-            }, receiveValue: { [weak self] _ in
+            } receiveValue: { [weak self] _ in
                 self?.setupSeries()
-            })
+            }
             .store(in: &cancellables)
     }
 

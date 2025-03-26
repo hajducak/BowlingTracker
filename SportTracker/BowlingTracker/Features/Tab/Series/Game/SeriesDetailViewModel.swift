@@ -7,7 +7,8 @@ enum SeriesDetailContentState {
     case playing(GameViewModel)
 }
 
-class SeriesDetailViewModel: ObservableObject, Identifiable {
+final class SeriesDetailViewModel: ObservableObject, Identifiable {
+    // MARK: - Published Properties
     @Published var games: [Game] = []
     @Published var state: SeriesDetailContentState = .empty
     @Published var toast: Toast? = nil
@@ -15,14 +16,8 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
     @Published var isLoadingOverlay: Bool = false
-    var basicStatisticsViewModel: BasicStatisticsViewModel?
-    var advancedStatisticsViewModel: AdvancedStatisticsViewModel?
-    var pinCoverageViewModel: PinCoverageViewModel?
-    private let gameViewModelFactory: GameViewModelFactory
-    private let firebaseService: FirebaseService<Series>
-    private var cancellables: Set<AnyCancellable> = []
     
-    // MARK: for editing the series
+    // MARK: - Series Edit Properties
     @Published var newSeriesName: String
     @Published var newSeriesDescription: String
     @Published var newSeriesOilPatternName: String
@@ -31,22 +26,43 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var newSeriesSelectedType: SeriesType
     @Published var newSeriesSelectedDate: Date
     
+    // MARK: - View Models
+    var basicStatisticsViewModel: BasicStatisticsViewModel?
+    var advancedStatisticsViewModel: AdvancedStatisticsViewModel?
+    var pinCoverageViewModel: PinCoverageViewModel?
+    
+    // MARK: - Dependencies
+    private let gameViewModelFactory: GameViewModelFactory
+    private let userService: UserService
+    private var cancellables: Set<AnyCancellable> = []
+    
+    // MARK: - Publishers
     let seriesSaved = PassthroughSubject<Series, Never>()
-
-    init(firebaseService: FirebaseService<Series>, gameViewModelFactory: GameViewModelFactory, series: Series) {
-        self.firebaseService = firebaseService
+    
+    init(userService: UserService, gameViewModelFactory: GameViewModelFactory, series: Series) {
+        self.userService = userService
         self.gameViewModelFactory = gameViewModelFactory
         self.series = series
         self.games = series.games
+
         self.newSeriesName = series.name
         self.newSeriesDescription = series.description
         self.newSeriesOilPatternName = series.oilPatternName ?? ""
-        self.newSeriesOilPatternURL = series.oilPatternURL  ?? ""
+        self.newSeriesOilPatternURL = series.oilPatternURL ?? ""
         self.newSeriesHouseName = series.house ?? ""
         self.newSeriesSelectedType = series.tag
         self.newSeriesSelectedDate = series.date
-        setupContent()
 
+        setupContent()
+        setupSubscriptions()
+    }
+
+    private func setupSubscriptions() {
+        setupGameViewModelSubscription()
+        setupSeriesSubscription()
+    }
+    
+    private func setupGameViewModelSubscription() {
         $gameViewModel
             .compactMap { $0 }
             .flatMap { $0.gameSaved }
@@ -54,29 +70,37 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                 self?.saveCurrent(game: savedGame)
             }
             .store(in: &cancellables)
-        
+    }
+    
+    private func setupSeriesSubscription() {
         $series
             .sink { [weak self] series in
-                guard let self else { return }
-                if basicStatisticsViewModel == nil  {
-                    basicStatisticsViewModel = .init(series: [series])
-                } else {
-                    basicStatisticsViewModel?.series = [series]
-                }
-                if advancedStatisticsViewModel == nil {
-                    advancedStatisticsViewModel = .init(series: [series])
-                } else {
-                    advancedStatisticsViewModel?.series = [series]
-                }
-                if pinCoverageViewModel == nil {
-                    pinCoverageViewModel = .init(series: [series])
-                } else {
-                    pinCoverageViewModel?.series = [series]
-                }
-            }.store(in: &cancellables)
+                self?.updateStatisticsViewModels(with: series)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateStatisticsViewModels(with series: Series) {
+        if basicStatisticsViewModel == nil {
+            basicStatisticsViewModel = .init(series: [series])
+        } else {
+            basicStatisticsViewModel?.series = [series]
+        }
+        
+        if advancedStatisticsViewModel == nil {
+            advancedStatisticsViewModel = .init(series: [series])
+        } else {
+            advancedStatisticsViewModel?.series = [series]
+        }
+        
+        if pinCoverageViewModel == nil {
+            pinCoverageViewModel = .init(series: [series])
+        } else {
+            pinCoverageViewModel?.series = [series]
+        }
     }
 
-    func setupContent() {
+    private func setupContent() {
         if series.isCurrentGameActive() {
             guard let currentGame = series.currentGame else {
                 state = series.games.isEmpty ? .empty : .content(games)
@@ -96,40 +120,31 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     /// Locally saves the current game
     private func saveCurrent(game: Game) {
-        saveGameIntoSeries(game: game)
-    }
-    
-    /// Creates a new current game locally
-    func newGame() {
-        series.newGame()
-        setupContent()
-    }
-
-    /// Saves the game to Firebase and updates the local series data
-    func saveGameIntoSeries(game: Game) {
         isLoadingOverlay = true
-        firebaseService.saveGameToSeries(seriesID: series.id, game: game)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                guard let self else { return }
-                if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
-                }
-            } receiveValue: { [weak self] _ in
-                guard let self else { return }
-                toast = Toast(type: .success("Successfully saved in Database"))
-                newGame()
-                fetchUpdatedSeries()
+        
+        saveUserData { [weak self] userData in
+            guard let self = self else {
+                return Fail(error: AppError.customError("Self is nil")).eraseToAnyPublisher()
             }
-            .store(in: &cancellables)
+            let updatedUser = userData.appendGameToSeries(seriesId: series.id, game: game)
+            return userService.saveUser(updatedUser)
+        } onSuccess: { [weak self] in
+            guard let self = self else { return }
+            toast = Toast(type: .success("Successfully saved in Database"))
+            series.newGame()
+            fetchUpdatedSeries()
+            setupContent()
+        }
     }
     
     /// Fetches the updated series from Firebase
     private func fetchUpdatedSeries() {
-        firebaseService.fetchAll()
+        userService.fetchUserData()
             .receive(on: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] allSeries in
-                guard let self, let updatedSeries = allSeries.first(where: { $0.id == self.series.id }) else { return }
+            .sink { _ in } receiveValue: { [weak self] user in
+                guard let self = self,
+                      let userData = user,
+                      let updatedSeries = userData.series.first(where: { $0.id == self.series.id }) else { return }
                 series = updatedSeries
                 isLoadingOverlay = false
             }
@@ -142,56 +157,66 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             toast = Toast(type: .error(.customError("No games in series to save")))
             return
         }
-        save()
-    }
-    
-    func save() {
+        
         series.currentGame = nil
-        firebaseService.save(series, withID: series.id)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                guard let self else { return }
-                if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
-                }
-            } receiveValue: { [weak self] _ in
-                guard let self else { return }
-                toast = Toast(type: .success("Series successfully saved"))
-                reloadStatistics()
-                seriesSaved.send(self.series)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                    self.shouldDismiss = true
-                }
+        saveUserData { [weak self] userData in
+            guard let self = self else {
+                return Fail(error: AppError.customError("Self is nil")).eraseToAnyPublisher()
             }
-            .store(in: &cancellables)
+            let updatedUser = userData.updateSeries(series)
+            return userService.saveUser(updatedUser)
+        } onSuccess: { [weak self] in
+            guard let self = self else { return }
+            toast = Toast(type: .success("Series successfully saved"))
+            reloadStatistics()
+            seriesSaved.send(series)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.shouldDismiss = true
+            }
+        }
     }
 
     func updateSeries() {
         isLoadingOverlay = true
-        firebaseService.updateSeriesParameters(
-            seriesID: series.id,
-            date: valueIfModified(newSeriesSelectedDate, series.date),
-            name: valueIfModified(newSeriesName, series.name),
-            description: valueIfModified(newSeriesDescription, series.description),
-            tag: valueIfModified(newSeriesSelectedType, series.tag),
-            oilPatternName: valueIfModified(newSeriesOilPatternName, series.oilPatternName ?? ""),
-            oilPatternURL: valueIfModified(newSeriesOilPatternURL, series.oilPatternURL ?? ""),
-            house: valueIfModified(newSeriesHouseName, series.house ?? "")
-        )
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] completion in
-            guard let self else { return }
-            if case .failure(let error) = completion {
-                toast = Toast(type: .error(error))
-                isLoadingOverlay = false
+        
+        saveUserData { [weak self] userData in
+            guard let self = self,
+                  var seriesToUpdate = userData.series.first(where: { $0.id == self.series.id }) else {
+                return Fail(error: AppError.customError("Series not found")).eraseToAnyPublisher()
             }
-        } receiveValue: { [weak self] _ in
-            guard let self else { return }
+            updateParameter(&seriesToUpdate)
+            let updatedUser = userData.updateSeries(seriesToUpdate)
+            return userService.saveUser(updatedUser)
+        } onSuccess: { [weak self] in
+            guard let self = self else { return }
             toast = Toast(type: .success("Series successfully edited"))
             fetchUpdatedSeries()
             reloadSeries()
         }
-        .store(in: &cancellables)
+    }
+    
+    private func updateParameter(_ series: inout Series) {
+        if let newDate = valueIfModified(newSeriesSelectedDate, series.date) {
+            series.date = newDate
+        }
+        if let newName = valueIfModified(newSeriesName, series.name) {
+            series.name = newName
+        }
+        if let newDescription = valueIfModified(newSeriesDescription, series.description) {
+            series.description = newDescription
+        }
+        if let newTag = valueIfModified(newSeriesSelectedType, series.tag) {
+            series.tag = newTag
+        }
+        if let newOilPatternName = valueIfModified(newSeriesOilPatternName, series.oilPatternName ?? "") {
+            series.oilPatternName = newOilPatternName
+        }
+        if let newOilPatternURL = valueIfModified(newSeriesOilPatternURL, series.oilPatternURL ?? "") {
+            series.oilPatternURL = newOilPatternURL
+        }
+        if let newHouse = valueIfModified(newSeriesHouseName, series.house ?? "") {
+            series.house = newHouse
+        }
     }
     
     private func valueIfModified<T: Equatable>(_ newValue: T, _ oldValue: T) -> T? {
@@ -206,7 +231,40 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
         NotificationCenter.default.post(name: .seriesDidEdit, object: nil)
     }
     
+    private func saveUserData(
+        updateUser: @escaping (User) -> AnyPublisher<Void, AppError>,
+        onSuccess: @escaping () -> Void
+    ) {
+        userService.fetchUserData()
+            .flatMap { user -> AnyPublisher<Void, AppError> in
+                guard let userData = user else {
+                    return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
+                }
+                return updateUser(userData)
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                guard let self = self else { return }
+                isLoadingOverlay = false
+                if case .failure(let error) = completion {
+                    toast = Toast(type: .error(error))
+                }
+            } receiveValue: {  _ in
+                onSuccess()
+            }
+            .store(in: &cancellables)
+    }
+    
     deinit {
+        seriesSaved.send(completion: .finished)
         cancellables.removeAll()
+
+        NotificationCenter.default.removeObserver(self, name: .seriesDidEdit, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .seriesDidSave, object: nil)
+        
+        gameViewModel = nil
+        basicStatisticsViewModel = nil
+        advancedStatisticsViewModel = nil
+        pinCoverageViewModel = nil
     }
 }

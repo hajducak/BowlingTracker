@@ -8,10 +8,10 @@ typealias SeriesStatistics = (percentage: Double, count: String)
 
 struct Series: Codable, Identifiable {
     let id: String
-    let date: Date
-    let name: String
-    let description: String
-    let tag: SeriesType
+    var date: Date
+    var name: String
+    var description: String
+    var tag: SeriesType
     var games: [Game]
     var currentGame: Game?
     var oilPatternName: String?

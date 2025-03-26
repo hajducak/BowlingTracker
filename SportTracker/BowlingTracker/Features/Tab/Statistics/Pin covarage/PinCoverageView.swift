@@ -19,7 +19,9 @@ struct PinCoverageView: View {
                     percentage: viewModel.coveragePercentage,
                     title: "Coverage",
                     description: viewModel.coverageCount,
-                    size: .init(width: graphSize, height: graphSize)
+                    size: .init(width: graphSize, height: graphSize),
+                    percentageModifier: 0.23,
+                    titleModifier: 0.14
                 )
                 Spacer()
                 PinsGrid(

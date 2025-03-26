@@ -14,20 +14,19 @@ struct BowlingTrackerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if authViewModel.isAuthenticated {
-                let firebaseSeriesService = FirebaseService<Series>(collectionName: CollectionNames.series)
-                
+            if let authUser = authViewModel.isAuthenticated {
+                let userService = UserService(authUser: authUser)
                 let gameViewModelFactory = GameViewModelFactoryImpl()
                 let seriesViewModelFactory = SeriesDetailViewModelFactoryImpl(
-                    firebaseService: firebaseSeriesService,
+                    userService: userService,
                     gameViewModelFactory: gameViewModelFactory
                 )
                 let bowlingSeriesViewModel = SeriesViewModel(
                     seriesViewModelFactory: seriesViewModelFactory,
-                    firebaseService: firebaseSeriesService
+                    userService: userService
                 )
                 let statisticsViewModel = StatisticsViewModel(
-                    firebaseService: firebaseSeriesService
+                    userService: userService
                 )
 
                 ContentView(

@@ -134,6 +134,7 @@ class GameViewModel: ObservableObject {
     }
     
     deinit {
+        gameSaved.send(completion: .finished)
         cancellables.removeAll()
     }
 }

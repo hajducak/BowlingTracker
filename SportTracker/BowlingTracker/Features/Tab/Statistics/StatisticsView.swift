@@ -33,6 +33,9 @@ struct StatisticsView: View {
                 }
                 Spacer().frame(height: Padding.defaultPadding)
             }
+            .refreshable {
+                viewModel.refresh()
+            }
         }
         .background(Color(.bgPrimary))
         .loadingOverlay(when: $viewModel.isLoading, title: "Loading series...")

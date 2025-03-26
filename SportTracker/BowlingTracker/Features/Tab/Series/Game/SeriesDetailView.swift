@@ -65,37 +65,39 @@ struct SeriesDetailView: View {
     }
     
     private var content: some View {
-        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
-            viewModel.series.house.map {
-                Text($0)
-                    .heading()
-                    .padding(.horizontal, Padding.defaultPadding)
-            }
-            Text(viewModel.series.description)
-                .body()
-                .padding(.horizontal, Padding.defaultPadding)
-            oilPatternLink
-            Spacer().frame(height: Padding.spacingXXS)
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: Padding.spacingS) {
-                    if let statistics = viewModel.basicStatisticsViewModel {
-                        BasicStatisticsView(viewModel: statistics, title: "Statistics")
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading, spacing: Padding.spacingS) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                    viewModel.series.house.map {
+                        Text($0)
+                            .heading()
+                            .padding(.horizontal, Padding.defaultPadding)
                     }
-                    Text("Games played")
-                        .title()
+                    Text(viewModel.series.formattedDate)
+                        .body()
                         .padding(.horizontal, Padding.defaultPadding)
-                        .padding(.top, Padding.spacingXXS)
-                    GamesListView(viewModel: viewModel)
-                    if let advancedStatisticsViewModel = viewModel.advancedStatisticsViewModel {
-                        AdvancedStatisticsView(viewModel: advancedStatisticsViewModel, title: "Advanced")
-                    }
-                    if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
-                        PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
-                    }
+                    Text(viewModel.series.description)
+                        .body()
+                        .padding(.horizontal, Padding.defaultPadding)
+                    oilPatternLink
+                }
+                if let statistics = viewModel.basicStatisticsViewModel {
+                    BasicStatisticsView(viewModel: statistics, title: "Statistics")
+                }
+                Text("Games played")
+                    .title()
+                    .padding(.horizontal, Padding.defaultPadding)
+                    .padding(.top, Padding.spacingXXS)
+                GamesListView(viewModel: viewModel)
+                if let advancedStatisticsViewModel = viewModel.advancedStatisticsViewModel {
+                    AdvancedStatisticsView(viewModel: advancedStatisticsViewModel, title: "Advanced")
+                }
+                if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
+                    PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
                 }
             }
+            Spacer().frame(height: Padding.defaultPadding)
         }
-        .padding(.bottom, Padding.defaultPadding)
         .navigationBarItems(
             trailing:
                 Button(action: {
@@ -163,59 +165,4 @@ struct SeriesDetailView: View {
             }
         }
     }
-}
-
-#Preview("Finished Series") {
-    SeriesDetailView(
-        viewModel: .init(
-            firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
-            gameViewModelFactory: GameViewModelFactoryImpl(),
-            series:  Series(name: "Finished Series", tag: .league, games: [
-                Game(frames: [
-                    Frame(rolls: [Roll.roll10], index: 1),
-                    Frame(rolls: [Roll.roll10], index: 2),
-                    Frame(rolls: [Roll.roll5, Roll.roll5], index: 3),
-                    Frame(rolls: [Roll.roll3, Roll.roll4], index: 4),
-                    Frame(rolls: [Roll.roll10], index: 5),
-                    Frame(rolls: [Roll.roll10], index: 6),
-                    Frame(rolls: [Roll.roll2, Roll.roll6], index: 7),
-                    Frame(rolls: [Roll.roll8, Roll.roll2], index: 8),
-                    Frame(rolls: [Roll.roll10], index: 9),
-                    Frame(rolls: [Roll.roll10, Roll.roll10, Roll.roll10], index: 10)
-                ]),
-                Game(frames: [
-                    Frame(rolls: [Roll.roll10], index: 1),
-                    Frame(rolls: [Roll.roll10], index: 2),
-                    Frame(rolls: [Roll.roll5, Roll.roll5], index: 3),
-                    Frame(rolls: [Roll.roll3, Roll.roll4], index: 4),
-                    Frame(rolls: [Roll.roll10], index: 5),
-                    Frame(rolls: [Roll.roll10], index: 6),
-                    Frame(rolls: [Roll.roll2, Roll.roll6], index: 7),
-                    Frame(rolls: [Roll.roll8, Roll.roll2], index: 8),
-                    Frame(rolls: [Roll.roll10], index: 9),
-                    Frame(rolls: [Roll.roll10, Roll.roll10, Roll.roll10], index: 10)
-                ]),
-                Game(frames: [
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 1),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 2),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 3),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 4),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 5),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 6),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 7),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 8),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins)], index: 9),
-                    Frame(rolls: [Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins), Roll.init(knockedDownPins: Roll.tenPins)], index: 10)
-                ])
-            ], currentGame: nil)
-        )
-    ).navigationTitle("1. liga ABL")
-}
-
-#Preview("Current Game") {
-    SeriesDetailView(viewModel: .init(
-        firebaseService: FirebaseService<Series>(collectionName: CollectionNames.series),
-        gameViewModelFactory: GameViewModelFactoryImpl(),
-        series: Series(name: "Not finished series", tag: .league, games: [])
-    ))
 }

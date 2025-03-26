@@ -80,6 +80,8 @@ struct SeriesView: View {
                             }.buttonStyle(PlainButtonStyle())
                         }
                         Spacer().frame(height: Padding.spacingM)
+                    }.refreshable {
+                        viewModel.refresh()
                     }
                 case .loading: EmptyView()
                 }

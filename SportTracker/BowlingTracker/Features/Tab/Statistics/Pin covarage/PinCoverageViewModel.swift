@@ -8,11 +8,9 @@ class PinCoverageViewModel: ObservableObject {
     }
     @Published var coveragePercentage: Double = 0.0
     @Published var coverageCount: String = ""
-    
-    @Published var calculateIsEnabled: Bool = false
     @Published var selectedPinIds: Set<Int> = [] {
         didSet {
-            calculateIsEnabled = !selectedPinIds.isEmpty
+            calculateCoverage()
         }
     }
     @Published var disabledPinIds: Set<Int> = []
@@ -26,7 +24,7 @@ class PinCoverageViewModel: ObservableObject {
         calculateCoverage(for: pinCombination, series)
     }
 
-    func calculateCoverage() {
+    private func calculateCoverage() {
         let pinCombination = selectedPinIds.map { Pin(id: $0) }
         calculateCoverage(for: pinCombination, series)
     }

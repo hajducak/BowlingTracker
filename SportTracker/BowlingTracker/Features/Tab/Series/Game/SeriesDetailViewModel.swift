@@ -7,7 +7,8 @@ enum SeriesDetailContentState {
     case playing(GameViewModel)
 }
 
-class SeriesDetailViewModel: ObservableObject, Identifiable {
+final class SeriesDetailViewModel: ObservableObject, Identifiable {
+    // MARK: - Published Properties
     @Published var games: [Game] = []
     @Published var state: SeriesDetailContentState = .empty
     @Published var toast: Toast? = nil
@@ -15,13 +16,8 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
     @Published var isLoadingOverlay: Bool = false
-    var basicStatisticsViewModel: BasicStatisticsViewModel?
-    var advancedStatisticsViewModel: AdvancedStatisticsViewModel?
-    var pinCoverageViewModel: PinCoverageViewModel?
-    private let gameViewModelFactory: GameViewModelFactory
-    private let userService: UserService
-    private var cancellables: Set<AnyCancellable> = []
     
+    // MARK: - Series Edit Properties
     @Published var newSeriesName: String
     @Published var newSeriesDescription: String
     @Published var newSeriesOilPatternName: String
@@ -30,22 +26,43 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var newSeriesSelectedType: SeriesType
     @Published var newSeriesSelectedDate: Date
     
+    // MARK: - View Models
+    var basicStatisticsViewModel: BasicStatisticsViewModel?
+    var advancedStatisticsViewModel: AdvancedStatisticsViewModel?
+    var pinCoverageViewModel: PinCoverageViewModel?
+    
+    // MARK: - Dependencies
+    private let gameViewModelFactory: GameViewModelFactory
+    private let userService: UserService
+    private var cancellables: Set<AnyCancellable> = []
+    
+    // MARK: - Publishers
     let seriesSaved = PassthroughSubject<Series, Never>()
-
+    
     init(userService: UserService, gameViewModelFactory: GameViewModelFactory, series: Series) {
         self.userService = userService
         self.gameViewModelFactory = gameViewModelFactory
         self.series = series
         self.games = series.games
+
         self.newSeriesName = series.name
         self.newSeriesDescription = series.description
         self.newSeriesOilPatternName = series.oilPatternName ?? ""
-        self.newSeriesOilPatternURL = series.oilPatternURL  ?? ""
+        self.newSeriesOilPatternURL = series.oilPatternURL ?? ""
         self.newSeriesHouseName = series.house ?? ""
         self.newSeriesSelectedType = series.tag
         self.newSeriesSelectedDate = series.date
-        setupContent()
 
+        setupContent()
+        setupSubscriptions()
+    }
+
+    private func setupSubscriptions() {
+        setupGameViewModelSubscription()
+        setupSeriesSubscription()
+    }
+    
+    private func setupGameViewModelSubscription() {
         $gameViewModel
             .compactMap { $0 }
             .flatMap { $0.gameSaved }
@@ -53,29 +70,37 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                 self?.saveCurrent(game: savedGame)
             }
             .store(in: &cancellables)
-        
+    }
+    
+    private func setupSeriesSubscription() {
         $series
             .sink { [weak self] series in
-                guard let self else { return }
-                if basicStatisticsViewModel == nil  {
-                    basicStatisticsViewModel = .init(series: [series])
-                } else {
-                    basicStatisticsViewModel?.series = [series]
-                }
-                if advancedStatisticsViewModel == nil {
-                    advancedStatisticsViewModel = .init(series: [series])
-                } else {
-                    advancedStatisticsViewModel?.series = [series]
-                }
-                if pinCoverageViewModel == nil {
-                    pinCoverageViewModel = .init(series: [series])
-                } else {
-                    pinCoverageViewModel?.series = [series]
-                }
-            }.store(in: &cancellables)
+                self?.updateStatisticsViewModels(with: series)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateStatisticsViewModels(with series: Series) {
+        if basicStatisticsViewModel == nil {
+            basicStatisticsViewModel = .init(series: [series])
+        } else {
+            basicStatisticsViewModel?.series = [series]
+        }
+        
+        if advancedStatisticsViewModel == nil {
+            advancedStatisticsViewModel = .init(series: [series])
+        } else {
+            advancedStatisticsViewModel?.series = [series]
+        }
+        
+        if pinCoverageViewModel == nil {
+            pinCoverageViewModel = .init(series: [series])
+        } else {
+            pinCoverageViewModel?.series = [series]
+        }
     }
 
-    func setupContent() {
+    private func setupContent() {
         if series.isCurrentGameActive() {
             guard let currentGame = series.currentGame else {
                 state = series.games.isEmpty ? .empty : .content(games)
@@ -95,17 +120,6 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     /// Locally saves the current game
     private func saveCurrent(game: Game) {
-        saveGameIntoSeries(game: game)
-    }
-    
-    /// Creates a new current game locally
-    func newGame() {
-        series.newGame()
-        setupContent()
-    }
-
-    /// Saves the game to Firebase and updates the local series data
-    func saveGameIntoSeries(game: Game) {
         isLoadingOverlay = true
         
         userService.fetchUserData()
@@ -114,20 +128,21 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                     return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
                 }
                 let updatedUser = userData.appendGameToSeries(seriesId: self.series.id, game: game)
-                return self.userService.saveUser(updatedUser)
+                return userService.saveUser(updatedUser)
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self = self else { return }
-                self.isLoadingOverlay = false
+                isLoadingOverlay = false
                 if case .failure(let error) = completion {
                     self.toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
                 guard let self = self else { return }
-                self.toast = Toast(type: .success("Successfully saved in Database"))
-                self.newGame()
-                self.fetchUpdatedSeries()
+                toast = Toast(type: .success("Successfully saved in Database"))
+                series.newGame()
+                fetchUpdatedSeries()
+                setupContent()
             }
             .store(in: &cancellables)
     }
@@ -150,10 +165,6 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
             toast = Toast(type: .error(.customError("No games in series to save")))
             return
         }
-        save()
-    }
-    
-    func save() {
         series.currentGame = nil
         userService.fetchUserData()
             .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
@@ -161,14 +172,14 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                     return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
                 }
                 let updatedUser = userData.updateSeries(series)
-                return self.userService.saveUser(updatedUser)
+                return userService.saveUser(updatedUser)
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self = self else { return }
-                self.isLoadingOverlay = false
+                isLoadingOverlay = false
                 if case .failure(let error) = completion {
-                    self.toast = Toast(type: .error(error))
+                    toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
                 guard let self = self else { return }
@@ -192,45 +203,49 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                       var seriesToUpdate = userData.series.first(where: { $0.id == self.series.id }) else {
                     return Fail(error: AppError.customError("Series not found")).eraseToAnyPublisher()
                 }
-                if let newDate = self.valueIfModified(self.newSeriesSelectedDate, self.series.date) {
-                    seriesToUpdate.date = newDate
-                }
-                if let newName = self.valueIfModified(self.newSeriesName, self.series.name) {
-                    seriesToUpdate.name = newName
-                }
-                if let newDescription = self.valueIfModified(self.newSeriesDescription, self.series.description) {
-                    seriesToUpdate.description = newDescription
-                }
-                if let newTag = self.valueIfModified(self.newSeriesSelectedType, self.series.tag) {
-                    seriesToUpdate.tag = newTag
-                }
-                if let newOilPatternName = self.valueIfModified(self.newSeriesOilPatternName, self.series.oilPatternName ?? "") {
-                    seriesToUpdate.oilPatternName = newOilPatternName
-                }
-                if let newOilPatternURL = self.valueIfModified(self.newSeriesOilPatternURL, self.series.oilPatternURL ?? "") {
-                    seriesToUpdate.oilPatternURL = newOilPatternURL
-                }
-                if let newHouse = self.valueIfModified(self.newSeriesHouseName, self.series.house ?? "") {
-                    seriesToUpdate.house = newHouse
-                }
+                updateParameter(&seriesToUpdate)
                 
                 let updatedUser = userData.updateSeries(seriesToUpdate)
-                return self.userService.saveUser(updatedUser)
+                return userService.saveUser(updatedUser)
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self = self else { return }
-                self.isLoadingOverlay = false
+                isLoadingOverlay = false
                 if case .failure(let error) = completion {
-                    self.toast = Toast(type: .error(error))
+                    toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
                 guard let self = self else { return }
-                self.toast = Toast(type: .success("Series successfully edited"))
-                self.fetchUpdatedSeries()
-                self.reloadSeries()
+                toast = Toast(type: .success("Series successfully edited"))
+                fetchUpdatedSeries()
+                reloadSeries()
             }
             .store(in: &cancellables)
+    }
+    
+    private func updateParameter(_ series: inout Series) {
+        if let newDate = self.valueIfModified(self.newSeriesSelectedDate, self.series.date) {
+            series.date = newDate
+        }
+        if let newName = self.valueIfModified(self.newSeriesName, self.series.name) {
+            series.name = newName
+        }
+        if let newDescription = self.valueIfModified(self.newSeriesDescription, self.series.description) {
+            series.description = newDescription
+        }
+        if let newTag = self.valueIfModified(self.newSeriesSelectedType, self.series.tag) {
+            series.tag = newTag
+        }
+        if let newOilPatternName = self.valueIfModified(self.newSeriesOilPatternName, self.series.oilPatternName ?? "") {
+            series.oilPatternName = newOilPatternName
+        }
+        if let newOilPatternURL = self.valueIfModified(self.newSeriesOilPatternURL, self.series.oilPatternURL ?? "") {
+            series.oilPatternURL = newOilPatternURL
+        }
+        if let newHouse = self.valueIfModified(self.newSeriesHouseName, self.series.house ?? "") {
+            series.house = newHouse
+        }
     }
     
     private func valueIfModified<T: Equatable>(_ newValue: T, _ oldValue: T) -> T? {

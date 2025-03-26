@@ -20,8 +20,6 @@ class BasicStatisticsViewModel: ObservableObject {
     @Published var totalOpensCount: String = ""
     @Published var totalSplitsCount: String = ""
     
-    private var cancellables: Set<AnyCancellable> = []
-    
     init(series: [Series]) {
         self.series = series
     }
@@ -57,9 +55,5 @@ class BasicStatisticsViewModel: ObservableObject {
         totalSparesCount = "\(totalSpares)/\(sparesPossibility)"
         totalOpensCount = "\(totalOpenFrames)/\(opensPossibility)"
         totalSplitsCount = "\(totalSplits)/\(splitsPossibility)"
-    }
-
-    deinit {
-        cancellables.removeAll()
     }
 }

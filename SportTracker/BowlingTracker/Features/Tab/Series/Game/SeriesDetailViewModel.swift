@@ -16,6 +16,8 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var shouldDismiss: Bool = false
     @Published var isLoadingOverlay: Bool = false
     var basicStatisticsViewModel: BasicStatisticsViewModel?
+    var advancedStatisticsViewModel: AdvancedStatisticsViewModel?
+    var pinCoverageViewModel: PinCoverageViewModel?
     private let gameViewModelFactory: GameViewModelFactory
     private let firebaseService: FirebaseService<Series>
     private var cancellables: Set<AnyCancellable> = []
@@ -60,6 +62,16 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
                     basicStatisticsViewModel = .init(series: [series])
                 } else {
                     basicStatisticsViewModel?.series = [series]
+                }
+                if advancedStatisticsViewModel == nil {
+                    advancedStatisticsViewModel = .init(series: [series])
+                } else {
+                    advancedStatisticsViewModel?.series = [series]
+                }
+                if pinCoverageViewModel == nil {
+                    pinCoverageViewModel = .init(series: [series])
+                } else {
+                    pinCoverageViewModel?.series = [series]
                 }
             }.store(in: &cancellables)
     }

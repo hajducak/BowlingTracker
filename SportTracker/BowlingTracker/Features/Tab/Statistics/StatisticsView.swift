@@ -27,6 +27,9 @@ struct StatisticsView: View {
                     if let advancedStaticticsViewModel = viewModel.advancedStaticticsViewModel {
                         AdvancedStatisticsView(viewModel: advancedStaticticsViewModel, title: "Advanced")
                     }
+                    if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
+                        PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
+                    }
                 }
                 Spacer().frame(height: Padding.defaultPadding)
             }

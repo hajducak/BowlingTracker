@@ -6,6 +6,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
     var basicStatisticsViewModel: BasicStatisticsViewModel?
     var advancedStaticticsViewModel: AdvancedStatisticsViewModel?
     var averagesViewModel: SeriesAverageViewModel?
+    var pinCoverageViewModel: PinCoverageViewModel?
     @Published var selectedFilter: SeriesType?
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
@@ -76,8 +77,12 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         } else {
             advancedStaticticsViewModel?.series = series
         }
+        if pinCoverageViewModel == nil {
+            pinCoverageViewModel = .init(series: series)
+        } else {
+            pinCoverageViewModel?.series = series
+        }
         // MARK: - More Statistics:
-        // TODO: add 10 pin covarage % (maybe some more combination of pins, % of their covarage)
         // TODO: Ball usage percentage - ball name in game
         // TODO: Bowling house center statistics
         // TODO: lane number statictics

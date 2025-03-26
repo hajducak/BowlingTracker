@@ -71,5 +71,5 @@ struct AdvancedStatisticsView: View {
                 Frame(rolls: [Roll.roll10, Roll.roll10, Roll.roll10], index: 10)
             ])
         ])
-    ]), title: "Advenced")
+    ]), title: "Advanced")
 }

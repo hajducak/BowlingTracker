@@ -84,6 +84,8 @@ struct GameView: View {
 }
 
 struct PinsGrid: View {
+    var pinSize: CGSize = .init(width: 40, height: 40)
+    var contentSpacing: CGFloat = Padding.spacingXXM
     @Binding var selectedPins: Set<Int>
     let disabledPins: Set<Int>
     
@@ -95,11 +97,12 @@ struct PinsGrid: View {
     ]
     
     var body: some View {
-        VStack(spacing: Padding.spacingXXM) {
+        VStack(spacing: contentSpacing) {
             ForEach(pinLayout, id: \.self) { row in
-                HStack(spacing: Padding.spacingXXM) {
+                HStack(spacing: contentSpacing) {
                     ForEach(row, id: \.self) { pin in
                         PinView(
+                            size: pinSize,
                             pin: pin,
                             isSelected: selectedPins.contains(pin),
                             isDisabled: disabledPins.contains(pin)
@@ -124,16 +127,24 @@ struct PinsGrid: View {
 }
 
 struct PinView: View {
+    var size: CGSize
     let pin: Int
     let isSelected: Bool
     let isDisabled: Bool
     let onTap: () -> Void
     
+    private var fontSize: CGFloat {
+        let defaultWidth: CGFloat = 40
+        let defaultFontSize: CGFloat = 18
+        let ratio = size.width / defaultWidth
+        return defaultFontSize * ratio
+    }
+    
     var body: some View {
         Text("\(pin)").bold()
-            .frame(width: 40, height: 40)
+            .frame(width: size.width, height: size.height)
+            .custom(size: fontSize, color: isDisabled ? .textSecondary : .textPrimary)
             .background(isSelected ? Color(.primary) : isDisabled ? Color(.bgSecondary) : Color(.bgTerciary))
-            .foregroundColor(isDisabled ? .textSecondary : .textPrimary)
             .clipShape(Circle())
             .overlay(Circle().stroke(Color(.border), lineWidth: isSelected ? 0 : 1))
             .opacity(isDisabled ? DefaultOpacity.disabled : 1.0)

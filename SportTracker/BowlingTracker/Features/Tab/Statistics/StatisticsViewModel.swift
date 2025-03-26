@@ -87,8 +87,17 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         // TODO: lane number statictics
     }
     
+    func refresh() {
+        setUp()
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: .seriesDidSave, object: nil)
         cancellables.removeAll()
+        
+        basicStatisticsViewModel = nil
+        advancedStaticticsViewModel = nil
+        averagesViewModel = nil
+        pinCoverageViewModel = nil
     }
 }

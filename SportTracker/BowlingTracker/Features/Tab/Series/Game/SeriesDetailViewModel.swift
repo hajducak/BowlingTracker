@@ -236,8 +236,8 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
         onSuccess: @escaping () -> Void
     ) {
         userService.fetchUserData()
-            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
-                guard let self = self, let userData = user else {
+            .flatMap { user -> AnyPublisher<Void, AppError> in
+                guard let userData = user else {
                     return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
                 }
                 return updateUser(userData)
@@ -259,7 +259,8 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
         seriesSaved.send(completion: .finished)
         cancellables.removeAll()
 
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: .seriesDidEdit, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .seriesDidSave, object: nil)
         
         gameViewModel = nil
         basicStatisticsViewModel = nil

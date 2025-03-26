@@ -30,16 +30,19 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 - ✅ User authentication with remambered credentionals
 - ✅ Create and manage bowling series
 - ✅ Record individual game scores pin by pin
-- ✅ Calculate statistics such as average score, strike percentage, and spare percentage
+- ✅ Statistics such as average score, strike %, and spare %
+- ✅ Advanced statistics such as strike after strike %, strike after open %, clean game % and split coverage %
+- ✅ Calculate any pin combination coverage
 - ✅ Save data to Firebase
-- ✅ Resume an ongoing game
 
 - **Pin selection mode** – manually select standing or left over pins before rolling
 - **Pinfall visualization** – view pinfall results for each individual frame  
 - **Series and Statistics filtering** - filter your data based on tags
+- **Charts Visualization** - series avarages visualisation inside interactive chart
 
 ## 🛠️ Technologies Used
 - **SwiftUI** – modern UI framework for iOS apps
+- **Swift Charts** - modern data visualization tool
 - **Combine** – reactive programming framework
 - **Firebase** – data storage and authentication
 - **MVVM** – architectural pattern for clean and maintainable code
@@ -64,6 +67,12 @@ License
 This project is available under the MIT license.
 
 ## 🔮 Future Features
-- **Offline game saving** – store games locally when offline and sync with the cloud once reconnected  
-- **Comprehensive statistics** – detailed insights, including pinfall percentages  
+- **Offline game saving** – store games locally when offline and sync with the cloud once reconnected
+- **Lane based filtering** – filter your stats based on line play
+- **Center based filtering** – filter your stats based on bowling center play    
+- **Ball based filtering** – filter your stats based on ball play
 - **Frame editing** – edit the current game frame in case of a misclick  
+- **Challanges/Training** - train pin convertion or accuracy of your throws
+- **Personal number calculator** - calculate your personal number and spare system
+- **Equipment** - addin your arsenal of balls making statistics even better
+- **Widget** - adding various widgets in your home screen

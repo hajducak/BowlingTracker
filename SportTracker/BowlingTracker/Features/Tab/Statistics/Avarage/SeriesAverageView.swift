@@ -61,7 +61,7 @@ struct SeriesAverageView: View {
                     }
             }
             .chartYScale(domain: viewModel.minAverage...viewModel.maxAverage)
-            .chartXScale(domain: 1...viewModel.averages.count)
+            .chartXScale(domain: viewModel.averages.count > 0 ? 1...viewModel.averages.count : 0...1)
             .chartLegend(.hidden)
             .chartYAxis {
                 AxisMarks(position: .leading) { value in

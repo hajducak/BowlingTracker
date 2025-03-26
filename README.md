@@ -52,12 +52,13 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
    ```
    sh git clone https://github.com/hajducak/BowlingTracker.git
    ```
-2. Use `main` only 
+2. Use `main` branch only.
 3. Open the project in Xcode.
 4. Ensure all dependencies are installed (e.g., Firebase via Swift Package Manager).
 5. Run the app on a simulator or a physical device.
-6. Sing up into app. I am not collecting any personal info. 
-7. Sing up users will only have access to reading data not rewriting any data in app.
+6. Sing up into app. I am not collecting any personal info.
+- If you want to see data already in app use test account: `public_test@gmail.com` & `Heslo1234`
+7. Happly try whatever you want and give feedback.
 
 ## 🪪 Contribution
 

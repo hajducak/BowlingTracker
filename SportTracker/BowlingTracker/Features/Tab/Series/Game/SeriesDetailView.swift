@@ -77,19 +77,20 @@ struct SeriesDetailView: View {
             oilPatternLink
             Spacer().frame(height: Padding.spacingXXS)
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                VStack(alignment: .leading, spacing: Padding.spacingS) {
                     if let statistics = viewModel.basicStatisticsViewModel {
                         BasicStatisticsView(viewModel: statistics, title: "Statistics")
-                            .padding(.top, Padding.spacingXXS)
                     }
                     Text("Games played")
                         .title()
                         .padding(.horizontal, Padding.defaultPadding)
-                        .padding(.vertical, Padding.spacingM)
+                        .padding(.top, Padding.spacingXXS)
                     GamesListView(viewModel: viewModel)
+                    if let advancedStatisticsViewModel = viewModel.advancedStatisticsViewModel {
+                        AdvancedStatisticsView(viewModel: advancedStatisticsViewModel, title: "Advanced")
+                    }
                     if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
                         PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
-                            .padding(.top, Padding.spacingXXS)
                     }
                 }
             }

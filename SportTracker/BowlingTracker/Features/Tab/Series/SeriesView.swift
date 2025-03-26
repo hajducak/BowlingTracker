@@ -81,7 +81,7 @@ struct SeriesView: View {
                         }
                         Spacer().frame(height: Padding.spacingM)
                     }.refreshable {
-                        viewModel.resfresh()
+                        viewModel.refresh()
                     }
                 case .loading: EmptyView()
                 }

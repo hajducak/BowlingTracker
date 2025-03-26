@@ -5,7 +5,7 @@ import FirebaseAuth
 final class AuthViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
-    @Published var isAuthenticated = false
+    @Published var isAuthenticated: FirebaseAuth.User? = nil
     @Published var isLoading = false
     @Published var toast: Toast?
     @Published var shouldRememberCredentials = false
@@ -22,7 +22,7 @@ final class AuthViewModel: ObservableObject {
     }
     
     private func checkAuthenticationState() {
-        isAuthenticated = authService.getCurrentUser() != nil
+        isAuthenticated = authService.authentifiedUser()
     }
     
     private func tryLoadSavedCredentials() {
@@ -46,7 +46,7 @@ final class AuthViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] user in
                 guard let self = self else { return }
-                handleSuccessfulAuth()
+                handleSuccessfulAuth(user)
             }
             .store(in: &cancellables)
     }
@@ -63,7 +63,7 @@ final class AuthViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] user in
                 guard let self = self else { return }
-                handleSuccessfulAuth()
+                handleSuccessfulAuth(user)
             }
             .store(in: &cancellables)
     }
@@ -80,7 +80,7 @@ final class AuthViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] _ in
                 guard let self = self else { return }
-                isAuthenticated = false
+                isAuthenticated = nil
                 email = ""
                 password = ""
                 do {
@@ -92,8 +92,8 @@ final class AuthViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    private func handleSuccessfulAuth() {
-        isAuthenticated = true
+    private func handleSuccessfulAuth(_ user: FirebaseAuth.User) {
+        isAuthenticated = user
         if shouldRememberCredentials {
             do {
                 try keychainService.saveCredentials(email: email, password: password)

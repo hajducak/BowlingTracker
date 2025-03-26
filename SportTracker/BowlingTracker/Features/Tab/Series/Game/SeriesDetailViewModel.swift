@@ -19,10 +19,9 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     var advancedStatisticsViewModel: AdvancedStatisticsViewModel?
     var pinCoverageViewModel: PinCoverageViewModel?
     private let gameViewModelFactory: GameViewModelFactory
-    private let firebaseService: FirebaseService<Series>
+    private let userService: UserService
     private var cancellables: Set<AnyCancellable> = []
     
-    // MARK: for editing the series
     @Published var newSeriesName: String
     @Published var newSeriesDescription: String
     @Published var newSeriesOilPatternName: String
@@ -33,8 +32,8 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     let seriesSaved = PassthroughSubject<Series, Never>()
 
-    init(firebaseService: FirebaseService<Series>, gameViewModelFactory: GameViewModelFactory, series: Series) {
-        self.firebaseService = firebaseService
+    init(userService: UserService, gameViewModelFactory: GameViewModelFactory, series: Series) {
+        self.userService = userService
         self.gameViewModelFactory = gameViewModelFactory
         self.series = series
         self.games = series.games
@@ -108,28 +107,37 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     /// Saves the game to Firebase and updates the local series data
     func saveGameIntoSeries(game: Game) {
         isLoadingOverlay = true
-        firebaseService.saveGameToSeries(seriesID: series.id, game: game)
+        
+        userService.fetchUserData()
+            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
+                guard let self = self, let userData = user else {
+                    return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
+                }
+                let updatedUser = userData.appendGameToSeries(seriesId: self.series.id, game: game)
+                return self.userService.saveUser(updatedUser)
+            }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
-                guard let self else { return }
+                guard let self = self else { return }
+                self.isLoadingOverlay = false
                 if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
+                    self.toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
-                guard let self else { return }
-                toast = Toast(type: .success("Successfully saved in Database"))
-                newGame()
-                fetchUpdatedSeries()
+                guard let self = self else { return }
+                self.toast = Toast(type: .success("Successfully saved in Database"))
+                self.newGame()
+                self.fetchUpdatedSeries()
             }
             .store(in: &cancellables)
     }
     
     /// Fetches the updated series from Firebase
     private func fetchUpdatedSeries() {
-        firebaseService.fetchAll()
+        userService.fetchUserData()
             .receive(on: DispatchQueue.main)
-            .sink { _ in } receiveValue: { [weak self] allSeries in
-                guard let self, let updatedSeries = allSeries.first(where: { $0.id == self.series.id }) else { return }
+            .sink { _ in } receiveValue: { [weak self] user in
+                guard let self, let userData = user, let updatedSeries = userData.series.first(where: { $0.id == self.series.id }) else { return }
                 series = updatedSeries
                 isLoadingOverlay = false
             }
@@ -147,15 +155,23 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     func save() {
         series.currentGame = nil
-        firebaseService.save(series, withID: series.id)
+        userService.fetchUserData()
+            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
+                guard let self = self, let userData = user else {
+                    return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
+                }
+                let updatedUser = userData.updateSeries(series)
+                return self.userService.saveUser(updatedUser)
+            }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
-                guard let self else { return }
+                guard let self = self else { return }
+                self.isLoadingOverlay = false
                 if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
+                    self.toast = Toast(type: .error(error))
                 }
             } receiveValue: { [weak self] _ in
-                guard let self else { return }
+                guard let self = self else { return }
                 toast = Toast(type: .success("Series successfully saved"))
                 reloadStatistics()
                 seriesSaved.send(self.series)
@@ -168,30 +184,53 @@ class SeriesDetailViewModel: ObservableObject, Identifiable {
 
     func updateSeries() {
         isLoadingOverlay = true
-        firebaseService.updateSeriesParameters(
-            seriesID: series.id,
-            date: valueIfModified(newSeriesSelectedDate, series.date),
-            name: valueIfModified(newSeriesName, series.name),
-            description: valueIfModified(newSeriesDescription, series.description),
-            tag: valueIfModified(newSeriesSelectedType, series.tag),
-            oilPatternName: valueIfModified(newSeriesOilPatternName, series.oilPatternName ?? ""),
-            oilPatternURL: valueIfModified(newSeriesOilPatternURL, series.oilPatternURL ?? ""),
-            house: valueIfModified(newSeriesHouseName, series.house ?? "")
-        )
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] completion in
-            guard let self else { return }
-            if case .failure(let error) = completion {
-                toast = Toast(type: .error(error))
-                isLoadingOverlay = false
+        
+        userService.fetchUserData()
+            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
+                guard let self = self, 
+                      let userData = user,
+                      var seriesToUpdate = userData.series.first(where: { $0.id == self.series.id }) else {
+                    return Fail(error: AppError.customError("Series not found")).eraseToAnyPublisher()
+                }
+                if let newDate = self.valueIfModified(self.newSeriesSelectedDate, self.series.date) {
+                    seriesToUpdate.date = newDate
+                }
+                if let newName = self.valueIfModified(self.newSeriesName, self.series.name) {
+                    seriesToUpdate.name = newName
+                }
+                if let newDescription = self.valueIfModified(self.newSeriesDescription, self.series.description) {
+                    seriesToUpdate.description = newDescription
+                }
+                if let newTag = self.valueIfModified(self.newSeriesSelectedType, self.series.tag) {
+                    seriesToUpdate.tag = newTag
+                }
+                if let newOilPatternName = self.valueIfModified(self.newSeriesOilPatternName, self.series.oilPatternName ?? "") {
+                    seriesToUpdate.oilPatternName = newOilPatternName
+                }
+                if let newOilPatternURL = self.valueIfModified(self.newSeriesOilPatternURL, self.series.oilPatternURL ?? "") {
+                    seriesToUpdate.oilPatternURL = newOilPatternURL
+                }
+                if let newHouse = self.valueIfModified(self.newSeriesHouseName, self.series.house ?? "") {
+                    seriesToUpdate.house = newHouse
+                }
+                
+                let updatedUser = userData.updateSeries(seriesToUpdate)
+                return self.userService.saveUser(updatedUser)
             }
-        } receiveValue: { [weak self] _ in
-            guard let self else { return }
-            toast = Toast(type: .success("Series successfully edited"))
-            fetchUpdatedSeries()
-            reloadSeries()
-        }
-        .store(in: &cancellables)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                guard let self = self else { return }
+                self.isLoadingOverlay = false
+                if case .failure(let error) = completion {
+                    self.toast = Toast(type: .error(error))
+                }
+            } receiveValue: { [weak self] _ in
+                guard let self = self else { return }
+                self.toast = Toast(type: .success("Series successfully edited"))
+                self.fetchUpdatedSeries()
+                self.reloadSeries()
+            }
+            .store(in: &cancellables)
     }
     
     private func valueIfModified<T: Equatable>(_ newValue: T, _ oldValue: T) -> T? {

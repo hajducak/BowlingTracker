@@ -58,8 +58,12 @@ class SeriesViewModel: ObservableObject {
         setupSeries()
     }
     
-    private func setupSeries() {
-        state = .loading
+    func resfresh() {
+        setupSeries(isLoading: false)
+    }
+    
+    private func setupSeries(isLoading: Bool = true) {
+        if isLoading { state = .loading }
         firebaseService.fetchAll()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in

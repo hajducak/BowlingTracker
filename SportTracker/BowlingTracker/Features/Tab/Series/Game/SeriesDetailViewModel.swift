@@ -122,29 +122,19 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     private func saveCurrent(game: Game) {
         isLoadingOverlay = true
         
-        userService.fetchUserData()
-            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
-                guard let self = self, let userData = user else {
-                    return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
-                }
-                let updatedUser = userData.appendGameToSeries(seriesId: series.id, game: game)
-                return userService.saveUser(updatedUser)
+        saveUserData { [weak self] userData in
+            guard let self = self else {
+                return Fail(error: AppError.customError("Self is nil")).eraseToAnyPublisher()
             }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                guard let self = self else { return }
-                isLoadingOverlay = false
-                if case .failure(let error) = completion {
-                    self.toast = Toast(type: .error(error))
-                }
-            } receiveValue: { [weak self] _ in
-                guard let self = self else { return }
-                toast = Toast(type: .success("Successfully saved in Database"))
-                series.newGame()
-                fetchUpdatedSeries()
-                setupContent()
-            }
-            .store(in: &cancellables)
+            let updatedUser = userData.appendGameToSeries(seriesId: series.id, game: game)
+            return userService.saveUser(updatedUser)
+        } onSuccess: { [weak self] in
+            guard let self = self else { return }
+            toast = Toast(type: .success("Successfully saved in Database"))
+            series.newGame()
+            fetchUpdatedSeries()
+            setupContent()
+        }
     }
     
     /// Fetches the updated series from Firebase
@@ -152,7 +142,9 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
         userService.fetchUserData()
             .receive(on: DispatchQueue.main)
             .sink { _ in } receiveValue: { [weak self] user in
-                guard let self, let userData = user, let updatedSeries = userData.series.first(where: { $0.id == self.series.id }) else { return }
+                guard let self = self,
+                      let userData = user,
+                      let updatedSeries = userData.series.first(where: { $0.id == self.series.id }) else { return }
                 series = updatedSeries
                 isLoadingOverlay = false
             }
@@ -165,63 +157,42 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
             toast = Toast(type: .error(.customError("No games in series to save")))
             return
         }
+        
         series.currentGame = nil
-        userService.fetchUserData()
-            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
-                guard let self = self, let userData = user else {
-                    return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
-                }
-                let updatedUser = userData.updateSeries(series)
-                return userService.saveUser(updatedUser)
+        saveUserData { [weak self] userData in
+            guard let self = self else {
+                return Fail(error: AppError.customError("Self is nil")).eraseToAnyPublisher()
             }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                guard let self = self else { return }
-                isLoadingOverlay = false
-                if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
-                }
-            } receiveValue: { [weak self] _ in
-                guard let self = self else { return }
-                toast = Toast(type: .success("Series successfully saved"))
-                reloadStatistics()
-                seriesSaved.send(series)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                    self.shouldDismiss = true
-                }
+            let updatedUser = userData.updateSeries(series)
+            return userService.saveUser(updatedUser)
+        } onSuccess: { [weak self] in
+            guard let self = self else { return }
+            toast = Toast(type: .success("Series successfully saved"))
+            reloadStatistics()
+            seriesSaved.send(series)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                self.shouldDismiss = true
             }
-            .store(in: &cancellables)
+        }
     }
 
     func updateSeries() {
         isLoadingOverlay = true
         
-        userService.fetchUserData()
-            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
-                guard let self = self, 
-                      let userData = user,
-                      var seriesToUpdate = userData.series.first(where: { $0.id == self.series.id }) else {
-                    return Fail(error: AppError.customError("Series not found")).eraseToAnyPublisher()
-                }
-                updateParameter(&seriesToUpdate)
-                
-                let updatedUser = userData.updateSeries(seriesToUpdate)
-                return userService.saveUser(updatedUser)
+        saveUserData { [weak self] userData in
+            guard let self = self,
+                  var seriesToUpdate = userData.series.first(where: { $0.id == self.series.id }) else {
+                return Fail(error: AppError.customError("Series not found")).eraseToAnyPublisher()
             }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                guard let self = self else { return }
-                isLoadingOverlay = false
-                if case .failure(let error) = completion {
-                    toast = Toast(type: .error(error))
-                }
-            } receiveValue: { [weak self] _ in
-                guard let self = self else { return }
-                toast = Toast(type: .success("Series successfully edited"))
-                fetchUpdatedSeries()
-                reloadSeries()
-            }
-            .store(in: &cancellables)
+            updateParameter(&seriesToUpdate)
+            let updatedUser = userData.updateSeries(seriesToUpdate)
+            return userService.saveUser(updatedUser)
+        } onSuccess: { [weak self] in
+            guard let self = self else { return }
+            toast = Toast(type: .success("Series successfully edited"))
+            fetchUpdatedSeries()
+            reloadSeries()
+        }
     }
     
     private func updateParameter(_ series: inout Series) {
@@ -258,6 +229,30 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     
     private func reloadSeries() {
         NotificationCenter.default.post(name: .seriesDidEdit, object: nil)
+    }
+    
+    private func saveUserData(
+        updateUser: @escaping (User) -> AnyPublisher<Void, AppError>,
+        onSuccess: @escaping () -> Void
+    ) {
+        userService.fetchUserData()
+            .flatMap { [weak self] user -> AnyPublisher<Void, AppError> in
+                guard let self = self, let userData = user else {
+                    return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
+                }
+                return updateUser(userData)
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                guard let self = self else { return }
+                isLoadingOverlay = false
+                if case .failure(let error) = completion {
+                    toast = Toast(type: .error(error))
+                }
+            } receiveValue: {  _ in
+                onSuccess()
+            }
+            .store(in: &cancellables)
     }
     
     deinit {

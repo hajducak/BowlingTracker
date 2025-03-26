@@ -127,7 +127,7 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
                 guard let self = self, let userData = user else {
                     return Fail(error: AppError.customError("User not found")).eraseToAnyPublisher()
                 }
-                let updatedUser = userData.appendGameToSeries(seriesId: self.series.id, game: game)
+                let updatedUser = userData.appendGameToSeries(seriesId: series.id, game: game)
                 return userService.saveUser(updatedUser)
             }
             .receive(on: DispatchQueue.main)
@@ -185,7 +185,7 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
                 guard let self = self else { return }
                 toast = Toast(type: .success("Series successfully saved"))
                 reloadStatistics()
-                seriesSaved.send(self.series)
+                seriesSaved.send(series)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                     self.shouldDismiss = true
                 }
@@ -225,25 +225,25 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     }
     
     private func updateParameter(_ series: inout Series) {
-        if let newDate = self.valueIfModified(self.newSeriesSelectedDate, self.series.date) {
+        if let newDate = valueIfModified(newSeriesSelectedDate, series.date) {
             series.date = newDate
         }
-        if let newName = self.valueIfModified(self.newSeriesName, self.series.name) {
+        if let newName = valueIfModified(newSeriesName, series.name) {
             series.name = newName
         }
-        if let newDescription = self.valueIfModified(self.newSeriesDescription, self.series.description) {
+        if let newDescription = valueIfModified(newSeriesDescription, series.description) {
             series.description = newDescription
         }
-        if let newTag = self.valueIfModified(self.newSeriesSelectedType, self.series.tag) {
+        if let newTag = valueIfModified(newSeriesSelectedType, series.tag) {
             series.tag = newTag
         }
-        if let newOilPatternName = self.valueIfModified(self.newSeriesOilPatternName, self.series.oilPatternName ?? "") {
+        if let newOilPatternName = valueIfModified(newSeriesOilPatternName, series.oilPatternName ?? "") {
             series.oilPatternName = newOilPatternName
         }
-        if let newOilPatternURL = self.valueIfModified(self.newSeriesOilPatternURL, self.series.oilPatternURL ?? "") {
+        if let newOilPatternURL = valueIfModified(newSeriesOilPatternURL, series.oilPatternURL ?? "") {
             series.oilPatternURL = newOilPatternURL
         }
-        if let newHouse = self.valueIfModified(self.newSeriesHouseName, self.series.house ?? "") {
+        if let newHouse = valueIfModified(newSeriesHouseName, series.house ?? "") {
             series.house = newHouse
         }
     }
@@ -261,6 +261,14 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     }
     
     deinit {
+        seriesSaved.send(completion: .finished)
         cancellables.removeAll()
+
+        NotificationCenter.default.removeObserver(self)
+        
+        gameViewModel = nil
+        basicStatisticsViewModel = nil
+        advancedStatisticsViewModel = nil
+        pinCoverageViewModel = nil
     }
 }

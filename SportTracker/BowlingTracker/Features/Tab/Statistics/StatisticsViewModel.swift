@@ -84,7 +84,7 @@ class StatisticsViewModel: ObservableObject, Identifiable {
         // MARK: - More Statistics:
         // TODO: Ball usage percentage - ball name in game
         // TODO: Bowling house center statistics
-        // TODO: lane number statictics
+        // TODO: Lane number statictics
     }
     
     func refresh() {

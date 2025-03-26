@@ -65,37 +65,39 @@ struct SeriesDetailView: View {
     }
     
     private var content: some View {
-        VStack(alignment: .leading, spacing: Padding.spacingXXS) {
-            viewModel.series.house.map {
-                Text($0)
-                    .heading()
-                    .padding(.horizontal, Padding.defaultPadding)
-            }
-            Text(viewModel.series.description)
-                .body()
-                .padding(.horizontal, Padding.defaultPadding)
-            oilPatternLink
-            Spacer().frame(height: Padding.spacingXXS)
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: Padding.spacingS) {
-                    if let statistics = viewModel.basicStatisticsViewModel {
-                        BasicStatisticsView(viewModel: statistics, title: "Statistics")
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading, spacing: Padding.spacingS) {
+                VStack(alignment: .leading, spacing: Padding.spacingXXS) {
+                    viewModel.series.house.map {
+                        Text($0)
+                            .heading()
+                            .padding(.horizontal, Padding.defaultPadding)
                     }
-                    Text("Games played")
-                        .title()
+                    Text(viewModel.series.formattedDate)
+                        .body()
                         .padding(.horizontal, Padding.defaultPadding)
-                        .padding(.top, Padding.spacingXXS)
-                    GamesListView(viewModel: viewModel)
-                    if let advancedStatisticsViewModel = viewModel.advancedStatisticsViewModel {
-                        AdvancedStatisticsView(viewModel: advancedStatisticsViewModel, title: "Advanced")
-                    }
-                    if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
-                        PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
-                    }
+                    Text(viewModel.series.description)
+                        .body()
+                        .padding(.horizontal, Padding.defaultPadding)
+                    oilPatternLink
+                }
+                if let statistics = viewModel.basicStatisticsViewModel {
+                    BasicStatisticsView(viewModel: statistics, title: "Statistics")
+                }
+                Text("Games played")
+                    .title()
+                    .padding(.horizontal, Padding.defaultPadding)
+                    .padding(.top, Padding.spacingXXS)
+                GamesListView(viewModel: viewModel)
+                if let advancedStatisticsViewModel = viewModel.advancedStatisticsViewModel {
+                    AdvancedStatisticsView(viewModel: advancedStatisticsViewModel, title: "Advanced")
+                }
+                if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
+                    PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
                 }
             }
+            Spacer().frame(height: Padding.defaultPadding)
         }
-        .padding(.bottom, Padding.defaultPadding)
         .navigationBarItems(
             trailing:
                 Button(action: {

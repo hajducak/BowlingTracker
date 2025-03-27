@@ -9,6 +9,7 @@ struct User: Codable, Identifiable {
     var homeCenter: String?
     var style: String?
     var hand: String?
+    // TODO: add PIN & PAP
     
     init(id: String, email: String, series: [Series] = []) {
         self.id = id

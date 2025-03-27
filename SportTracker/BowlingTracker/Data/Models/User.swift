@@ -5,6 +5,11 @@ struct User: Codable, Identifiable {
     let email: String
     var series: [Series]
     
+    var name: String?
+    var homeCenter: String?
+    var style: String?
+    var hand: String?
+    
     init(id: String, email: String, series: [Series] = []) {
         self.id = id
         self.email = email

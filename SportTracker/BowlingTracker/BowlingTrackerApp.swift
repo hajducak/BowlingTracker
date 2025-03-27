@@ -28,10 +28,14 @@ struct BowlingTrackerApp: App {
                 let statisticsViewModel = StatisticsViewModel(
                     userService: userService
                 )
+                let userProfileViewModel = UserProfileViewModel(
+                    userService: userService
+                )
 
                 ContentView(
                     bowlingSeriesViewModel: bowlingSeriesViewModel,
-                    statisticsViewModel: statisticsViewModel
+                    statisticsViewModel: statisticsViewModel,
+                    userProfileViewModel: userProfileViewModel
                 )
                 .environmentObject(authViewModel)
             } else {

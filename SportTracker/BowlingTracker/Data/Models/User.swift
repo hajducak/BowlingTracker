@@ -1,5 +1,31 @@
 import Foundation
 
+enum BowlingStyle: String, Codable {
+    case twoHanded, oneHanded
+    
+    var description: String{
+        switch self {
+        case .twoHanded:
+            return "Two handed"
+        case .oneHanded:
+            return "One handed"
+        }
+    }
+}
+
+enum HandStyle: String, Codable {
+    case lefty, righty
+    
+    var description: String{
+        switch self {
+        case .lefty:
+            return "Lefty"
+        case .righty:
+            return "Righty"
+        }
+    }
+}
+
 struct User: Codable, Identifiable {
     let id: String
     let email: String
@@ -7,8 +33,8 @@ struct User: Codable, Identifiable {
     
     var name: String?
     var homeCenter: String?
-    var style: String?
-    var hand: String?
+    var style: BowlingStyle?
+    var hand: HandStyle?
     // TODO: add PIN & PAP
     
     init(id: String, email: String, series: [Series] = []) {

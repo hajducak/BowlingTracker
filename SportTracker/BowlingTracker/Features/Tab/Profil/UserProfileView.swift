@@ -2,6 +2,7 @@ import SwiftUI
 
 struct UserProfileView: View {
     @ObservedObject var viewModel: UserProfileViewModel
+    @State private var showEditProfile = false
     
     var body: some View {
         ScrollView {
@@ -16,119 +17,74 @@ struct UserProfileView: View {
         .toast($viewModel.toast, timeout: 3)
         .frame(maxWidth: .infinity)
         .background(Color(.bgPrimary))
-        .navigationTitle("My Profile")
+        .navigationTitle(viewModel.user?.name ?? "My Profile")
+        .navigationBarItems(trailing: editButton)
+        .fullScreenCover(isPresented: $showEditProfile) {
+            EditProfileView(
+                name: $viewModel.newProfileName,
+                homeCenter: $viewModel.newHomeCenter,
+                style: $viewModel.newStyle,
+                hand: $viewModel.newHand
+            ) {
+                viewModel.updateUserProfile()
+                showEditProfile = false
+            } onClose: {
+                showEditProfile = false
+            }
+        }
     }
     
     var profileCard: some View {
-        HStack(alignment: .top) {
-            Image(.profilePhoto) // TODO: image from profile
-                .resizable()
-                .scaledToFill()
-                .frame(width: 80, height: 140)
-                .clipShape(
-                    CustomCornerRectangle(topLeft: Corners.corenrRadiusExtraLarge, topRight: Corners.corenrRadiusXL, bottomLeft: Corners.corenrRadiusXL, bottomRight: Corners.corenrRadiusXL)
-                )
-            
-            // TODO: made placeholder
-//            Image(systemName: "person.crop.circle")
-//                .resizable()
-//                .scaledToFit()
-//                .frame(width: 80, height: 80)
-//                .foregroundStyle(Color(.bgPrimary))
-//                .overlay(alignment: .topTrailing) {
-//                    ZStack {
-//                        Circle()
-//                            .fill(Color(.bgSecondary))
-//                            .frame(width: 15, height: 15)
-//                        Image(systemName: "plus.circle.fill")
-//                            .resizable()
-//                            .foregroundStyle(Color(.primary))
-//                            .frame(width: 15, height: 15)
-//                    }
-//                }.background {
-//                    RoundedRectangle(cornerRadius: Corners.corenrRadiusXL)
-//                        .stroke(Color(.bgTerciary), lineWidth: 2)
-//                        .frame(height: 130)
-//                        .cornerRadius(Corners.corenrRadiusExtraLarge, corners: [.topLeft])
-//                }
-            VStack(alignment: .leading, spacing: Padding.spacingS) {
-                if let user = viewModel.user {
-                    Text(user.name ?? "Marek Hajdučák") // TODO: ass navigation title ???
-                        .title()
-                    HStack {
-                        Image(systemName: "envelope.fill")
-                        Text(user.email)
-                    }.subheading()
+        VStack(alignment: .leading, spacing: Padding.spacingS) {
+            if let user = viewModel.user {
+                HStack {
+                    Image(systemName: "envelope.fill")
+                    Text(user.email)
+                    Spacer()
+                }
+                user.hand.map { hand in
                     HStack {
                         Image(systemName: "hand.raised.fill")
-                        Text(user.hand ?? "Righty")
-                    }.subheading()
+                        Text(hand.description)
+                        Spacer()
+                    }
+                }
+                user.style.map { style in
                     HStack {
                         Image(systemName: "figure.bowling")
-                        Text(user.style ?? "Two handed")
-                    }.subheading()
+                        Text(style.description)
+                        Spacer()
+                    }
+                }
+                user.homeCenter.map { home in
                     HStack {
                         Image(systemName: "pin.fill")
-                        Text(user.homeCenter ?? "Academy Bowling Žilina")
-                    }.subheading()
+                        Text(home)
+                        Spacer()
+                    }
                 }
             }
-            .frame(maxWidth: .infinity)
         }
+        .subheading()
         .frame(maxWidth: .infinity)
         .padding(Padding.spacingXM)
         .background(Color(.bgSecondary))
-        .cornerRadius(Corners.corenrRadiusXL, corners: [.bottomLeft, .bottomRight, .topRight])
-        .cornerRadius(Corners.corenrRadiusExtraLarge, corners: [.topLeft])
+        .cornerRadius(Corners.corenrRadiusXL, corners: [.bottomLeft, .bottomRight])
         .padding(.horizontal, Padding.defaultPadding)
     }
-}
-
-struct CustomCornerRectangle: Shape {
-    var topLeft: CGFloat
-    var topRight: CGFloat
-    var bottomLeft: CGFloat
-    var bottomRight: CGFloat
     
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: topLeft, y: 0))
-        path.addLine(to: CGPoint(x: rect.width - topRight, y: 0))
-        path.addQuadCurve(
-            to: CGPoint(x: rect.width, y: topRight),
-            control: CGPoint(x: rect.width, y: 0)
-        )
-        path.addLine(to: CGPoint(x: rect.width, y: rect.height - bottomRight))
-        path.addQuadCurve(
-            to: CGPoint(x: rect.width - bottomRight, y: rect.height),
-            control: CGPoint(x: rect.width, y: rect.height)
-        )
-        path.addLine(to: CGPoint(x: bottomLeft, y: rect.height))
-        path.addQuadCurve(
-            to: CGPoint(x: 0, y: rect.height - bottomLeft),
-            control: CGPoint(x: 0, y: rect.height)
-        )
-        path.addLine(to: CGPoint(x: 0, y: topLeft))
-        path.addQuadCurve(
-            to: CGPoint(x: topLeft, y: 0),
-            control: CGPoint(x: 0, y: 0)
-        )
-        return path
-    }
-}
-
-extension View {
-    func customCornerRadius(
-        topLeft: CGFloat = 0,
-        topRight: CGFloat = 0,
-        bottomLeft: CGFloat = 0,
-        bottomRight: CGFloat = 0
-    ) -> some View {
-        clipShape(CustomCornerRectangle(
-            topLeft: topLeft,
-            topRight: topRight,
-            bottomLeft: bottomLeft,
-            bottomRight: bottomRight
-        ))
+    private var editButton: some View {
+        Button(action: {
+            withAnimation(.easeInOut) {
+                showEditProfile = true
+            }
+        }) {
+            HStack {
+                Text("Edit")
+                    .heading(color: Color(.primary))
+                Image(systemName: "pencil.circle")
+                    .foregroundColor(Color(.primary))
+            }
+        }
     }
 }

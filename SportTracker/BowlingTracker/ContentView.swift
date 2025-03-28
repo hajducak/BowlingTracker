@@ -3,12 +3,19 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var bowlingSeriesViewModel: SeriesViewModel
     @StateObject private var statisticsViewModel: StatisticsViewModel
+    @StateObject private var userProfileViewModel: UserProfileViewModel
+
     @StateObject private var tabSelectionViewModel = TabSelectionViewModel()
     @EnvironmentObject var authViewModel: AuthViewModel
 
-    init(bowlingSeriesViewModel: SeriesViewModel, statisticsViewModel: StatisticsViewModel) {
+    init(
+        bowlingSeriesViewModel: SeriesViewModel,
+        statisticsViewModel: StatisticsViewModel,
+        userProfileViewModel: UserProfileViewModel)
+    {
         _bowlingSeriesViewModel = StateObject(wrappedValue: bowlingSeriesViewModel)
         _statisticsViewModel = StateObject(wrappedValue: statisticsViewModel)
+        _userProfileViewModel = StateObject(wrappedValue: userProfileViewModel)
     }
 
     var body: some View {
@@ -16,7 +23,6 @@ struct ContentView: View {
             NavigationView {
                 SeriesView(viewModel: bowlingSeriesViewModel)
                     .navigationBarTitle("My Series")
-                    .navigationBarItems(leading: signOutButton)
             }
             .tabItem {
                 Image(systemName: "figure.bowling.circle.fill")
@@ -26,12 +32,21 @@ struct ContentView: View {
             NavigationView {
                 StatisticsView(viewModel: statisticsViewModel)
                     .navigationBarTitle("My Statistics")
+            }
+            .tabItem {
+                Image(systemName: "chart.line.uptrend.xyaxis.circle.fill")
+                Text("Statistics")
+            }.tag(1)
+            
+            NavigationView {
+                UserProfileView(viewModel: userProfileViewModel)
+                    .navigationBarTitle("My Profile")
                     .navigationBarItems(leading: signOutButton)
             }
             .tabItem {
                 Image(systemName: "person.crop.circle")
-                Text("Statistics")
-            }.tag(1)
+                Text("Profile")
+            }.tag(2)
         }
         .onAppear {
             let appearance = UITabBarAppearance()

@@ -35,6 +35,8 @@ struct Corners {
     static var corenrRadiusXL: CGFloat = 16
     /// 20px
     static var corenrRadiusL: CGFloat = 20
+    /// 55px
+    static var corenrRadiusExtraLarge: CGFloat = 55
 }
 
 struct DefaultColor {

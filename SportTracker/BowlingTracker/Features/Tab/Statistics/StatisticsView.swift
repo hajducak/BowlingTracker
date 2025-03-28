@@ -38,7 +38,7 @@ struct StatisticsView: View {
             }
         }
         .background(Color(.bgPrimary))
-        .loadingOverlay(when: $viewModel.isLoading, title: "Loading series...")
+        .loadingOverlay(when: $viewModel.isLoading, title: "Loading data...")
         .frame(maxWidth: .infinity)
         .toast($viewModel.toast, timeout: 3)
     }

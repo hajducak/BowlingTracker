@@ -3,14 +3,13 @@ import SwiftUI
 struct UserProfileView: View {
     @ObservedObject var viewModel: UserProfileViewModel
     @State private var showEditProfile = false
+    @State private var isBallPulsing = false
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Padding.spacingM) {
                 profileCard
-                Text("My Arsenal")
-                    .title()
-                    .padding(.horizontal, Padding.defaultPadding)
+                arsenalSection
             }
         }
         .loadingOverlay(when: $viewModel.isLoading, title: "Loading data...")
@@ -73,6 +72,46 @@ struct UserProfileView: View {
         .padding(.horizontal, Padding.defaultPadding)
     }
     
+    private var arsenalSection: some View {
+        VStack(alignment: .leading, spacing: Padding.spacingM) {
+            Text("My Arsenal")
+                .title()
+            if let user = viewModel.user {
+                HStack(spacing: Padding.spacingM) {
+                    if user.balls.isNullOrEmpty {
+                        ZStack {
+                            Circle()
+                                .fill(Color(.bgTerciary))
+                                .frame(width: 80, height: 80)
+                            Circle()
+                                .fill(Color(.bgPrimary))
+                                .frame(width: 75, height: 75)
+                            Circle()
+                                .fill(Color(.bgTerciary))
+                                .frame(width: 62, height: 62)
+                                .scaleEffect(isBallPulsing ? 1.0 : 0.9)
+                                .onAppear {
+                                    withAnimation(
+                                        Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true)
+                                    ) {
+                                        isBallPulsing.toggle()
+                                    }
+                                }
+                            Image(systemName: "plus.circle")
+                                .foregroundColor(Color(.primary))
+                        }.tap {
+                            // TODO: add ball view
+                        }
+                    }
+                    // TODO: mock data
+                    BallView(image: Image(.phaze4))
+                    BallView(image: Image(.urethane))
+                    // TODO: balls
+                }
+            }
+        }.padding(.horizontal, Padding.defaultPadding)
+    }
+    
     private var editButton: some View {
         Button(action: {
             withAnimation(.easeInOut) {
@@ -86,5 +125,28 @@ struct UserProfileView: View {
                     .foregroundColor(Color(.primary))
             }
         }
+    }
+}
+
+struct BallView: View {
+    var image: Image // TODO: remove wehn image will be inside ball struct
+    // let ball: Ball
+    // let onTap: (Ball) -> ()
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color(.primary))
+                .frame(width: 80, height: 80)
+            Circle()
+                .fill(Color(.bgPrimary))
+                .frame(width: 75, height: 75)
+            image // TODO: WebImage(image: ball.image.url)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 62, height: 62)
+                .clipShape(Circle())
+        }
+        // .tap { onTap(ball) }
     }
 }

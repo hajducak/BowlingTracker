@@ -173,3 +173,9 @@ extension Double {
         String(format: "%.2f%", self)
     }
 }
+
+extension Optional where Wrapped: Collection {
+    var isNullOrEmpty: Bool {
+        return self?.isEmpty ?? true
+    }
+}

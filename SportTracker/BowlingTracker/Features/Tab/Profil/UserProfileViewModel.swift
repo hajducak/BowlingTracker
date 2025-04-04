@@ -14,6 +14,7 @@ final class UserProfileViewModel: ObservableObject {
     @Published var newHomeCenter = ""
     @Published var newStyle: BowlingStyle = .oneHanded
     @Published var newHand: HandStyle = .righty
+    @Published var newBall: Ball? = nil
     
     init(userService: UserService) {
         self.userService = userService
@@ -41,7 +42,7 @@ final class UserProfileViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
     
-    func updateUserProfile() {
+    func updateUser() {
         isLoading = true
         guard var user = self.user else { return }
         if let name = valueIfModified(newProfileName, user.name) {
@@ -55,6 +56,9 @@ final class UserProfileViewModel: ObservableObject {
         }
         if let hand = valueIfModified(newHand, user.hand) {
             user.hand = hand
+        }
+        if let ball = newBall {
+            user.balls?.append(ball)
         }
         userService.saveUser(user)
             .receive(on: DispatchQueue.main)

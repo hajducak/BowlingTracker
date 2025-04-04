@@ -26,7 +26,7 @@ struct UserProfileView: View {
                 style: $viewModel.newStyle,
                 hand: $viewModel.newHand
             ) {
-                viewModel.updateUserProfile()
+                viewModel.updateUser()
                 showEditProfile = false
             } onClose: {
                 showEditProfile = false

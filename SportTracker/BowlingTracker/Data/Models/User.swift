@@ -102,22 +102,4 @@ struct User: Codable, Identifiable {
             balls: balls
         )
     }
-    /// Updates a user arsenal
-    /// - Parameters:
-    ///   - ball: The new ball to append to the balls array
-    /// - Returns: A new User instance with the updated balls array
-    func add(ball: Ball) -> User {
-        var updatedBalls = balls
-        updatedBalls?.append(ball)
-        return User(
-            id: id,
-            email: email,
-            series: series,
-            name: name,
-            homeCenter: homeCenter,
-            style:style,
-            hand: hand,
-            balls: updatedBalls
-        )
-    }
 }

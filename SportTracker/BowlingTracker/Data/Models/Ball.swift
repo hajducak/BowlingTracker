@@ -1,4 +1,6 @@
-struct Ball: Codable {
+import Foundation
+struct Ball: Codable, Identifiable {
+    var id: String = UUID().uuidString
     let name: String
     let brand: String
     let coverstock: String

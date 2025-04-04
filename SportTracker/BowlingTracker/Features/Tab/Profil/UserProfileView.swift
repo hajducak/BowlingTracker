@@ -77,7 +77,7 @@ struct UserProfileView: View {
             Text("My Arsenal")
                 .title()
             if let user = viewModel.user {
-                HStack(spacing: Padding.spacingM) {
+                HStack(alignment: .top, spacing: Padding.spacingM) {
                     if user.balls.isNullOrEmpty {
                         ZStack {
                             Circle()
@@ -104,10 +104,23 @@ struct UserProfileView: View {
                             // TODO: add ball view
                         }
                     }
-                    // TODO: mock data
-                    BallView(image: Image(.phaze4))
-                    BallView(image: Image(.urethane))
-                    // TODO: balls
+                    // TODO: mock data and user.balls (FOREACH)
+                    VStack {
+                        BallView(image: Image(.phaze4))
+                        Text("Phaze 4")
+                            .heading(color: Color(.primary))
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .frame(maxWidth: 84)
+                    }
+                    VStack {
+                        BallView(image: Image(.urethane))
+                        Text("Purple Urethane")
+                            .heading(color: Color(.primary))
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .frame(maxWidth: 84)
+                    }
                 }
             }
         }.padding(.horizontal, Padding.defaultPadding)

@@ -97,8 +97,9 @@ struct UserProfileView: View {
                                         isBallPulsing.toggle()
                                     }
                                 }
-                            Image(systemName: "plus.circle")
+                            Image(systemName: "plus")
                                 .foregroundColor(Color(.primary))
+                                .title()
                         }.tap {
                             // TODO: add ball view
                         }

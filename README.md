@@ -39,6 +39,7 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 - **Pinfall visualization** – view pinfall results for each individual frame  
 - **Series and Statistics filtering** - filter your data based on tags
 - **Charts Visualization** - series avarages visualisation inside interactive chart
+- **Equipment** - addin your arsenal of balls making statistics even better
 
 ## 🛠️ Technologies Used
 - **SwiftUI** – modern UI framework for iOS apps
@@ -75,5 +76,4 @@ This project is available under the MIT license.
 - **Frame editing** – edit the current game frame in case of a misclick  
 - **Challanges/Training** - train pin convertion or accuracy of your throws
 - **Personal number calculator** - calculate your personal number and spare system
-- **Equipment** - addin your arsenal of balls making statistics even better
 - **Widget** - adding various widgets in your home screen

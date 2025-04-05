@@ -133,6 +133,7 @@ final class UserProfileViewModel: ObservableObject {
     
     private func resetBallParameters() {
         newBallName = ""
+        newBallImageUrl = ""
         newBallBrand = ""
         newBallCoverstock = ""
         newBallRg = ""
@@ -140,8 +141,12 @@ final class UserProfileViewModel: ObservableObject {
         newBallSurface = ""
         newBallWeight = ""
         newBallCore = ""
+        newBallCoreImageUrl = ""
         newBallPinToPap = ""
         newBallLayout = ""
+        newBallLenght = ""
+        newBallBackend = ""
+        newBallHook = ""
     }
 
     private func valueIfModified<T: Equatable>(_ newValue: T, _ oldValue: T) -> T? {

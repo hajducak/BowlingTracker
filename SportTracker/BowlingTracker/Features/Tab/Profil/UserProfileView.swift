@@ -103,7 +103,7 @@ struct UserProfileView: View {
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)
             if let user = viewModel.user {
-                ScrollView {
+                ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: Padding.spacingM) {
                         addBall
                         if let balls = user.balls {
@@ -113,7 +113,9 @@ struct UserProfileView: View {
                                 })
                             }
                         }
-                    }.padding(.horizontal, Padding.defaultPadding)
+                    }
+                    .padding(.horizontal, Padding.defaultPadding)
+                    .padding(.bottom, Padding.spacingXM)
                 }
             }
         }
@@ -200,6 +202,7 @@ struct BallView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .frame(maxWidth: 84)
+            // FIXME: height is not correct
         }
         .tap { onTap(ball) }
     }

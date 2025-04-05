@@ -16,5 +16,6 @@ struct Ball: Codable, Identifiable {
     let lenght: Int?
     let backend: Int?
     let hook: Int?
+    let isSpareBall: Bool?
 }
 

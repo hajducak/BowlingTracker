@@ -35,6 +35,17 @@ struct ImageBallView: View {
                     }
                 }
                 .id("\(ball.id)-\(ball.imageUrl?.absoluteString ?? "")")
+            }.overlay(alignment: .topLeading) {
+                if ball.isSpareBall ?? false {
+                    Text("Spare")
+                        .smallNegative()
+                        .padding(.horizontal, Padding.spacingXS)
+                        .padding(.vertical, Padding.spacingXXS)
+                        .background(Color(.complementary))
+                        .cornerRadius(Corners.corenrRadiusS, corners: [.topRight, .bottomLeft])
+                        .cornerRadius(Corners.corenrRadiusXXS, corners: [.topLeft, .bottomLeft])
+                        .offset(x: -Padding.spacingS, y: Padding.spacingXXM)
+                }
             }
             Text(ball.name)
                 .subheading(color: Color(.primary))

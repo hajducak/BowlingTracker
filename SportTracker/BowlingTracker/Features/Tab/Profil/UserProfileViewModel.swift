@@ -18,6 +18,7 @@ final class UserProfileViewModel: ObservableObject {
     
     @Published var newBallName: String = ""
     @Published var newBallImageUrl: String = ""
+    @Published var newBallIsSpareBall: Bool = false
     @Published var newBallBrand: String = ""
     @Published var newBallCoverstock: String = ""
     @Published var newBallRg: String = ""
@@ -136,7 +137,8 @@ final class UserProfileViewModel: ObservableObject {
             layout: newBallLayout,
             lenght: lenght,
             backend: backend,
-            hook: hook
+            hook: hook,
+            isSpareBall: newBallIsSpareBall
         )
         resetBallParameters()
         return ball

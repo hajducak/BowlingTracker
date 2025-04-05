@@ -36,6 +36,7 @@ struct UserProfileView: View {
                 name: $viewModel.newBallName,
                 brand: $viewModel.newBallBrand,
                 imageURL: $viewModel.newBallImageUrl,
+                isSpareBall: $viewModel.newBallIsSpareBall,
                 weight: $viewModel.newBallWeight,
                 rg: $viewModel.newBallRg,
                 diff: $viewModel.newBallDiff,

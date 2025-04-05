@@ -153,6 +153,10 @@ final class UserProfileViewModel: ObservableObject {
         return newValue == oldValue ? nil : newValue
     }
     
+    func openDetail(_ ball: Ball) {
+        // TODO: Ball detial
+    }
+
     deinit {
         cancellables.removeAll()
     }

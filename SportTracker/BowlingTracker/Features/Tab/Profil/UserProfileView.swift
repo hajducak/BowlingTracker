@@ -116,9 +116,7 @@ struct UserProfileView: View {
                         }
                         if let balls = user.balls {
                             ForEach(balls) { ball in
-                                ImageBallView(ball: ball, onTap: { _ in
-                                    // TODO: Ball detial
-                                })
+                                ImageBallView(ball: ball, onTap: { viewModel.openDetail($0) })
                             }
                         }
                     }

@@ -4,12 +4,11 @@ struct UserProfileView: View {
     @ObservedObject var viewModel: UserProfileViewModel
     @State private var showEditProfile = false
     @State private var showAddBall = false
-    @State private var isBallPulsing = false
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Padding.spacingM) {
-                profileCard
+                userProfileInfo
                 arsenalSection
             }
         }
@@ -58,7 +57,7 @@ struct UserProfileView: View {
         }
     }
     
-    var profileCard: some View {
+    var userProfileInfo: some View {
         VStack(alignment: .leading, spacing: Padding.spacingS) {
             if let user = viewModel.user {
                 HStack {
@@ -66,10 +65,10 @@ struct UserProfileView: View {
                     Text(user.email)
                     Spacer()
                 }
-                user.hand.map { hand in
+                user.homeCenter.map { home in
                     HStack {
-                        Image(systemName: "hand.raised.fill")
-                        Text(hand.description)
+                        Image(systemName: "pin.fill")
+                        Text(home)
                         Spacer()
                     }
                 }
@@ -80,35 +79,44 @@ struct UserProfileView: View {
                         Spacer()
                     }
                 }
-                user.homeCenter.map { home in
+                user.hand.map { hand in
                     HStack {
-                        Image(systemName: "pin.fill")
-                        Text(home)
+                        Image(systemName: "hand.raised.fill")
+                        Text(hand.description)
                         Spacer()
                     }
                 }
             }
         }
-        .subheading()
+        .subheading(weight: .medium)
         .frame(maxWidth: .infinity)
-        .padding(Padding.spacingXM)
-        .background(Color(.bgSecondary))
-        .cornerRadius(Corners.corenrRadiusXL, corners: [.bottomLeft, .bottomRight])
         .padding(.horizontal, Padding.defaultPadding)
     }
     
     private var arsenalSection: some View {
         VStack(alignment: .leading, spacing: Padding.spacingM) {
-            Text("My Arsenal")
-                .title()
-                .padding(.horizontal, Padding.defaultPadding)
+            HStack {
+                Text("My Arsenal")
+                    .title()
+                Spacer()
+                Button {
+                    showAddBall = true
+                } label: {
+                    Image(systemName: "plus.circle")
+                        .foregroundColor(Color(.primary))
+                }
+            }.padding(.horizontal, Padding.defaultPadding)
             if let user = viewModel.user {
                 ScrollView(.horizontal) {
                     HStack(alignment: .top, spacing: Padding.spacingM) {
-                        addBall
+                        if user.balls.isNillOrEmpty {
+                            EmptyBallView() {
+                                showAddBall = true
+                            }
+                        }
                         if let balls = user.balls {
                             ForEach(balls) { ball in
-                                BallView(ball: ball, onTap: { _ in
+                                ImageBallView(ball: ball, onTap: { _ in
                                     // TODO: Ball detial
                                 })
                             }
@@ -135,18 +143,24 @@ struct UserProfileView: View {
             }
         }
     }
+}
+
+struct EmptyBallView: View {
+    @State private var isBallPulsing = false
+    var size: CGSize = .init(width: 80, height: 80)
+    let onTap: () -> ()
     
-    private var addBall: some View {
+    var body: some View {
         ZStack {
             Circle()
                 .fill(Color(.bgTerciary))
-                .frame(width: 80, height: 80)
+                .frame(width: size.width, height: size.height)
             Circle()
                 .fill(Color(.bgPrimary))
-                .frame(width: 75, height: 75)
+                .frame(width: size.width - 5, height: size.height - 5)
             Circle()
                 .fill(Color(.bgTerciary))
-                .frame(width: 62, height: 62)
+                .frame(width: size.width - 18, height: size.height - 18)
                 .scaleEffect(isBallPulsing ? 1.0 : 0.9)
                 .onAppear {
                     withAnimation(
@@ -158,11 +172,11 @@ struct UserProfileView: View {
             Image(systemName: "plus")
                 .foregroundColor(Color(.primary))
                 .title()
-        }.tap { showAddBall = true }
+        }.tap { onTap() }
     }
 }
 
-struct BallView: View {
+struct ImageBallView: View {
     let ball: Ball
     let onTap: (Ball) -> ()
 
@@ -198,11 +212,10 @@ struct BallView: View {
                 }
             }
             Text(ball.name)
-                .heading(color: Color(.primary))
+                .subheading(color: Color(.primary))
                 .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .frame(maxWidth: 84)
-            // FIXME: height is not correct
+                .lineLimit(3)
+                .frame(maxWidth: 84, minHeight: 40)
         }
         .tap { onTap(ball) }
     }

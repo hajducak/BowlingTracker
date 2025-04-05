@@ -166,6 +166,15 @@ extension View {
     func infinity(_ isInfinity: Bool) -> some View {
         modifier(InfinityModifier(isInfinity: isInfinity))
     }
+    
+    func hideKeyboardOnTap() -> some View {
+        self.tap {
+            UIApplication.shared.sendAction(
+                #selector(UIResponder.resignFirstResponder),
+                to: nil, from: nil, for: nil
+            )
+        }
+    }
 }
 
 extension Double {
@@ -175,7 +184,7 @@ extension Double {
 }
 
 extension Optional where Wrapped: Collection {
-    var isNullOrEmpty: Bool {
+    var isNillOrEmpty: Bool {
         return self?.isEmpty ?? true
     }
 }

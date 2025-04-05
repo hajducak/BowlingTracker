@@ -79,9 +79,9 @@ final class UserProfileViewModel: ObservableObject {
         isLoading = true
         guard var user = self.user else { return }
         if user.balls == nil {
-            user.balls = Array<Ball>()
+            user.balls = [Ball]()
         }
-        user.balls?.append(newBall())
+        user.balls?.insert(newBall(), at: 0)
         updateUser(user)
     }
     

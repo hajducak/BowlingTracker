@@ -43,7 +43,6 @@ struct AddBallView: View {
                     
                     TextField("Enter ball weight", text: $weight)
                         .keyboardType(.numberPad)
-                    // FIXME: add done button for all number/decimal pads to be able dismiss keyboard
                         .defaultTextFieldStyle(labeled: "*Weight")
                     
                     TextField("Enter ball RG", text: $rg)
@@ -95,7 +94,9 @@ struct AddBallView: View {
                     RoundedRectangle(cornerRadius: Corners.corenrRadiusL)
                         .fill(Color(.bgSecondary))
                 }
-        }.edgesIgnoringSafeArea(.bottom)
+        }
+        .edgesIgnoringSafeArea(.bottom)
+        .hideKeyboardOnTap()
     }
     
     private var buttons: some View {

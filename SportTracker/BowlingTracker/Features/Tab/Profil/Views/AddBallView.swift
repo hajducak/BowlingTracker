@@ -6,7 +6,7 @@ struct AddBallView: View {
     @Binding var name: String
     @Binding var brand: String
     @Binding var imageURL: String
-    
+    @Binding var isSpareBall: Bool
     @Binding var weight: String
     @Binding var rg: String
     @Binding var diff: String
@@ -45,6 +45,11 @@ struct AddBallView: View {
                         .keyboardType(.numberPad)
                         .defaultTextFieldStyle(labeled: "*Weight")
                     
+                    Toggle("Spare ball", isOn: $isSpareBall)
+                        .tint(Color(.primary))
+                        .heading()
+                        .padding(.bottom, Padding.spacingS)
+                    
                     TextField("Enter ball RG", text: $rg)
                         .keyboardType(.decimalPad)
                         .defaultTextFieldStyle(labeled: "Radius of Gyration")
@@ -82,7 +87,6 @@ struct AddBallView: View {
                         .keyboardType(.numberPad)
                     TextField("Enter ball hook", text: $hook)
                         .defaultTextFieldStyle(labeled: "Hook")
-                    
                         .keyboardType(.numberPad)
                 }.padding(.horizontal, Padding.defaultPadding)
             }

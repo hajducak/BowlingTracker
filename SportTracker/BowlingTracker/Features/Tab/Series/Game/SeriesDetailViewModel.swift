@@ -112,8 +112,9 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
                       let series = userData.series.first(where: { $0.id == self.series.id }) else { return }
                 self.series = series
                 self.userBalls = userData.balls ?? []
+                let usedBallIds = series.games.flatMap { [$0.ballId, $0.spareBallId] }.compactMap { $0 }
                 self.seriesUsedBalls = userBalls.filter { ball in
-                    series.games.compactMap({ $0.ballId }).contains(ball.id)
+                    usedBallIds.contains(ball.id)
                 }
                 isLoadingOverlay = false
                 if series.isCurrentGameActive() {

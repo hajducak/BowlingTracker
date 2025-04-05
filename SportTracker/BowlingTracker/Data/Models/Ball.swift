@@ -10,6 +10,7 @@ struct Ball: Codable, Identifiable {
     let surface: String?
     let weight: Int
     let core: String?
+    let coreImageUrl: URL?
     let pinToPap: Double?
     let layout: String?
     let lenght: Int?

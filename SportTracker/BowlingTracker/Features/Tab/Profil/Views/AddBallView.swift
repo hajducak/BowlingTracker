@@ -14,6 +14,7 @@ struct AddBallView: View {
     @Binding var pinToPap: String
     @Binding var layout: String
     
+    @Binding var coreImageUrl: String
     @Binding var core: String
     @Binding var surface: String
     @Binding var coverstock: String
@@ -58,6 +59,9 @@ struct AddBallView: View {
                     
                     TextField("Enter ball layout", text: $layout)
                         .defaultTextFieldStyle(labeled: "Ball layout")
+                    
+                    TextField("Enter core image", text: $coreImageUrl)
+                        .defaultTextFieldStyle(labeled: "Core image")
                     
                     TextField("Enter ball core", text: $core)
                         .defaultTextFieldStyle(labeled: "Core")

@@ -42,6 +42,7 @@ struct UserProfileView: View {
                 diff: $viewModel.newBallDiff,
                 pinToPap: $viewModel.newBallPinToPap,
                 layout: $viewModel.newBallLayout,
+                coreImageUrl: $viewModel.newBallCoreImageUrl,
                 core: $viewModel.newBallCore,
                 surface: $viewModel.newBallSurface,
                 coverstock: $viewModel.newBallCoverstock,
@@ -104,9 +105,7 @@ struct UserProfileView: View {
             if let user = viewModel.user {
                 ScrollView {
                     HStack(alignment: .top, spacing: Padding.spacingM) {
-                        if user.balls.isNullOrEmpty {
-                            addBall
-                        }
+                        addBall
                         if let balls = user.balls {
                             ForEach(balls) { ball in
                                 BallView(ball: ball, onTap: { _ in
@@ -178,6 +177,7 @@ struct BallView: View {
                     switch phase {
                     case .empty:
                         ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: Color(.primary)))
                     case .success(let image):
                         image
                             .resizable()

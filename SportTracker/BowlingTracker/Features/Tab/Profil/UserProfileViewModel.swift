@@ -24,6 +24,7 @@ final class UserProfileViewModel: ObservableObject {
     @Published var newBallSurface: String = ""
     @Published var newBallWeight: String = ""
     @Published var newBallCore: String = ""
+    @Published var newBallCoreImageUrl: String = ""
     @Published var newBallPinToPap: String = ""
     @Published var newBallLayout: String = ""
     @Published var newBallLenght: String = ""
@@ -77,6 +78,9 @@ final class UserProfileViewModel: ObservableObject {
     func addNewBall() {
         isLoading = true
         guard var user = self.user else { return }
+        if user.balls == nil {
+            user.balls = Array<Ball>()
+        }
         user.balls?.append(newBall())
         updateUser(user)
     }
@@ -97,14 +101,15 @@ final class UserProfileViewModel: ObservableObject {
     }
     
     private func newBall() -> Ball {
-        let rg: Double? = Double(newBallRg)
-        let diff: Double? = Double(newBallDiff)
+        let rg: Double? = Double(newBallRg.replacingOccurrences(of: ",", with: "."))
+        let diff: Double? = Double(newBallDiff.replacingOccurrences(of: ",", with: "."))
         let weight: Int = Int(newBallWeight) ?? 0
-        let pinToPap: Double? = Double(newBallPinToPap)
+        let pinToPap: Double? = Double(newBallPinToPap.replacingOccurrences(of: ",", with: "."))
         let pictureUrl: URL? = URL(string: newBallImageUrl)
         let lenght: Int? = Int(newBallLenght)
         let backend: Int? = Int(newBallBackend)
         let hook: Int? = Int(newBallHook)
+        let coreImageUrl: URL? = URL(string: newBallCoreImageUrl)
         let ball = Ball(
             imageUrl: pictureUrl,
             name: newBallName,
@@ -115,6 +120,7 @@ final class UserProfileViewModel: ObservableObject {
             surface: newBallSurface,
             weight: weight,
             core: newBallCore,
+            coreImageUrl: coreImageUrl,
             pinToPap: pinToPap,
             layout: newBallLayout,
             lenght: lenght,

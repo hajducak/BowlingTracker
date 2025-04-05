@@ -51,9 +51,13 @@ struct UserProfileView: View {
             ) {
                 viewModel.addNewBall()
                 showAddBall = false
+                viewModel.showAddBallModal = false
             } onClose: {
                 showAddBall = false
+                viewModel.showAddBallModal = false
             }
+        }.onReceive(viewModel.$showAddBallModal) { value in
+            if value { showAddBall = true }
         }
     }
     

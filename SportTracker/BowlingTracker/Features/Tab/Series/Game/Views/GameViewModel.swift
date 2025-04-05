@@ -137,7 +137,8 @@ class GameViewModel: ObservableObject {
     }
     
     func onAddBall() {
-        // TODO: select Tab = 2 and add Notification for addBall() in profile
+        NotificationCenter.default.post(name: .selectProfileTab, object: nil)
+        NotificationCenter.default.post(name: .addBallRequested, object: nil)
     }
     
     deinit {

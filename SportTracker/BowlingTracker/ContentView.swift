@@ -73,15 +73,3 @@ struct ContentView: View {
         }
     }
 }
-
-class TabSelectionViewModel: ObservableObject {
-    @Published var selectedTab: Int = 0
-
-    func selectAddTab() {
-        selectedTab = 0
-    }
-
-    func selectListTab() {
-        selectedTab = 1
-    }
-}

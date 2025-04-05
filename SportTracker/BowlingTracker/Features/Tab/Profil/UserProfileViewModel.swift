@@ -7,6 +7,7 @@ final class UserProfileViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var toast: Toast?
     @Published var user: User?
+    @Published var showAddBallModal: Bool = false
     
     private let userService: UserService
     
@@ -35,6 +36,7 @@ final class UserProfileViewModel: ObservableObject {
         self.userService = userService
         
         loadData()
+        setupNotifications()
     }
     
     private func loadData() {
@@ -55,6 +57,15 @@ final class UserProfileViewModel: ObservableObject {
                 self.newStyle = user?.style ?? .oneHanded
                 self.newHand = user?.hand ?? .righty
             }.store(in: &cancellables)
+    }
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(showAddBall), name: .addBallRequested, object: nil)
+    }
+    
+    @objc private func showAddBall() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.showAddBallModal = true
+        }
     }
     
     func updateUserProfile() {
@@ -158,6 +169,7 @@ final class UserProfileViewModel: ObservableObject {
     }
 
     deinit {
+        NotificationCenter.default.removeObserver(self)
         cancellables.removeAll()
     }
 }

@@ -86,16 +86,5 @@ struct SeriesCell: View {
 extension SeriesType {
     var bgColor: Color {
         return .complementary
-        // TODO: ask Laura what is better, blue or different colors
-        switch self {
-        case .tournament:
-            return .tournament
-        case .league:
-            return .league
-        case .practise:
-            return .practise
-        case .other:
-            return .other
-        }
     }
 }

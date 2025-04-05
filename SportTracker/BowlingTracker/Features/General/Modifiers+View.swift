@@ -166,10 +166,25 @@ extension View {
     func infinity(_ isInfinity: Bool) -> some View {
         modifier(InfinityModifier(isInfinity: isInfinity))
     }
+    
+    func hideKeyboardOnTap() -> some View {
+        self.tap {
+            UIApplication.shared.sendAction(
+                #selector(UIResponder.resignFirstResponder),
+                to: nil, from: nil, for: nil
+            )
+        }
+    }
 }
 
 extension Double {
     func twoPointFormat() -> String {
         String(format: "%.2f%", self)
+    }
+}
+
+extension Optional where Wrapped: Collection {
+    var isNillOrEmpty: Bool {
+        return self?.isEmpty ?? true
     }
 }

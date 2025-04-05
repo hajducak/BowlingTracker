@@ -35,12 +35,26 @@ struct User: Codable, Identifiable {
     var homeCenter: String?
     var style: BowlingStyle?
     var hand: HandStyle?
-    // TODO: add PIN & PAP
+    var balls: [Ball]?
     
-    init(id: String, email: String, series: [Series] = []) {
+    init(
+        id: String,
+        email: String,
+        series: [Series] = [],
+        name: String? = nil,
+        homeCenter: String? = nil,
+        style: BowlingStyle? = nil,
+        hand: HandStyle? = nil,
+        balls: [Ball]? = nil
+    ) {
         self.id = id
         self.email = email
         self.series = series
+        self.name = name
+        self.homeCenter = homeCenter
+        self.style = style
+        self.hand = hand
+        self.balls = balls
     }
     
     /// Updates a series in the user's series array
@@ -53,7 +67,16 @@ struct User: Codable, Identifiable {
         } else {
             updatedSeriesArray.append(updatedSeries)
         }
-        return User(id: id, email: email, series: updatedSeriesArray)
+        return User(
+            id: id,
+            email: email,
+            series: updatedSeriesArray,
+            name: name,
+            homeCenter: homeCenter,
+            style:style,
+            hand: hand,
+            balls: balls
+        )
     }
     
     /// Updates a series in the user's series array by appending a new game
@@ -68,6 +91,15 @@ struct User: Codable, Identifiable {
             updatedSeries.games.append(game)
             updatedSeriesArray[index] = updatedSeries
         }
-        return User(id: id, email: email, series: updatedSeriesArray)
+        return User(
+            id: id,
+            email: email,
+            series: updatedSeriesArray,
+            name: name,
+            homeCenter: homeCenter,
+            style:style,
+            hand: hand,
+            balls: balls
+        )
     }
-} 
+}

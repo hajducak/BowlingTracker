@@ -89,6 +89,18 @@ struct SeriesDetailView: View {
                     .padding(.horizontal, Padding.defaultPadding)
                     .padding(.top, Padding.spacingXXS)
                 GamesListView(viewModel: viewModel)
+
+                Text("Used balls")
+                    .title()
+                    .padding(.horizontal, Padding.defaultPadding)
+                    .padding(.top, Padding.spacingXXS)
+                ScrollView(.horizontal) {
+                    HStack(alignment: .top, spacing: Padding.spacingM) {
+                        ForEach(viewModel.seriesUsedBalls) { ball in
+                            ImageBallView(ball: ball, onTap: { viewModel.openDetail($0) })
+                        }
+                    }.padding(.horizontal, Padding.defaultPadding)
+                }
                 if let advancedStatisticsViewModel = viewModel.advancedStatisticsViewModel {
                     AdvancedStatisticsView(viewModel: advancedStatisticsViewModel, title: "Advanced")
                 }

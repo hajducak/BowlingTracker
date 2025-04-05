@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 
 class GameViewModel: ObservableObject {
     @Published var selectedPins: Set<Int> = []
@@ -7,17 +8,19 @@ class GameViewModel: ObservableObject {
     @Published var currentFrameIndex: Int = 0
     @Published var game: Game
     @Published var gameLane: String = ""
-    @Published var gameBallName: String = ""
+    @Published var selectedBall: Ball?
     @Published var saveGameIsEnabled: Bool = false
     @Published var spareIsEnabled: Bool = false
     @Published var strikeIsEnabled: Bool = true
     @Published var addRollIsEnabled: Bool = true
+    @Published var user: User
 
     private var cancellables = Set<AnyCancellable>()
     let gameSaved = PassthroughSubject<Game, Never>()
 
-    init(game: Game) {
+    init(game: Game, user: User) {
         self.game = game
+        self.user = user
 
         $game.combineLatest($gameLane)
             .map { $0.frames.allSatisfy { $0.frameType != .unfinished } && !$1.isEmpty }
@@ -129,8 +132,13 @@ class GameViewModel: ObservableObject {
     
     func saveGame() {
         game.lane = gameLane
-        game.ball = gameBallName
+        game.ballId = selectedBall?.id
         gameSaved.send(game)
+    }
+    
+    func onAddBall() {
+        NotificationCenter.default.post(name: .selectProfileTab, object: nil)
+        NotificationCenter.default.post(name: .addBallRequested, object: nil)
     }
     
     deinit {

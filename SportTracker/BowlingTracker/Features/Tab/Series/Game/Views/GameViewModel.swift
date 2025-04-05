@@ -9,6 +9,7 @@ class GameViewModel: ObservableObject {
     @Published var game: Game
     @Published var gameLane: String = ""
     @Published var selectedBall: Ball?
+    @Published var selectedSpareBall: Ball?
     @Published var saveGameIsEnabled: Bool = false
     @Published var spareIsEnabled: Bool = false
     @Published var strikeIsEnabled: Bool = true
@@ -133,6 +134,7 @@ class GameViewModel: ObservableObject {
     func saveGame() {
         game.lane = gameLane
         game.ballId = selectedBall?.id
+        game.spareBallId = selectedSpareBall?.id
         gameSaved.send(game)
     }
     

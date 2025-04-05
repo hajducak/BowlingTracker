@@ -112,7 +112,7 @@ struct UserProfileView: View {
                 }
             }.padding(.horizontal, Padding.defaultPadding)
             if let user = viewModel.user {
-                ScrollView(.horizontal) {
+                ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .top, spacing: Padding.spacingM) {
                         if user.balls.isNillOrEmpty {
                             EmptyBallView() {

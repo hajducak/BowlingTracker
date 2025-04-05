@@ -24,57 +24,67 @@ struct GameView: View {
                 selectedPins: $viewModel.selectedPins,
                 disabledPins: viewModel.disabledPins
             )
-                .padding(.horizontal, Padding.defaultPadding)
-                .padding(.bottom, Padding.defaultPadding)
-            HStack(spacing: Padding.spacingS) {
-                PrimaryButton(
-                    leadingImage: Image(systemName: "chevron.backward"),
-                    title: "Back",
-                    isLoading: false,
-                    isEnabled: true,
-                    isInfinity: false,
-                    horizontalPadding: Padding.spacingM,
-                    action: viewModel.undoRoll
-                )
-                PrimaryButton(
-                    title: "Add Roll",
-                    isLoading: false,
-                    isEnabled: viewModel.addRollIsEnabled,
-                    action: viewModel.addRoll
-                )
-                PrimaryButton(
-                    title: "X",
-                    isLoading: false,
-                    isEnabled: viewModel.strikeIsEnabled,
-                    isInfinity: false,
-                    horizontalPadding: Padding.spacingM,
-                    action: viewModel.addStrike
-                )
-                PrimaryButton(
-                    title: "/",
-                    isLoading: false,
-                    isEnabled: viewModel.spareIsEnabled,
-                    isInfinity: false,
-                    horizontalPadding: Padding.spacingM,
-                    action: viewModel.addSpare
-                )
-            }
-                .padding(.horizontal, Padding.defaultPadding)
+            .padding(.horizontal, Padding.defaultPadding)
+            .padding(.bottom, Padding.defaultPadding)
+            buttons
             PrimaryButton(
                 title: "Save Game",
                 isLoading: false,
                 isEnabled: viewModel.saveGameIsEnabled,
                 action: viewModel.saveGame
             )
-                .padding(.horizontal, Padding.defaultPadding)
+            .padding(.horizontal, Padding.defaultPadding)
             TextField("Enter lane numbers", text: $viewModel.gameLane)
                 .defaultTextFieldStyle(labeled: "On lane")
                 .padding(.horizontal, Padding.defaultPadding)
                 .padding(.top, Padding.spacingS)
+            selectBallSection
+        }
+    }
+    
+    private var buttons: some View {
+        HStack(spacing: Padding.spacingS) {
+            PrimaryButton(
+                leadingImage: Image(systemName: "chevron.backward"),
+                title: "Back",
+                isLoading: false,
+                isEnabled: true,
+                isInfinity: false,
+                horizontalPadding: Padding.spacingM,
+                action: viewModel.undoRoll
+            )
+            PrimaryButton(
+                title: "Add Roll",
+                isLoading: false,
+                isEnabled: viewModel.addRollIsEnabled,
+                action: viewModel.addRoll
+            )
+            PrimaryButton(
+                title: "X",
+                isLoading: false,
+                isEnabled: viewModel.strikeIsEnabled,
+                isInfinity: false,
+                horizontalPadding: Padding.spacingM,
+                action: viewModel.addStrike
+            )
+            PrimaryButton(
+                title: "/",
+                isLoading: false,
+                isEnabled: viewModel.spareIsEnabled,
+                isInfinity: false,
+                horizontalPadding: Padding.spacingM,
+                action: viewModel.addSpare
+            )
+        }
+        .padding(.horizontal, Padding.defaultPadding)
+    }
+    
+    private var selectBallSection: some View {
+        Group {
             if let balls = viewModel.user.balls, !balls.isEmpty {
                 VStack(alignment: .leading, spacing: Padding.spacingS) {
                     Menu {
-                        ForEach(balls, id: \.id) { ball in
+                        ForEach(balls.filter({ !($0.isSpareBall ?? false) }), id: \.id) { ball in
                             Button(ball.name) {
                                 viewModel.selectedBall = ball
                             }
@@ -89,10 +99,33 @@ struct GameView: View {
                         }
                         .padding()
                         .background(Color(.bgSecondary))
-                        .cornerRadius(12)
+                        .cornerRadius(Corners.corenrRadiusM)
                     }.labled(label: "Select Ball")
-                    if let selectedBall = viewModel.selectedBall {
-                        ImageBallView(ball: selectedBall) { _ in }
+                    Menu {
+                        ForEach(balls.filter({ $0.isSpareBall ?? false }), id: \.id) { ball in
+                            Button(ball.name) {
+                                viewModel.selectedSpareBall = ball
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(viewModel.selectedSpareBall?.name ?? "Choose a Spare ball")
+                                .body()
+                            Spacer()
+                            Image(systemName: "chevron.down.circle.fill")
+                                .foregroundStyle(Color(.primary))
+                        }
+                        .padding()
+                        .background(Color(.bgSecondary))
+                        .cornerRadius(Corners.corenrRadiusM)
+                    }.labled(label: "Select Spare Ball")
+                    HStack {
+                        if let selectedBall = viewModel.selectedBall {
+                            ImageBallView(ball: selectedBall) { _ in }
+                        }
+                        if let selectedBall = viewModel.selectedSpareBall {
+                            ImageBallView(ball: selectedBall) { _ in }
+                        }
                     }
                 }.padding(.horizontal, Padding.defaultPadding)
             } else {

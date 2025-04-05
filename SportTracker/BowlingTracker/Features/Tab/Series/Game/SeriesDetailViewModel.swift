@@ -13,6 +13,7 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var state: SeriesDetailContentState = .empty
     @Published var toast: Toast? = nil
     @Published var series: Series
+    @Published var userBalls: [Ball] = []
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
     @Published var isLoadingOverlay: Bool = false
@@ -101,17 +102,29 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     }
 
     private func setupContent() {
-        if series.isCurrentGameActive() {
-            guard let currentGame = series.currentGame else {
-                state = series.games.isEmpty ? .empty : .content(games)
-                return
+        isLoadingOverlay = true
+        userService.fetchUserData()
+            .receive(on: DispatchQueue.main)
+            .sink { _ in } receiveValue: { [weak self] user in
+                guard let self = self,
+                      let userData = user,
+                      let series = userData.series.first(where: { $0.id == self.series.id }) else { return }
+                self.series = series
+                self.userBalls = userData.balls ?? []
+                isLoadingOverlay = false
+                if series.isCurrentGameActive() {
+                    guard let currentGame = series.currentGame else {
+                        state = series.games.isEmpty ? .empty : .content(games)
+                        return
+                    }
+                    let viewModel = gameViewModelFactory.viewModel(game: currentGame, user: userData)
+                    self.gameViewModel = viewModel
+                    state = .playing(viewModel)
+                } else {
+                    state = series.games.isEmpty ? .empty : .content(games)
+                }
             }
-            let viewModel = gameViewModelFactory.viewModel(game: currentGame)
-            self.gameViewModel = viewModel
-            state = .playing(viewModel)
-        } else {
-            state = series.games.isEmpty ? .empty : .content(games)
-        }
+            .store(in: &cancellables)
     }
 
     func getCurrentGameScore() -> Int {

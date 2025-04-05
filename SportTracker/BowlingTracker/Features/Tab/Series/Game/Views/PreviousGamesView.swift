@@ -31,7 +31,7 @@ struct PreviousGamesView: View {
                             gameNumber: index + 1,
                             currentScore: viewModel.series.games[index].currentScore,
                             lane: viewModel.series.games[index].lane,
-                            ball: viewModel.series.games[index].ball
+                            ball: viewModel.userBalls.first(where: { $0.id == viewModel.series.games[index].ballId })
                         )
                             .padding(.horizontal, Padding.defaultPadding)
                         ScrollView(.horizontal) {

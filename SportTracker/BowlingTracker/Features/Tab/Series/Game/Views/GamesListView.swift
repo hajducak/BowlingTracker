@@ -13,7 +13,7 @@ struct GamesListView: View {
                         gameNumber: index + 1,
                         currentScore: viewModel.games[index].currentScore,
                         lane: viewModel.games[index].lane,
-                        ball: viewModel.games[index].ball
+                        ball: viewModel.userBalls.first(where: { $0.id == viewModel.games[index].ballId })
                     )
                     Spacer()
                     Image(systemName: "chevron.up.circle.fill")

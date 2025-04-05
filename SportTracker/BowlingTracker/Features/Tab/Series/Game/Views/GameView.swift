@@ -71,15 +71,47 @@ struct GameView: View {
                 .defaultTextFieldStyle(labeled: "On lane")
                 .padding(.horizontal, Padding.defaultPadding)
                 .padding(.top, Padding.spacingS)
-            TextField("Enter ball name", text: $viewModel.gameBallName)
-                .defaultTextFieldStyle(labeled: "With ball")
+            if let balls = viewModel.user.balls, !balls.isEmpty {
+                VStack(alignment: .leading, spacing: Padding.spacingS) {
+                    Menu {
+                        ForEach(balls, id: \.id) { ball in
+                            Button(ball.name) {
+                                viewModel.selectedBall = ball
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(viewModel.selectedBall?.name ?? "Choose a ball")
+                                .body()
+                            Spacer()
+                            Image(systemName: "chevron.down.circle.fill")
+                                .foregroundStyle(Color(.primary))
+                        }
+                        .padding()
+                        .background(Color(.bgSecondary))
+                        .cornerRadius(12)
+                    }.labled(label: "Select Ball")
+                    if let selectedBall = viewModel.selectedBall {
+                        ImageBallView(ball: selectedBall) { _ in }
+                    }
+                }.padding(.horizontal, Padding.defaultPadding)
+            } else {
+                VStack(alignment: .leading) {
+                    Text("‼️ No balls available!")
+                        .heading(color: .error)
+                    SecondaryButton(trailingImage: Image(systemName: "plus.circle"), title: "Add Ball", isLoading: false, isEnabled: true) {
+                        viewModel.onAddBall()
+                    }
+                }
+                .labled(label: "Select Ball")
                 .padding(.horizontal, Padding.defaultPadding)
+            }
         }
     }
 }
 
 #Preview {
-    GameView(viewModel: GameViewModel(game: Game()))
+    GameView(viewModel: GameViewModel(game: Game(), user: User(id: "1", email: "1@1.com")))
         .padding()
 }
 

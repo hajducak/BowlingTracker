@@ -4,7 +4,7 @@ struct GameHeading: View {
     var gameNumber: Int
     var currentScore: Int
     var lane: String?
-    var ball: String?
+    var ball: Ball?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -24,7 +24,7 @@ struct GameHeading: View {
                 Spacer()
             }
             ball.map { ball in
-                Text(ball)
+                Text(ball.name)
                     .subheading()
                     .padding(.top, Padding.spacingXXXS)
             }

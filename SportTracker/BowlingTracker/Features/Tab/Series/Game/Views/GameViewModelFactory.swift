@@ -1,10 +1,10 @@
 
 protocol GameViewModelFactory {
-    func viewModel(game: Game) -> GameViewModel
+    func viewModel(game: Game, user: User) -> GameViewModel
 }
 
 final class GameViewModelFactoryImpl: GameViewModelFactory {
-    func viewModel(game: Game) -> GameViewModel {
-        GameViewModel(game: game)
+    func viewModel(game: Game, user: User) -> GameViewModel {
+        GameViewModel(game: game, user: user)
     }
 }

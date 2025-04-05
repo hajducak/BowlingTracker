@@ -14,7 +14,21 @@ final class UserProfileViewModel: ObservableObject {
     @Published var newHomeCenter = ""
     @Published var newStyle: BowlingStyle = .oneHanded
     @Published var newHand: HandStyle = .righty
-    @Published var newBall: Ball? = nil
+    
+    @Published var newBallName: String = ""
+    @Published var newBallImageUrl: String = ""
+    @Published var newBallBrand: String = ""
+    @Published var newBallCoverstock: String = ""
+    @Published var newBallRg: String = ""
+    @Published var newBallDiff: String = ""
+    @Published var newBallSurface: String = ""
+    @Published var newBallWeight: String = ""
+    @Published var newBallCore: String = ""
+    @Published var newBallPinToPap: String = ""
+    @Published var newBallLayout: String = ""
+    @Published var newBallLenght: String = ""
+    @Published var newBallBackend: String = ""
+    @Published var newBallHook: String = ""
     
     init(userService: UserService) {
         self.userService = userService
@@ -42,7 +56,7 @@ final class UserProfileViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
     
-    func updateUser() {
+    func updateUserProfile() {
         isLoading = true
         guard var user = self.user else { return }
         if let name = valueIfModified(newProfileName, user.name) {
@@ -57,9 +71,17 @@ final class UserProfileViewModel: ObservableObject {
         if let hand = valueIfModified(newHand, user.hand) {
             user.hand = hand
         }
-        if let ball = newBall {
-            user.balls?.append(ball)
-        }
+        updateUser(user)
+    }
+    
+    func addNewBall() {
+        isLoading = true
+        guard var user = self.user else { return }
+        user.balls?.append(newBall())
+        updateUser(user)
+    }
+    
+    private func updateUser(_ user: User) {
         userService.saveUser(user)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
@@ -74,6 +96,48 @@ final class UserProfileViewModel: ObservableObject {
             }.store(in: &cancellables)
     }
     
+    private func newBall() -> Ball {
+        let rg: Double? = Double(newBallRg)
+        let diff: Double? = Double(newBallDiff)
+        let weight: Int = Int(newBallWeight) ?? 0
+        let pinToPap: Double? = Double(newBallPinToPap)
+        let pictureUrl: URL? = URL(string: newBallImageUrl)
+        let lenght: Int? = Int(newBallLenght)
+        let backend: Int? = Int(newBallBackend)
+        let hook: Int? = Int(newBallHook)
+        let ball = Ball(
+            imageUrl: pictureUrl,
+            name: newBallName,
+            brand: newBallBrand,
+            coverstock: newBallCoverstock,
+            rg: rg,
+            diff: diff,
+            surface: newBallSurface,
+            weight: weight,
+            core: newBallCore,
+            pinToPap: pinToPap,
+            layout: newBallLayout,
+            lenght: lenght,
+            backend: backend,
+            hook: hook
+        )
+        resetBallParameters()
+        return ball
+    }
+    
+    private func resetBallParameters() {
+        newBallName = ""
+        newBallBrand = ""
+        newBallCoverstock = ""
+        newBallRg = ""
+        newBallDiff = ""
+        newBallSurface = ""
+        newBallWeight = ""
+        newBallCore = ""
+        newBallPinToPap = ""
+        newBallLayout = ""
+    }
+
     private func valueIfModified<T: Equatable>(_ newValue: T, _ oldValue: T) -> T? {
         return newValue == oldValue ? nil : newValue
     }

@@ -3,6 +3,7 @@ import SwiftUI
 struct UserProfileView: View {
     @ObservedObject var viewModel: UserProfileViewModel
     @State private var showEditProfile = false
+    @State private var showAddBall = false
     @State private var isBallPulsing = false
     
     var body: some View {
@@ -25,10 +26,33 @@ struct UserProfileView: View {
                 style: $viewModel.newStyle,
                 hand: $viewModel.newHand
             ) {
-                viewModel.updateUser()
+                viewModel.updateUserProfile()
                 showEditProfile = false
             } onClose: {
                 showEditProfile = false
+            }
+        }.fullScreenCover(isPresented: $showAddBall) {
+            AddBallView(
+                title: "Add new ball",
+                name: $viewModel.newBallName,
+                brand: $viewModel.newBallBrand,
+                imageURL: $viewModel.newBallImageUrl,
+                weight: $viewModel.newBallWeight,
+                rg: $viewModel.newBallRg,
+                diff: $viewModel.newBallDiff,
+                pinToPap: $viewModel.newBallPinToPap,
+                layout: $viewModel.newBallLayout,
+                core: $viewModel.newBallCore,
+                surface: $viewModel.newBallSurface,
+                coverstock: $viewModel.newBallCoverstock,
+                lenght: $viewModel.newBallLenght,
+                backend: $viewModel.newBallBackend,
+                hook: $viewModel.newBallHook
+            ) {
+                viewModel.addNewBall()
+                showAddBall = false
+            } onClose: {
+                showAddBall = false
             }
         }
     }
@@ -76,54 +100,24 @@ struct UserProfileView: View {
         VStack(alignment: .leading, spacing: Padding.spacingM) {
             Text("My Arsenal")
                 .title()
+                .padding(.horizontal, Padding.defaultPadding)
             if let user = viewModel.user {
-                HStack(alignment: .top, spacing: Padding.spacingM) {
-                    if user.balls.isNullOrEmpty {
-                        ZStack {
-                            Circle()
-                                .fill(Color(.bgTerciary))
-                                .frame(width: 80, height: 80)
-                            Circle()
-                                .fill(Color(.bgPrimary))
-                                .frame(width: 75, height: 75)
-                            Circle()
-                                .fill(Color(.bgTerciary))
-                                .frame(width: 62, height: 62)
-                                .scaleEffect(isBallPulsing ? 1.0 : 0.9)
-                                .onAppear {
-                                    withAnimation(
-                                        Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true)
-                                    ) {
-                                        isBallPulsing.toggle()
-                                    }
-                                }
-                            Image(systemName: "plus")
-                                .foregroundColor(Color(.primary))
-                                .title()
-                        }.tap {
-                            // TODO: add ball view
+                ScrollView {
+                    HStack(alignment: .top, spacing: Padding.spacingM) {
+                        if user.balls.isNullOrEmpty {
+                            addBall
                         }
-                    }
-                    // TODO: mock data and user.balls (FOREACH)
-                    VStack {
-                        BallView(image: Image(.phaze4))
-                        Text("Phaze 4")
-                            .heading(color: Color(.primary))
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
-                            .frame(maxWidth: 84)
-                    }
-                    VStack {
-                        BallView(image: Image(.urethane))
-                        Text("Purple Urethane")
-                            .heading(color: Color(.primary))
-                            .multilineTextAlignment(.center)
-                            .lineLimit(2)
-                            .frame(maxWidth: 84)
-                    }
+                        if let balls = user.balls {
+                            ForEach(balls) { ball in
+                                BallView(ball: ball, onTap: { _ in
+                                    // TODO: Ball detial
+                                })
+                            }
+                        }
+                    }.padding(.horizontal, Padding.defaultPadding)
                 }
             }
-        }.padding(.horizontal, Padding.defaultPadding)
+        }
     }
     
     private var editButton: some View {
@@ -140,27 +134,73 @@ struct UserProfileView: View {
             }
         }
     }
-}
-
-struct BallView: View {
-    var image: Image // TODO: remove wehn image will be inside ball struct
-    // let ball: Ball
-    // let onTap: (Ball) -> ()
-
-    var body: some View {
+    
+    private var addBall: some View {
         ZStack {
             Circle()
-                .fill(Color(.primary))
+                .fill(Color(.bgTerciary))
                 .frame(width: 80, height: 80)
             Circle()
                 .fill(Color(.bgPrimary))
                 .frame(width: 75, height: 75)
-            image // TODO: WebImage(image: ball.image.url)
-                .resizable()
-                .scaledToFill()
+            Circle()
+                .fill(Color(.bgTerciary))
                 .frame(width: 62, height: 62)
-                .clipShape(Circle())
+                .scaleEffect(isBallPulsing ? 1.0 : 0.9)
+                .onAppear {
+                    withAnimation(
+                        Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true)
+                    ) {
+                        isBallPulsing.toggle()
+                    }
+                }
+            Image(systemName: "plus")
+                .foregroundColor(Color(.primary))
+                .title()
+        }.tap { showAddBall = true }
+    }
+}
+
+struct BallView: View {
+    let ball: Ball
+    let onTap: (Ball) -> ()
+
+    var body: some View {
+        VStack {
+            ZStack {
+                Circle()
+                    .fill(Color(.primary))
+                    .frame(width: 80, height: 80)
+                Circle()
+                    .fill(Color(.bgPrimary))
+                    .frame(width: 75, height: 75)
+                AsyncImage(url: ball.imageUrl) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 62, height: 62)
+                            .clipShape(Circle())
+                    case .failure:
+                        Image(.defaultBall)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 62, height: 62)
+                            .clipShape(Circle())
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+            }
+            Text(ball.name)
+                .heading(color: Color(.primary))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .frame(maxWidth: 84)
         }
-        // .tap { onTap(ball) }
+        .tap { onTap(ball) }
     }
 }

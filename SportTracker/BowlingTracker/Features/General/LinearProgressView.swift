@@ -8,6 +8,9 @@ struct LinearProgressView: View {
     var width: CGFloat
     var height: CGFloat = 12
 
+    var onLongPress: (() -> ())?
+    var onTap: (() -> ())?
+
     @State private var animatedValue: Double = 0
 
     var progress: Double {
@@ -57,6 +60,8 @@ struct LinearProgressView: View {
         .onChange(of: value, { _, newValue in
             animatedValue = newValue
         })
+        .onLongPressGesture(minimumDuration: 0.5) { withAnimation { onLongPress?() } }
+        .tap { withAnimation { onTap?() } }
     }
 }
 

@@ -11,7 +11,7 @@ struct PinCoverageView: View {
             Text(title)
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)
-            InfoBox(info: "Select any combination of pins to calculate how frequently they were hit.")
+            TooltipView(info: "Select any combination of pins to calculate how frequently they were coverd.")
                 .padding(.bottom, Padding.spacingXS)
             HStack(alignment: .center, spacing: Padding.spacingS) {
                 Spacer()
@@ -32,19 +32,5 @@ struct PinCoverageView: View {
                 )
             }.padding(.horizontal, Padding.defaultPadding)
         }
-    }
-}
-
-struct InfoBox: View {
-    var info: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: Padding.spacingS) {
-            Image(systemName: "info.circle")
-                .foregroundStyle(Color(.primary))
-            Text(info)
-                .subheading(color: .textSecondary, weight: .regular)
-                .multilineTextAlignment(.leading)
-        }.padding(.horizontal, Padding.defaultPadding)
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class BasicStatisticsViewModel: ObservableObject {
+class BasicStatisticsViewModel: TooltipViewModel, TooltipStatRepresentable {
     @Published var series = [Series]() {
         didSet {
             setupStatistics(for: series)
@@ -31,7 +31,6 @@ class BasicStatisticsViewModel: ObservableObject {
         let strikesPossibility = 12 * totalGames
         let totalStrikes = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.strikeCount } }
 
-        // FIXME:  WRONG COUNTING? debug it
         let opensPossibility = 10 * totalGames
         let totalOpenFrames = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.openFrameCount } }
         
@@ -51,10 +50,31 @@ class BasicStatisticsViewModel: ObservableObject {
         totalSparesPercentage = percent(totalSpares, sparesPossibility)
         totalOpensPercentage = percent(totalOpenFrames, opensPossibility)
         totalSplitsPercentage = percent(totalSplits, splitsPossibility)
-
         totalStrikesCount = "\(totalStrikes)/\(strikesPossibility)"
         totalSparesCount = "\(totalSpares)/\(sparesPossibility)"
         totalOpensCount = "\(totalOpenFrames)/\(opensPossibility)"
         totalSplitsCount = "\(totalSplits)/\(splitsPossibility)"
+    }
+
+    enum StatType {
+        case strikes, spares, opens, splits
+    }
+    
+    func showTooltip(for stat: StatType) {
+        let text = getTooltipFor(stat)
+        super.showTooltip(text: text)
+    }
+    
+    internal func getTooltipFor(_ stat: StatType) -> String {
+        switch stat {
+        case .strikes:
+            return "Percentage of all possible strikes thrown (12 per game), where 100% means all strikes."
+        case .spares:
+            return "Percentage of remaining frames converted to spares after first throw, where 100% means all non-strike frames were spared."
+        case .opens:
+            return "Percentage of frames where pins remained standing after both throws, lower is better."
+        case .splits:
+            return "Percentage of frames where a split occurred, lower is better."
+        }
     }
 }

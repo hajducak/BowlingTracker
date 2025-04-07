@@ -4,25 +4,35 @@ struct BallDetailView: View {
     @ObservedObject var viewModel: BallViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: Padding.spacingS) {
-            Text(viewModel.name)
-                .title()
-            HStack(spacing: Padding.spacingM) {
-                BallAsyncImage(
-                    imageUrl: viewModel.imageUrl,
-                    ballId: viewModel.imageUrl?.absoluteString,
-                    size: .init(width: 120, height: 120)
+        NavigationView {
+            VStack(alignment: .leading, spacing: Padding.spacingS) {
+                ImageComparisonSlider(
+                    firstImage: viewModel.imageUrl,
+                    secondImage: viewModel.coreImageUrl,
+                    firstImageId: viewModel.imageUrl?.absoluteString,
+                    secondImageId: viewModel.coreImageUrl?.absoluteString,
+                    size: CGSize(width: 300, height: 300)
                 )
-                BallAsyncImage(
-                    imageUrl: viewModel.coreImageUrl,
-                    ballId: viewModel.coreImageUrl?.absoluteString,
-                    size: .init(width: 120, height: 120)
-                )
+                .padding(.top, Padding.spacingM)
                 Spacer()
             }
-            Spacer()
+            .infinity(true)
+            .padding(.horizontal, Padding.defaultPadding)
+            .navigationTitle(viewModel.name)
+            .navigationBarItems(
+                leading:
+                    Button(action: {
+                        viewModel.close()
+                    }, label: {
+                        HStack {
+                            Image(systemName: "xmark.circle")
+                                .foregroundColor(Color(.primary))
+                            Text("Close")
+                                .heading(color: Color(.primary))
+                        }
+                    })
+            ).background(Color(.bgPrimary))
         }
-        .padding(.horizontal, Padding.defaultPadding)
     }
 }
 

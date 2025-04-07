@@ -18,6 +18,7 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     @Published var gameViewModel: GameViewModel?
     @Published var shouldDismiss: Bool = false
     @Published var isLoadingOverlay: Bool = false
+    @Published var selectedBall: BallViewModel? = nil
     
     // MARK: - Series Edit Properties
     @Published var newSeriesName: String
@@ -274,7 +275,9 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     }
     
     func openDetail(_ ball: Ball) {
-        // TODO: Ball detial
+        selectedBall = BallViewModel(ball: ball, onDismiss: { [weak self] in
+            self?.selectedBall = nil
+        })
     }
     
     deinit {

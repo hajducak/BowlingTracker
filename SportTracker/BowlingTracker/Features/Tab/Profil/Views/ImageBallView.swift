@@ -39,34 +39,3 @@ struct ImageBallView: View {
         .tap { onTap(ball) }
     }
 }
-
-struct BallAsyncImage: View {
-    var imageUrl: URL?
-    var ballId: String?
-    var size: CGSize
-
-    var body: some View {
-        AsyncImage(url: imageUrl, transaction: Transaction(animation: .default)) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: Color(.primary)))
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size.width, height: size.height)
-                    .clipShape(Circle())
-            case .failure:
-                Image(.defaultBall)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size.width, height: size.height)
-                    .clipShape(Circle())
-            @unknown default:
-                EmptyView()
-            }
-        }
-        .id(ballId)
-    }
-}

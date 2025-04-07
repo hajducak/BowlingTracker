@@ -32,6 +32,11 @@ class PinCoverageViewModel: ObservableObject {
     /// Calculates coverage percentage for a specific pin combination
     /// - Parameter pinCombination: Array of pins that should be left standing
     private func calculateCoverage(for pinCombination: [Pin],_ series: [Series]) {
+        guard !pinCombination.isEmpty else {
+            coverageCount = "0/0"
+            coveragePercentage = 0.0
+            return
+        }
         let allGames = series.flatMap { $0.games }
         
         let (successful, total) = allGames.reduce((0, 0)) { result, game in

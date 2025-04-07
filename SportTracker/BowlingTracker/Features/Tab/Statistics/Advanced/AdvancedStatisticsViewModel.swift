@@ -1,6 +1,6 @@
 import Combine
 
-class AdvancedStatisticsViewModel: ObservableObject {
+class AdvancedStatisticsViewModel: TooltipViewModel {
     @Published var series = [Series]() {
         didSet {
             setup(for: series)
@@ -118,5 +118,30 @@ class AdvancedStatisticsViewModel: ObservableObject {
 
         splitConversionCount = "\(converted)/\(total)"
         splitConversionPercentage = total > 0 ? (Double(converted) / Double(total) * 100) : 0.0
+    }
+    
+    // TODO: can I forced implementation for enum and showTooltip in parent? 
+    enum StatType {
+        case strikeAfterStrike, strikeAfterOpen, cleanGame, splitConversion, firstBallAverage
+    }
+    
+    func showTooltip(for stat: StatType) {
+        let text = getTooltipFor(stat)
+        super.showTooltip(text: text)
+    }
+    
+    private func getTooltipFor(_ stat: StatType) -> String {
+        switch stat {
+        case .strikeAfterStrike:
+            return "Percentage of strikes thrown in the frame following a strike."
+        case .strikeAfterOpen:
+            return "Percentage of strikes thrown in the frame following an open frame."
+        case .cleanGame:
+            return "Percentage of games with no open frames."
+        case .splitConversion:
+            return "Percentage of splits that were converted to spares."
+        case .firstBallAverage:
+            return "Average number of pins knocked down on the first ball of each frame."
+        }
     }
 }

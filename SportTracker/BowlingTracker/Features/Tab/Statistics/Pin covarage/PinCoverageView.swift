@@ -11,7 +11,7 @@ struct PinCoverageView: View {
             Text(title)
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)
-            InfoBox(info: "Select any combination of pins to calculate how frequently they were hit.")
+            InfoBox(info: "Select any combination of pins to calculate how frequently they were coverd.")
                 .padding(.bottom, Padding.spacingXS)
             HStack(alignment: .center, spacing: Padding.spacingS) {
                 Spacer()

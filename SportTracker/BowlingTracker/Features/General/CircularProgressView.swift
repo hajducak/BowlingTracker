@@ -9,6 +9,9 @@ struct CircularProgressView: View {
     var titleModifier: CGFloat = 0.16
     var descriptionModifier: CGFloat = 0.1
     
+    var onLongPress: (() -> ())?
+    var onTap: (() -> ())?
+    
     @State private var animatedPercentage: Double = 0
 
     var body: some View {
@@ -50,6 +53,8 @@ struct CircularProgressView: View {
                 animatedPercentage = newPercentage
             })
         }
+        .onLongPressGesture(minimumDuration: 0.5) { withAnimation { onLongPress?() } }
+        .tap { withAnimation { onTap?() } }
     }
 }
 

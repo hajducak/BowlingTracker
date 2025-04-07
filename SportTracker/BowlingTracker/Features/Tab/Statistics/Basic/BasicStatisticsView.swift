@@ -13,33 +13,61 @@ struct BasicStatisticsView: View {
                     .title()
                     .padding(.horizontal, Padding.defaultPadding)
             }
+            if let text = viewModel.tooltipText {
+                InfoBox(info: text)
+                    .multilineTextAlignment(.leading)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .leading),
+                        removal: .move(edge: .leading)
+                    ))
+            }
             HStack(alignment: .center, spacing: 0) {
                 CircularProgressView(
                     percentage: viewModel.totalStrikesPercentage,
                     title: "Strikes",
                     description: viewModel.totalStrikesCount,
-                    size: .init(width: graphSize, height: graphSize)
+                    size: .init(width: graphSize, height: graphSize),
+                    onLongPress: {
+                        viewModel.showTooltip(for: .strikes)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.totalSparesPercentage,
                     title: "Spares",
                     description: viewModel.totalSparesCount,
-                    size: .init(width: graphSize, height: graphSize)
+                    size: .init(width: graphSize, height: graphSize),
+                    onLongPress: {
+                        viewModel.showTooltip(for: .spares)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.totalOpensPercentage,
                     title: "Opens",
                     description: viewModel.totalOpensCount,
-                    size: .init(width: graphSize, height: graphSize)
+                    size: .init(width: graphSize, height: graphSize),
+                    onLongPress: {
+                        viewModel.showTooltip(for: .opens)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.totalSplitsPercentage,
                     title: "Splits",
                     description: viewModel.totalSplitsCount,
-                    size: .init(width: graphSize, height: graphSize)
+                    size: .init(width: graphSize, height: graphSize),
+                    onLongPress: {
+                        viewModel.showTooltip(for: .splits)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
             }
             .padding(Padding.defaultPadding)
@@ -56,7 +84,7 @@ struct BasicStatisticsView: View {
                 maxValue: Double(300),
                 title: "Total average:",
                 width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
-                height: lienarGraphLine 
+                height: lienarGraphLine
             ).padding(.horizontal, Padding.defaultPadding)
         }
         .background(Color(.bgPrimary))

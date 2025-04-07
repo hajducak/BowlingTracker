@@ -9,21 +9,38 @@ struct AdvancedStatisticsView: View {
             Text(title)
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)
-
+            if let text = viewModel.tooltipText {
+                InfoBox(info: text)
+                    .multilineTextAlignment(.leading)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .leading),
+                        removal: .move(edge: .leading)
+                    ))
+            }
             HStack(alignment: .center, spacing: 0) {
                 let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
                 CircularProgressView(
                     percentage: viewModel.strikeAfterStrikePercentage,
                     title: "Strike after strike",
                     size: .init(width: graphSize, height: graphSize),
-                    titleModifier: 0.12
+                    titleModifier: 0.12,
+                    onLongPress: {
+                        viewModel.showTooltip(for: .strikeAfterStrike)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
                 Spacer()
                 CircularProgressView(
                     percentage: viewModel.strikeAfterOpenPercentage,
                     title: "Strike after open",
                     size: .init(width: graphSize, height: graphSize),
-                    titleModifier: 0.12
+                    titleModifier: 0.12,
+                    onLongPress: {
+                        viewModel.showTooltip(for: .strikeAfterOpen)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
                 Spacer()
                 CircularProgressView(
@@ -31,7 +48,12 @@ struct AdvancedStatisticsView: View {
                     title: "Clean games",
                     description: viewModel.cleanGameCount,
                     size: .init(width: graphSize, height: graphSize),
-                    titleModifier: 0.12
+                    titleModifier: 0.12,
+                    onLongPress: {
+                        viewModel.showTooltip(for: .cleanGame)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
                 Spacer()
                 CircularProgressView(
@@ -39,19 +61,31 @@ struct AdvancedStatisticsView: View {
                     title: "Covered splits",
                     description: viewModel.splitConversionCount,
                     size: .init(width: graphSize, height: graphSize),
-                    titleModifier: 0.12
+                    titleModifier: 0.12,
+                    onLongPress: {
+                        viewModel.showTooltip(for: .splitConversion)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
                 )
             }
             .padding(Padding.defaultPadding)
-
+            
             LinearProgressView(
                 value: viewModel.firstBallAverage,
                 maxValue: 10,
-                title: "First ball Average",
-                width:  UIScreen.main.bounds.width - Padding.defaultPadding * 2,
-                height: 9
-            ).padding(.horizontal, Padding.defaultPadding)
+                title: "First ball Average:",
+                width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                height: 9,
+                onLongPress: {
+                    viewModel.showTooltip(for: .firstBallAverage)
+                }, onTap: {
+                    viewModel.dismissTooltipIfShowing()
+                }
+            )
+            .padding(.horizontal, Padding.defaultPadding)
         }
+        .background(Color(.bgPrimary))
     }
 }
 

@@ -13,28 +13,11 @@ struct ImageBallView: View {
                 Circle()
                     .fill(Color(.bgPrimary))
                     .frame(width: 75, height: 75)
-                AsyncImage(url: ball.imageUrl, transaction: Transaction(animation: .default)) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: Color(.primary)))
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 62, height: 62)
-                            .clipShape(Circle())
-                    case .failure:
-                        Image(.defaultBall)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 62, height: 62)
-                            .clipShape(Circle())
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
-                .id("\(ball.id)-\(ball.imageUrl?.absoluteString ?? "")")
+                BallAsyncImage(
+                    imageUrl: ball.imageUrl,
+                    ballId: "\(ball.id)-\(ball.imageUrl?.absoluteString ?? "")",
+                    size: .init(width: 62, height: 62)
+                )
             }.overlay(alignment: .topLeading) {
                 if ball.isSpareBall ?? false {
                     Text("Spare")
@@ -54,5 +37,36 @@ struct ImageBallView: View {
                 .frame(maxWidth: 84, minHeight: 40)
         }
         .tap { onTap(ball) }
+    }
+}
+
+struct BallAsyncImage: View {
+    var imageUrl: URL?
+    var ballId: String?
+    var size: CGSize
+
+    var body: some View {
+        AsyncImage(url: imageUrl, transaction: Transaction(animation: .default)) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: Color(.primary)))
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size.width, height: size.height)
+                    .clipShape(Circle())
+            case .failure:
+                Image(.defaultBall)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size.width, height: size.height)
+                    .clipShape(Circle())
+            @unknown default:
+                EmptyView()
+            }
+        }
+        .id(ballId)
     }
 }

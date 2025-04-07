@@ -30,12 +30,13 @@ class BasicStatisticsViewModel: ObservableObject {
         
         let strikesPossibility = 12 * totalGames
         let totalStrikes = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.strikeCount } }
-        
-        let sparesPossibility = 10 * totalGames
-        let totalSpares = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.spareCount } }
-        
+
+        // FIXME:  WRONG COUNTING? debug it
         let opensPossibility = 10 * totalGames
         let totalOpenFrames = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.openFrameCount } }
+        
+        let totalSpares = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.spareCount } }
+        let sparesPossibility = totalOpenFrames + totalSpares
         
         let splitsPossibility = 10 * totalGames
         let totalSplits = series.reduce(0) { $0 + $1.games.reduce(0) { $0 + $1.splitCount } }

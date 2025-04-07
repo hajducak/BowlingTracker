@@ -66,19 +66,21 @@ struct Game: Codable, Identifiable {
         var opens = 0
 
         if rollCount >= 1, rolls[0] == 10 {
+            // cover when first strike
             strikes += 1
 
             if rollCount >= 3, rolls[1] + rolls[2] == 10 {
-                spares += 1
+                spares += 1 // X 7 /
             } else {
-                if rollCount >= 2, rolls[1] == 10 { strikes += 1 }
-                if rollCount >= 3, rolls[2] == 10 { strikes += 1 }
+                if rollCount >= 2, rolls[1] == 10 { strikes += 1 } // X X 7
+                if rollCount >= 3, rolls[1] + rolls[2] < 10 { opens += 1 } // X 7 -
+                if rollCount >= 3, rolls[2] == 10 { strikes += 1 } // X X X
             }
         } else if rollCount >= 2 {
-            if rolls[0] + rolls[1] == 10 {
+            if rolls[0] + rolls[1] == 10 { // 7 /
                 spares += 1
-                if rollCount == 3, rolls[2] == 10 { strikes += 1 }
-            } else {
+                if rollCount == 3, rolls[2] == 10 { strikes += 1 } // 7 / X
+            } else { // 7 -
                 opens += 1
             }
         }

@@ -7,7 +7,7 @@ struct SeriesDetailView: View {
     
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: Padding.spacingS) {
                 switch viewModel.state {
                 case .playing(let game):
                     ScrollView {

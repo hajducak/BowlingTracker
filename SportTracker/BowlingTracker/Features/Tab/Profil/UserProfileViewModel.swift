@@ -8,6 +8,7 @@ final class UserProfileViewModel: ObservableObject {
     @Published var toast: Toast?
     @Published var user: User?
     @Published var showAddBallModal: Bool = false
+    @Published var selectedBall: BallViewModel? = nil
     
     private let userService: UserService
     
@@ -167,7 +168,9 @@ final class UserProfileViewModel: ObservableObject {
     }
     
     func openDetail(_ ball: Ball) {
-        // TODO: Ball detial
+        selectedBall = BallViewModel(ball: ball, onDismiss: { [weak self] in
+            self?.selectedBall = nil
+        })
     }
 
     deinit {

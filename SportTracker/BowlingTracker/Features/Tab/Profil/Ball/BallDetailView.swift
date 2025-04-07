@@ -4,25 +4,41 @@ struct BallDetailView: View {
     @ObservedObject var viewModel: BallViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: Padding.spacingS) {
-            Text(viewModel.name)
-                .title()
-            HStack(spacing: Padding.spacingM) {
-                BallAsyncImage(
-                    imageUrl: viewModel.imageUrl,
-                    ballId: viewModel.imageUrl?.absoluteString,
-                    size: .init(width: 120, height: 120)
-                )
-                BallAsyncImage(
-                    imageUrl: viewModel.coreImageUrl,
-                    ballId: viewModel.coreImageUrl?.absoluteString,
-                    size: .init(width: 120, height: 120)
-                )
+        NavigationView {
+            VStack(alignment: .leading, spacing: Padding.spacingS) {
+                
+                HStack(spacing: Padding.spacingM) {
+                    BallAsyncImage(
+                        imageUrl: viewModel.imageUrl,
+                        ballId: viewModel.imageUrl?.absoluteString,
+                        size: .init(width: 120, height: 120)
+                    )
+                    BallAsyncImage(
+                        imageUrl: viewModel.coreImageUrl,
+                        ballId: viewModel.coreImageUrl?.absoluteString,
+                        size: .init(width: 120, height: 120)
+                    )
+                    Spacer()
+                }
                 Spacer()
+                
             }
-            Spacer()
+            .padding(.horizontal, Padding.defaultPadding)
+            .navigationTitle(viewModel.name)
+            .navigationBarItems(
+                leading:
+                    Button(action: {
+                        viewModel.close()
+                    }, label: {
+                        HStack {
+                            Image(systemName: "arrow.backward.circle")
+                                .foregroundColor(Color(.primary))
+                            Text("Back")
+                                .heading(color: Color(.primary))
+                        }
+                    })
+            ).background(Color(.bgPrimary))
         }
-        .padding(.horizontal, Padding.defaultPadding)
     }
 }
 

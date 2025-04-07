@@ -18,6 +18,9 @@ struct UserProfileView: View {
         .background(Color(.bgPrimary))
         .navigationTitle(viewModel.user?.name ?? "My Profile")
         .navigationBarItems(trailing: editButton)
+        .fullScreenCover(item: $viewModel.selectedBall) { ballViewModel in
+            BallDetailView(viewModel: ballViewModel)
+        }
         .fullScreenCover(isPresented: $showEditProfile) {
             EditProfileView(
                 name: $viewModel.newProfileName,

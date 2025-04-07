@@ -62,6 +62,9 @@ struct SeriesDetailView: View {
         }
         .accentColor(Color(.primary))
         .navigationBarBackButtonHidden()
+        .fullScreenCover(item: $viewModel.selectedBall) { ballViewModel in
+            BallDetailView(viewModel: ballViewModel)
+        }
     }
     
     private var content: some View {

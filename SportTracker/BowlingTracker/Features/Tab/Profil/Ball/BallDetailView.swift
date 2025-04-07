@@ -6,23 +6,17 @@ struct BallDetailView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: Padding.spacingS) {
-                
-                HStack(spacing: Padding.spacingM) {
-                    BallAsyncImage(
-                        imageUrl: viewModel.imageUrl,
-                        ballId: viewModel.imageUrl?.absoluteString,
-                        size: .init(width: 120, height: 120)
-                    )
-                    BallAsyncImage(
-                        imageUrl: viewModel.coreImageUrl,
-                        ballId: viewModel.coreImageUrl?.absoluteString,
-                        size: .init(width: 120, height: 120)
-                    )
-                    Spacer()
-                }
+                ImageComparisonSlider(
+                    firstImage: viewModel.imageUrl,
+                    secondImage: viewModel.coreImageUrl,
+                    firstImageId: viewModel.imageUrl?.absoluteString,
+                    secondImageId: viewModel.coreImageUrl?.absoluteString,
+                    size: CGSize(width: 300, height: 300)
+                )
+                .padding(.top, Padding.spacingM)
                 Spacer()
-                
             }
+            .infinity(true)
             .padding(.horizontal, Padding.defaultPadding)
             .navigationTitle(viewModel.name)
             .navigationBarItems(

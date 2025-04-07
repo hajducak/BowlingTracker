@@ -2,6 +2,12 @@ import Foundation
 import Combine
 import SwiftUI
 
+protocol TooltipStatRepresentable {
+    associatedtype StatType
+    func showTooltip(for stat: StatType)
+    func getTooltipFor(_ stat: StatType) -> String
+}
+
 class TooltipViewModel: ObservableObject {
     @Published var tooltipText: String? = nil
     private var tooltipTimer: DispatchWorkItem? = nil

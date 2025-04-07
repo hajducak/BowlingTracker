@@ -10,7 +10,7 @@ struct AdvancedStatisticsView: View {
                 .title()
                 .padding(.horizontal, Padding.defaultPadding)
             if let text = viewModel.tooltipText {
-                InfoBox(info: text)
+                TooltipView(info: text)
                     .multilineTextAlignment(.leading)
                     .transition(.asymmetric(
                         insertion: .move(edge: .leading),

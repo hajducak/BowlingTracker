@@ -11,6 +11,7 @@
 		528E48F92D638777008755A1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 528E48F82D638777008755A1 /* FirebaseFirestore */; };
 		528E48FB2D638777008755A1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 528E48FA2D638777008755A1 /* FirebaseStorage */; };
 		528E49072D6392EA008755A1 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 528E49062D6392EA008755A1 /* FirebaseFirestoreCombine-Community */; };
+		52FFAC4F2DA45F67009F3913 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 52FFAC4E2DA45F67009F3913 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 				528E49072D6392EA008755A1 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				528E48F92D638777008755A1 /* FirebaseFirestore in Frameworks */,
 				528E48FB2D638777008755A1 /* FirebaseStorage in Frameworks */,
+				52FFAC4F2DA45F67009F3913 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +123,7 @@
 				528E48F82D638777008755A1 /* FirebaseFirestore */,
 				528E48FA2D638777008755A1 /* FirebaseStorage */,
 				528E49062D6392EA008755A1 /* FirebaseFirestoreCombine-Community */,
+				52FFAC4E2DA45F67009F3913 /* Kingfisher */,
 			);
 			productName = SportTracker;
 			productReference = 528E48C62D638623008755A1 /* BowlingTracker.app */;
@@ -203,6 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				528E48F52D638777008755A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				52FFAC4D2DA45F67009F3913 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 528E48C72D638623008755A1 /* Products */;
@@ -577,6 +581,14 @@
 				minimumVersion = 11.8.1;
 			};
 		};
+		52FFAC4D2DA45F67009F3913 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -599,6 +611,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 528E48F52D638777008755A1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseFirestoreCombine-Community";
+		};
+		52FFAC4E2DA45F67009F3913 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52FFAC4D2DA45F67009F3913 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

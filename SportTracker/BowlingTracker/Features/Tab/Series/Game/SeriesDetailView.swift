@@ -155,7 +155,9 @@ struct SeriesDetailView: View {
             Text("No games found")
                 .title(color: Color(.textSecondary))
             Spacer()
-        }.padding(.horizontal, Padding.defaultPadding)
+        }
+        .infinity(true)
+        .padding(.horizontal, Padding.defaultPadding)
     }
     
     private var oilPatternLink: some View {

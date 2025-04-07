@@ -21,6 +21,7 @@ final class BallViewModel: ObservableObject, Identifiable {
         
         self.name = ball.name
         self.imageUrl = ball.imageUrl
+        self.coreImageUrl = ball.coreImageUrl
     }
     
     func close() {

@@ -31,9 +31,9 @@ struct BallDetailView: View {
                         viewModel.close()
                     }, label: {
                         HStack {
-                            Image(systemName: "arrow.backward.circle")
+                            Image(systemName: "xmark.circle")
                                 .foregroundColor(Color(.primary))
-                            Text("Back")
+                            Text("Close")
                                 .heading(color: Color(.primary))
                         }
                     })

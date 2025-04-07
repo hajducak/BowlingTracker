@@ -51,6 +51,7 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
 - **Combine** – reactive programming framework
 - **Firebase** – data storage and authentication
 - **MVVM** – architectural pattern for clean and maintainable code
+- **Kingfisher** - powerful library for downloading and caching images from the web
 
 ## 🔧 Installation
 1. Clone the repository:

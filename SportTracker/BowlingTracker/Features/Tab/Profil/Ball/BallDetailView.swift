@@ -17,22 +17,33 @@ struct BallDetailView: View {
                         secondImageId: coreImageUrl.absoluteString,
                         size: imageSize
                     )
-                    .padding(.top, Padding.spacingM)
+                    .padding(.vertical, Padding.spacingM)
                 } else if let imageUrl = viewModel.imageUrl {
                     BallAsyncImage(
                         imageUrl: imageUrl,
                         ballId: imageUrl.absoluteString,
                         size: imageSize
-                    )
+                    ).padding(.vertical, Padding.spacingM)
                 } else {
                     Image(.defaultBall)
                         .resizable()
                         .scaledToFill()
                         .frame(width: imageSize.width, height: imageSize.height)
                         .clipShape(Circle())
+                        .padding(.vertical, Padding.spacingM)
                 }
-                Spacer()
-                
+                Picker("", selection: $viewModel.contentType) {
+                    Text("Ball info").tag(BallViewContentType.info)
+                    Text("Statistics").tag(BallViewContentType.statistics)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .heading()
+                ScrollView {
+                    switch viewModel.contentType {
+                    case .info: contentInfo
+                    case .statistics: contentStatistics
+                    }
+                }
             }
             .infinity(true)
             .padding(.horizontal, Padding.defaultPadding)
@@ -50,6 +61,20 @@ struct BallDetailView: View {
                         }
                     })
             ).background(Color(.bgPrimary))
+        }
+    }
+    
+    var contentInfo: some View {
+        VStack {
+            Text("TODO: ball info")
+            Spacer()
+        }
+    }
+
+    var contentStatistics: some View {
+        VStack {
+            Text("TODO: ball statisctics")
+            Spacer()
         }
     }
 }

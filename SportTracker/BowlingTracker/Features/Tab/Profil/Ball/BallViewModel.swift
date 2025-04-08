@@ -1,12 +1,19 @@
 import Combine
 import Foundation
 
+enum BallViewContentType {
+    case info
+    case statistics
+}
+
 final class BallViewModel: ObservableObject, Identifiable {
     private var cancellables: Set<AnyCancellable> = []
     // private let userService: UserService
     
     let ball: Ball
     var onDismiss: (() -> Void)?
+    
+    @Published var contentType: BallViewContentType = .info
     
     @Published var name: String
     @Published var imageUrl: URL?

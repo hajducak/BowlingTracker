@@ -2,19 +2,37 @@ import SwiftUI
 
 struct BallDetailView: View {
     @ObservedObject var viewModel: BallViewModel
+    @State var imageSize = CGSize(width: 300, height: 300)
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: Padding.spacingS) {
-                ImageComparisonSlider(
-                    firstImage: viewModel.imageUrl,
-                    secondImage: viewModel.coreImageUrl,
-                    firstImageId: viewModel.imageUrl?.absoluteString,
-                    secondImageId: viewModel.coreImageUrl?.absoluteString,
-                    size: CGSize(width: 300, height: 300)
-                )
-                .padding(.top, Padding.spacingM)
+                if let imageUrl = viewModel.imageUrl,
+                   let coreImageUrl = viewModel.coreImageUrl
+                {
+                    ImageComparisonSlider(
+                        firstImage: imageUrl,
+                        secondImage: coreImageUrl,
+                        firstImageId: imageUrl.absoluteString,
+                        secondImageId: coreImageUrl.absoluteString,
+                        size: imageSize
+                    )
+                    .padding(.top, Padding.spacingM)
+                } else if let imageUrl = viewModel.imageUrl {
+                    BallAsyncImage(
+                        imageUrl: imageUrl,
+                        ballId: imageUrl.absoluteString,
+                        size: imageSize
+                    )
+                } else {
+                    Image(.defaultBall)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: imageSize.width, height: imageSize.height)
+                        .clipShape(Circle())
+                }
                 Spacer()
+                
             }
             .infinity(true)
             .padding(.horizontal, Padding.defaultPadding)

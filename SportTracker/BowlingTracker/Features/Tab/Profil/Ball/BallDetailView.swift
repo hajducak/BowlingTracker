@@ -8,7 +8,7 @@ struct BallDetailView: View {
     @State private var animateRows = false
     @State private var selectedSegmentIndex = 0
     
-    private var contentType: BallViewContentType {
+    private var contentType: BallViewContentType { // FIXME: not using this
         selectedSegmentIndex == 0 ? .info : .statistics
     }
     
@@ -62,8 +62,9 @@ struct BallDetailView: View {
                     withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                         animateRows = true
                     }
+                    viewModel.loadStatistics()
                 }
-            }
+            }.toast($viewModel.toast, timeout: 2)
         }
     }
     
@@ -79,7 +80,7 @@ struct BallDetailView: View {
                 } else {
                     contentStatistics
                 }
-            }
+            }.padding(.top, Padding.spacingM)
         }
         .padding(.horizontal, Padding.defaultPadding)
     }
@@ -133,7 +134,7 @@ struct BallDetailView: View {
             infoRow(title: "Lenght", value: "\(viewModel.lenght ?? 0)")
             infoRow(title: "Backend", value: "\(viewModel.backend ?? 0)")
             infoRow(title: "Hook", value: "\(viewModel.hook ?? 0)")
-        }.padding(.top, Padding.spacingM)
+        }
     }
     
     private func infoRow(title: String, value: String) -> some View {
@@ -167,10 +168,75 @@ struct BallDetailView: View {
 
     private var contentStatistics: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Performance Metrics")
-                .font(.headline)
-                .padding(.top)
-            // TODO:
+            HStack(spacing: 0) {
+                Text("Total games:")
+                    .custom(size: 16, weight: .medium)
+                Text(" \(viewModel.totalGames)")
+                    .custom(size: 16, weight: .bold)
+                Spacer()
+            }.padding(.horizontal, Padding.defaultPadding)
+            HStack(spacing: 0) {
+                Text("Total average:")
+                    .custom(size: 16, weight: .medium)
+                Text(" \(viewModel.totalAverage)")
+                    .custom(size: 16, weight: .bold)
+                Spacer()
+            }.padding(.horizontal, Padding.defaultPadding)
+            if let firstBallAverage = viewModel.firstBallAverage {
+                LinearProgressView(
+                    value: Double(firstBallAverage),
+                    maxValue: 10,
+                    title: "First ball Average:",
+                    width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                    height: 9,
+                    onLongPress: {
+                        viewModel.showTooltip(for: .firstBallAverage)
+                    }, onTap: {
+                        viewModel.dismissTooltipIfShowing()
+                    }
+                )
+                .padding(.horizontal, Padding.defaultPadding)
+            }
+            if let text = viewModel.tooltipText {
+                TooltipView(info: text)
+                    .multilineTextAlignment(.leading)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .leading),
+                        removal: .move(edge: .leading)
+                    ))
+            }
+            HStack(alignment: .center, spacing: Padding.spacingL) {
+                let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
+                if let SASP = viewModel.strikeAfterStrikePercentage  {
+                    CircularProgressView(
+                        percentage: SASP,
+                        title: "Strike after strike",
+                        size: .init(width: graphSize, height: graphSize),
+                        titleModifier: 0.12,
+                        onLongPress: {
+                            viewModel.showTooltip(for: .strikeAfterStrike)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                }
+                if let SAOP = viewModel.strikeAfterOpenPercentage {
+                    CircularProgressView(
+                        percentage: SAOP,
+                        title: "Strike after open",
+                        size: .init(width: graphSize, height: graphSize),
+                        titleModifier: 0.12,
+                        onLongPress: {
+                            viewModel.showTooltip(for: .strikeAfterOpen)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                }
+                Spacer()
+            }
+            .padding(.horizontal, Padding.defaultPadding)
+            .padding(.top, Padding.spacingM)
         }
     }
 }
@@ -200,30 +266,4 @@ struct ReverseConnectionShape: Shape {
         path.closeSubpath()
         return path
     }
-}
-
-#Preview {
-    BallDetailView(
-        viewModel: BallViewModel(
-            ball: Ball(
-                id: "1",
-                imageUrl: URL(string: "https://hammerbowling.com/cdn/shop/files/Purple_Pearl_Urethane_CG_1600x1707_website.png?v=1709760600&width=1800"),
-                name: "Purple Pearl Urethane ",
-                brand: "Hammer",
-                coverstock: "Urethane Pearl",
-                rg: 2.650,
-                diff: 0.015,
-                surface: "500, 1000, 2000 Siaair Micro Pad",
-                weight: 15,
-                core: "Symmetric - LED",
-                coreImageUrl: URL(string: "https://hammerbowling.com/cdn/shop/products/Purple_Pearl_Urethane_Core_16-15_1920x1980_06f9937e-969d-428c-a0b1-f3fcfcdf84a3.jpg?v=1709760600&width=1800"),
-                pinToPap: 2.3,
-                layout: "20-30-40",
-                lenght: 55,
-                backend: 40,
-                hook: 5,
-                isSpareBall: false
-            )
-        )
-    )
 }

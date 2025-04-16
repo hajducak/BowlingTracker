@@ -38,8 +38,6 @@ struct CustomSegmentedControl<Content: View>: View {
                 .frame(maxWidth: .infinity)
                 .offset(y: -1)
                 .zIndex(0)
-            
-            // Content area
             content(selectedIndex)
                 .transition(.opacity)
                 .animation(.easeInOut(duration: animationDuration), value: selectedIndex)

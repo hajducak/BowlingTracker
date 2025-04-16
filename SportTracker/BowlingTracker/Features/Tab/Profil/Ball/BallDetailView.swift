@@ -6,6 +6,11 @@ struct BallDetailView: View {
     @State private var maxImageSize: CGSize = CGSize(width: 300, height: 300)
     @State private var minImageSize: CGSize = CGSize(width: 80, height: 80)
     @State private var animateRows = false
+    @State private var selectedSegmentIndex = 0
+    
+    private var contentType: BallViewContentType {
+        selectedSegmentIndex == 0 ? .info : .statistics
+    }
     
     private var imageSize: CGSize {
         let maxScrollForAnimation: CGFloat = 200
@@ -31,56 +36,12 @@ struct BallDetailView: View {
                         }
                         .frame(height: 0)
                         Color.clear.frame(height: maxImageSize.height + Padding.spacingL)
-                        VStack(alignment: .leading, spacing: Padding.spacingS) {
-                            Picker("", selection: $viewModel.contentType) {
-                                Text("Ball information").tag(BallViewContentType.info)
-                                Text("Statistics").tag(BallViewContentType.statistics)
-                            }
-                            .pickerStyle(SegmentedPickerStyle())
-                            .heading()
-                            switch viewModel.contentType {
-                            case .info: contentInfo
-                            case .statistics: contentStatistics
-                            }
-                        }
-                        .padding(.horizontal, Padding.defaultPadding)
+                        segmentHeader
                     }
                     .coordinateSpace(name: "scrollView")
                     .infinity(true)
                 }
-                
-                VStack {
-                    if let imageUrl = viewModel.imageUrl,
-                       let coreImageUrl = viewModel.coreImageUrl
-                    { // TODO: disable slider when scrolling down and image is smaller and smaller
-                        ImageComparisonSlider(
-                            firstImage: imageUrl,
-                            secondImage: coreImageUrl,
-                            firstImageId: imageUrl.absoluteString,
-                            secondImageId: coreImageUrl.absoluteString,
-                            size: imageSize
-                        )
-                        .padding(.vertical, Padding.spacingM)
-                    } else if let imageUrl = viewModel.imageUrl {
-                        BallAsyncImage(
-                            imageUrl: imageUrl,
-                            ballId: imageUrl.absoluteString,
-                            size: imageSize
-                        )
-                        .padding(.vertical, Padding.spacingM)
-                    } else {
-                        Image(.defaultBall)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: imageSize.width, height: imageSize.height)
-                            .clipShape(Circle())
-                            .padding(.vertical, Padding.spacingM)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .background(Color(.bgPrimary))
-                .animation(.interpolatingSpring(stiffness: 120, damping: 14), value: imageSize)
-                .zIndex(1)
+                imageHeader
             }
             .navigationTitle(viewModel.name)
             .navigationBarItems(
@@ -106,7 +67,60 @@ struct BallDetailView: View {
         }
     }
     
-    var contentInfo: some View {
+    @ViewBuilder
+    private var segmentHeader: some View {
+        CustomSegmentedControl(
+            segments: ["Information", "Statistics"],
+            selectedIndex: $selectedSegmentIndex
+        ) { index in
+            Group {
+                if index == 0 {
+                    contentInfo
+                } else {
+                    contentStatistics
+                }
+            }
+        }
+        .padding(.horizontal, Padding.defaultPadding)
+    }
+    
+    private var imageHeader: some View {
+        VStack {
+            if let imageUrl = viewModel.imageUrl,
+               let coreImageUrl = viewModel.coreImageUrl
+            {
+                // TODO: disable slider when scrolling down and image is smaller and smaller
+                ImageComparisonSlider(
+                    firstImage: imageUrl,
+                    secondImage: coreImageUrl,
+                    firstImageId: imageUrl.absoluteString,
+                    secondImageId: coreImageUrl.absoluteString,
+                    size: imageSize
+                )
+                .padding(.vertical, Padding.spacingM)
+            } else if let imageUrl = viewModel.imageUrl {
+                BallAsyncImage(
+                    imageUrl: imageUrl,
+                    ballId: imageUrl.absoluteString,
+                    size: imageSize
+                )
+                .padding(.vertical, Padding.spacingM)
+            } else {
+                Image(.defaultBall)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: imageSize.width, height: imageSize.height)
+                    .clipShape(Circle())
+                    .padding(.vertical, Padding.spacingM)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.bgPrimary))
+        .animation(.interpolatingSpring(stiffness: 120, damping: 14), value: imageSize)
+        .zIndex(1)
+    }
+    
+    private var contentInfo: some View {
         VStack(alignment: .leading, spacing: Padding.spacingS) {
             infoRow(title: "Brand", value: viewModel.brand ?? "N/A")
             infoRow(title: "Coverstock", value: viewModel.coverstock ?? "N/A")
@@ -118,11 +132,11 @@ struct BallDetailView: View {
             infoRow(title: "Layout", value: viewModel.layout ?? "N/A")
             infoRow(title: "Lenght", value: "\(viewModel.lenght ?? 0)")
             infoRow(title: "Backend", value: "\(viewModel.backend ?? 0)")
-            infoRow(title: "Hook", value:  "\(viewModel.hook ?? 0)")
+            infoRow(title: "Hook", value: "\(viewModel.hook ?? 0)")
         }.padding(.top, Padding.spacingM)
     }
     
-    func infoRow(title: String, value: String) -> some View {
+    private func infoRow(title: String, value: String) -> some View {
         HStack(spacing: 0) {
             ZStack(alignment: .leading) {
                 DiagonalShape()
@@ -151,7 +165,7 @@ struct BallDetailView: View {
         .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
-    var contentStatistics: some View {
+    private var contentStatistics: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Performance Metrics")
                 .font(.headline)

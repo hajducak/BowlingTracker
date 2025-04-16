@@ -82,7 +82,6 @@ struct BallDetailView: View {
                 }
             }
             .padding(.top, Padding.spacingM)
-            .padding(.horizontal, Padding.defaultPadding)
         }
     }
     
@@ -135,7 +134,7 @@ struct BallDetailView: View {
             infoRow(title: "Lenght", value: "\(viewModel.lenght ?? 0)")
             infoRow(title: "Backend", value: "\(viewModel.backend ?? 0)")
             infoRow(title: "Hook", value: "\(viewModel.hook ?? 0)")
-        }
+        }.padding(.horizontal, Padding.defaultPadding)
     }
     
     private func infoRow(title: String, value: String) -> some View {
@@ -176,13 +175,15 @@ struct BallDetailView: View {
                     .custom(size: 16, weight: .bold)
                 Spacer()
             }.padding(.horizontal, Padding.defaultPadding)
-            HStack(spacing: 0) {
-                Text("Total average:")
-                    .custom(size: 16, weight: .medium)
-                Text(" \(viewModel.totalAverage)")
-                    .custom(size: 16, weight: .bold)
-                Spacer()
-            }.padding(.horizontal, Padding.defaultPadding)
+            if let totalAverage = viewModel.totalAverage {
+                LinearProgressView(
+                    value: totalAverage,
+                    maxValue: Double(300),
+                    title: "Total average:",
+                    width: UIScreen.main.bounds.width - Padding.defaultPadding * 2,
+                    height: 9
+                ).padding(.horizontal, Padding.defaultPadding)
+            }
             if let firstBallAverage = viewModel.firstBallAverage {
                 LinearProgressView(
                     value: Double(firstBallAverage),
@@ -206,11 +207,39 @@ struct BallDetailView: View {
                         removal: .move(edge: .leading)
                     ))
             }
-            HStack(alignment: .center, spacing: Padding.spacingL) {
+            HStack(alignment: .center, spacing: 0) {
                 let graphSize = (UIScreen.main.bounds.size.width / 4) - Padding.defaultPadding*1.2
-                if let SASP = viewModel.strikeAfterStrikePercentage  {
+                if let totalStrikesPercentage = viewModel.totalStrikesPercentage {
                     CircularProgressView(
-                        percentage: SASP,
+                        percentage: totalStrikesPercentage,
+                        title: "Strikes",
+                        description: viewModel.totalStrikesCount,
+                        size: .init(width: graphSize, height: graphSize),
+                        onLongPress: {
+                            viewModel.showTooltip(for: .strikes)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                    Spacer()
+                }
+                if let totalSparesPercentage = viewModel.totalSparesPercentage {
+                    CircularProgressView(
+                        percentage: totalSparesPercentage,
+                        title: "Spares",
+                        description: viewModel.totalSparesCount,
+                        size: .init(width: graphSize, height: graphSize),
+                        onLongPress: {
+                            viewModel.showTooltip(for: .spares)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                    Spacer()
+                }
+                if let strikeAfterStrikePercentage = viewModel.strikeAfterStrikePercentage  {
+                    CircularProgressView(
+                        percentage: strikeAfterStrikePercentage,
                         title: "Strike after strike",
                         size: .init(width: graphSize, height: graphSize),
                         titleModifier: 0.12,
@@ -220,10 +249,11 @@ struct BallDetailView: View {
                             viewModel.dismissTooltipIfShowing()
                         }
                     )
+                    Spacer()
                 }
-                if let SAOP = viewModel.strikeAfterOpenPercentage {
+                if let strikeAfterOpenPercentage = viewModel.strikeAfterOpenPercentage {
                     CircularProgressView(
-                        percentage: SAOP,
+                        percentage: strikeAfterOpenPercentage,
                         title: "Strike after open",
                         size: .init(width: graphSize, height: graphSize),
                         titleModifier: 0.12,
@@ -233,11 +263,72 @@ struct BallDetailView: View {
                             viewModel.dismissTooltipIfShowing()
                         }
                     )
+                    Spacer()
                 }
-                Spacer()
+                if let totalOpensPercentage = viewModel.totalOpensPercentage {
+                    CircularProgressView(
+                        percentage: totalOpensPercentage,
+                        title: "Opens",
+                        description: viewModel.totalOpensCount,
+                        size: .init(width: graphSize, height: graphSize),
+                        onLongPress: {
+                            viewModel.showTooltip(for: .opens)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                    Spacer()
+                }
+                if let cleanGamePercentage = viewModel.cleanGamePercentage {
+                    CircularProgressView(
+                        percentage: cleanGamePercentage,
+                        title: "Clean games",
+                        description: viewModel.cleanGameCount,
+                        size: .init(width: graphSize, height: graphSize),
+                        titleModifier: 0.12,
+                        onLongPress: {
+                            viewModel.showTooltip(for: .cleanGame)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                    Spacer()
+                }
+                if let totalSplitsPercentage = viewModel.totalSplitsPercentage {
+                    CircularProgressView(
+                        percentage: totalSplitsPercentage,
+                        title: "Splits",
+                        description: viewModel.totalSplitsCount,
+                        size: .init(width: graphSize, height: graphSize),
+                        onLongPress: {
+                            viewModel.showTooltip(for: .splits)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                    // last in strike balls stats do not have Spacer()
+                }
+                if let splitConversionPercentage = viewModel.splitConversionPercentage {
+                    CircularProgressView(
+                        percentage: splitConversionPercentage,
+                        title: "Covered splits",
+                        description: viewModel.splitConversionCount,
+                        size: .init(width: graphSize, height: graphSize),
+                        titleModifier: 0.12,
+                        onLongPress: {
+                            viewModel.showTooltip(for: .splitConversion)
+                        }, onTap: {
+                            viewModel.dismissTooltipIfShowing()
+                        }
+                    )
+                    // Last in spare balls stats do not have Spacer()
+                }
             }
-            .padding(.horizontal, Padding.defaultPadding)
-            .padding(.top, Padding.spacingM)
+            .padding(Padding.defaultPadding)
+
+            if let pinCoverageViewModel = viewModel.pinCoverageViewModel {
+                PinCoverageView(viewModel: pinCoverageViewModel, title: "Pin coverage")
+            }
         }
     }
 }

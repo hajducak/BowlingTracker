@@ -114,15 +114,6 @@ struct BallDetailView: View {
                 statBar(title: "Backend", value: viewModel.backend ?? 0, maxValue: 100)
                 statBar(title: "Hook Potential", value: viewModel.hook ?? 0, maxValue: 10)
             }
-            
-            // TODO: remove - Adding more content to enable scrolling
-            ForEach(0..<5) { i in
-                Rectangle()
-                    .fill(Color.gray.opacity(0.2))
-                    .frame(height: 80)
-                    .cornerRadius(8)
-                    .overlay(Text("Additional content \(i+1)"))
-            }
         }
     }
     
@@ -144,15 +135,6 @@ struct BallDetailView: View {
             Text("Performance Metrics")
                 .font(.headline)
                 .padding(.top)
-            
-            // TODO: remove - Adding more content to enable scrolling
-            ForEach(0..<10) { i in
-                Rectangle()
-                    .fill(Color.gray.opacity(0.2))
-                    .frame(height: 80)
-                    .cornerRadius(8)
-                    .overlay(Text("Statistics block \(i+1)"))
-            }
         }
     }
     

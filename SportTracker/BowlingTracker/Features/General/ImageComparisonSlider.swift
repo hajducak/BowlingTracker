@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct ImageComparisonSlider: View {
-    let firstImage: URL?
-    let secondImage: URL?
-    let firstImageId: String?
-    let secondImageId: String?
-    @State private var sliderPosition: CGFloat = 0.4
+    let firstImage: URL
+    let secondImage: URL
+    let firstImageId: String
+    let secondImageId: String
+    @State private var sliderPosition: CGFloat = 0.3
     let size: CGSize
     
     var body: some View {

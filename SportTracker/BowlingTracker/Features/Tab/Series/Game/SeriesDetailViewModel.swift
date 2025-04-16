@@ -275,7 +275,7 @@ final class SeriesDetailViewModel: ObservableObject, Identifiable {
     }
     
     func openDetail(_ ball: Ball) {
-        selectedBall = BallViewModel(ball: ball, onDismiss: { [weak self] in
+        selectedBall = BallViewModel(userService: userService, ball: ball, onDismiss: { [weak self] in
             self?.selectedBall = nil
         })
     }

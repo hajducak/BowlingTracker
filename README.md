@@ -26,6 +26,8 @@ Bowling Tracker is a mobile application for tracking bowling games and statistic
     <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot5.imageset/screenshot5.png" width="150">
     <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot6.imageset/screenshot6.png" width="150">
     <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot7.imageset/screenshot7.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot10.imageset/screenshot10.png" width="150">
+    <img src="SportTracker/BowlingTracker/Assets.xcassets/Screenshots/Dark mode/screenshot11.imageset/screenshot11.png" width="150">
   </div>
 </details>
 

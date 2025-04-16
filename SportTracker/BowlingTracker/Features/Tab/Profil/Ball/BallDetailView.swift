@@ -80,9 +80,10 @@ struct BallDetailView: View {
                 } else {
                     contentStatistics
                 }
-            }.padding(.top, Padding.spacingM)
+            }
+            .padding(.top, Padding.spacingM)
+            .padding(.horizontal, Padding.defaultPadding)
         }
-        .padding(.horizontal, Padding.defaultPadding)
     }
     
     private var imageHeader: some View {
@@ -152,7 +153,7 @@ struct BallDetailView: View {
             .zIndex(1)
             ZStack(alignment: .leading) {
                 ReverseConnectionShape()
-                    .fill(Color(.bgTerciary))
+                    .fill(Color(.bgSecondary))
                     .frame(maxWidth: .infinity)
                 Text(value)
                     .body()

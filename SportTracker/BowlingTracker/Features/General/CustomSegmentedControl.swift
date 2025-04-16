@@ -18,8 +18,6 @@ struct CustomSegmentedControl<Content: View>: View {
                     )
                 }
             }
-            .cornerRadius(Corners.corenrRadiusS)
-            
             GeometryReader { geometry in
                 let segmentWidth = geometry.size.width / CGFloat(segments.count)
                 let offset = CGFloat(selectedIndex) * segmentWidth
@@ -45,18 +43,14 @@ struct CustomSegmentedControl<Content: View>: View {
     }
     
     private func segmentButton(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: Padding.spacingXXS) {
-                Text(title)
-                    .custom(
-                        size: 16,
-                        color: isSelected ? Color(.primary) : Color(.textPrimary),
-                        weight: isSelected ? .bold : .regular
-                    )
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Padding.spacingXM)
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
+        Text(title)
+            .custom(
+                size: 16,
+                color: isSelected ? Color(.primary) : Color(.textPrimary),
+                weight: .semibold
+            )
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Padding.spacingXM)
+            .tap { action() }
     }
 }

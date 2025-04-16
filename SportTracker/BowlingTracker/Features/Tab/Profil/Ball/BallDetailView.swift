@@ -5,6 +5,7 @@ struct BallDetailView: View {
     @State private var scrollOffset: CGFloat = 0
     @State private var maxImageSize: CGSize = CGSize(width: 300, height: 300)
     @State private var minImageSize: CGSize = CGSize(width: 80, height: 80)
+    @State private var animateRows = false
     
     private var imageSize: CGSize {
         let maxScrollForAnimation: CGFloat = 200
@@ -32,7 +33,7 @@ struct BallDetailView: View {
                         Color.clear.frame(height: maxImageSize.height + Padding.spacingL)
                         VStack(alignment: .leading, spacing: Padding.spacingS) {
                             Picker("", selection: $viewModel.contentType) {
-                                Text("Ball info").tag(BallViewContentType.info)
+                                Text("Ball information").tag(BallViewContentType.info)
                                 Text("Statistics").tag(BallViewContentType.statistics)
                             }
                             .pickerStyle(SegmentedPickerStyle())
@@ -51,7 +52,7 @@ struct BallDetailView: View {
                 VStack {
                     if let imageUrl = viewModel.imageUrl,
                        let coreImageUrl = viewModel.coreImageUrl
-                    {
+                    { // TODO: disable slider when scrolling down and image is smaller and smaller
                         ImageComparisonSlider(
                             firstImage: imageUrl,
                             secondImage: coreImageUrl,
@@ -95,39 +96,59 @@ struct BallDetailView: View {
                         }
                     })
             )
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        animateRows = true
+                    }
+                }
+            }
         }
     }
     
     var contentInfo: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Padding.spacingS) {
             infoRow(title: "Brand", value: viewModel.brand ?? "N/A")
             infoRow(title: "Coverstock", value: viewModel.coverstock ?? "N/A")
             infoRow(title: "Core", value: viewModel.core ?? "N/A")
             infoRow(title: "Surface", value: viewModel.surface ?? "N/A")
             infoRow(title: "RG", value: viewModel.rg != nil ? "\(viewModel.rg!)" : "N/A")
-            infoRow(title: "Differential", value: viewModel.diff != nil ? "\(viewModel.diff!)" : "N/A")
+            infoRow(title: "Diff", value: viewModel.diff != nil ? "\(viewModel.diff!)" : "N/A")
             infoRow(title: "Weight", value: "\(viewModel.weight) lb")
             infoRow(title: "Layout", value: viewModel.layout ?? "N/A")
-            
-            VStack(alignment: .leading, spacing: 8) {
-                statBar(title: "Length", value: viewModel.lenght ?? 0, maxValue: 100)
-                statBar(title: "Backend", value: viewModel.backend ?? 0, maxValue: 100)
-                statBar(title: "Hook Potential", value: viewModel.hook ?? 0, maxValue: 10)
-            }
-        }
+            infoRow(title: "Lenght", value: "\(viewModel.lenght ?? 0)")
+            infoRow(title: "Backend", value: "\(viewModel.backend ?? 0)")
+            infoRow(title: "Hook", value:  "\(viewModel.hook ?? 0)")
+        }.padding(.top, Padding.spacingM)
     }
     
     func infoRow(title: String, value: String) -> some View {
-        HStack {
-            Text(title)
-                .foregroundColor(.gray)
-                .frame(width: 100, alignment: .leading)
-            
-            Text(value)
-                .foregroundColor(Color(.primary))
-            
-            Spacer()
+        HStack(spacing: 0) {
+            ZStack(alignment: .leading) {
+                DiagonalShape()
+                    .fill(Color(.complementary))
+                    .frame(width: 120)
+                    .shadow(color: Color(.bgSecondary).opacity(0.8), radius: 3, x: 2, y: 0)
+                Text(title)
+                    .custom(size: 16, color: .textPrimaryInverse, weight: .bold)
+                    .padding(.leading, Padding.spacingXM)
+            }
+            .frame(height: 35)
+            .zIndex(1)
+            ZStack(alignment: .leading) {
+                ReverseConnectionShape()
+                    .fill(Color(.bgTerciary))
+                    .frame(maxWidth: .infinity)
+                Text(value)
+                    .body()
+                    .padding(.trailing, Padding.spacingXM)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .frame(height: 35)
+            .offset(x: animateRows ? 0 : -300)
         }
+        .cornerRadius(4)
+        .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 
     var contentStatistics: some View {
@@ -135,34 +156,35 @@ struct BallDetailView: View {
             Text("Performance Metrics")
                 .font(.headline)
                 .padding(.top)
+            // TODO:
         }
     }
-    
-    func statBar(title: String, value: Int, maxValue: Int) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(title)
-                    .foregroundColor(.gray)
-                Spacer()
-                Text("\(value)/\(maxValue)")
-                    .foregroundColor(.gray)
-            }
-            
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 10)
-                        .cornerRadius(5)
-                    
-                    Rectangle()
-                        .fill(Color.blue)
-                        .frame(width: geometry.size.width * CGFloat(value) / CGFloat(maxValue), height: 10)
-                        .cornerRadius(5)
-                }
-            }
-            .frame(height: 10)
-        }
+}
+
+struct DiagonalShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let connectionOffset: CGFloat = 15
+        var path = Path()
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: rect.width - connectionOffset, y: 0))
+        path.addLine(to: CGPoint(x: rect.width, y: rect.height))
+        path.addLine(to: CGPoint(x: 0, y: rect.height))
+        path.closeSubpath()
+        return path
+    }
+}
+
+struct ReverseConnectionShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let connectionOffset: CGFloat = 15
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: rect.width, y: 0))
+        path.addLine(to: CGPoint(x: rect.width, y: rect.height))
+        path.addLine(to: CGPoint(x: 0, y: rect.height))
+        path.addLine(to: CGPoint(x: -connectionOffset, y: 0))
+        path.closeSubpath()
+        return path
     }
 }
 
